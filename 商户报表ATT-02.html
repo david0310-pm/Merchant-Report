@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant One AI Report - ATT | Klook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        klook: {
+                            orange: '#ff5b00',
+                            purple: '#4d40cc',
+                            cyan: '#00cbd1',
+                            'dark-yellow': '#ffc200',
+                            'light-yellow': '#ffe131',
+                            indigo: '#2e2ead',
+                            'light-purple': '#887bf1',
+                            'dark-cyan': '#00afaf',
+                            'light-cyan': '#21e0e0',
+                            grey: '#212121',
+                            light: '#f9fafb'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+    <style>
+        body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #212121; }
+        .chart-container { height: 320px; width: 100%; }
+        .chart-container-sm { height: 260px; width: 100%; }
+        .filter-input { border: 1px solid #e5e7eb; border-radius: 4px; padding: 6px 10px; font-size: 12px; color: #374151; outline: none; transition: border-color 0.2s; background-color: white;}
+        #activityDropdown input { font-size: 12px; }
+        .filter-input:focus { border-color: #ff5b00; }
+        .filter-label { font-size: 13px; color: #4b5563; white-space: nowrap; margin-right: 8px; font-weight: 500;}
+        .filter-row { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; }
+        .filter-group { display: flex; align-items: center; }
+        /* 树状表格缩进样式 */
+        .tree-level-1 { padding-left: 1rem; font-weight: 600; color: #212121; }
+        .tree-level-2 { padding-left: 2.5rem; color: #4b5563; font-size: 13px; }
+        /* 分页器样式 */
+        .page-link { padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 12px; cursor: pointer; background: white;}
+        .page-link.active { background: #4d40cc; color: white; border-color: #4d40cc; }
+        /* 打印样式 */
+        @media print {
+            body { background-color: #ffffff; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            button, .no-print { display: none !important; }
+            .chart-container, .border, .bg-white { page-break-inside: avoid; box-shadow: none !important; border-color: #e5e7eb !important; }
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm border-l-4 border-klook-orange">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center">
+                <img src="file:///Users/david.li/01工作/02商户报表项目/02商户报表demo（ATT）/公司logo.png" alt="Klook Logo" style="height: 40px;">
+            </div>
+            <h1 class="text-2xl font-bold text-klook-grey">Merchant One AI Report - ATT</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Global Currency View Switcher -->
+            <div class="relative" id="currencySwitcher">
+                <button onclick="toggleCurrencyDropdown()" class="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-klook-grey font-medium py-2 px-4 rounded transition shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="currentCurrency">Currency: USD ($)</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="currencyDropdown" class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50 hidden">
+                    <div class="py-1">
+                        <a href="#" onclick="switchCurrency('Merchant Currency (AUD)')" class="block px-4 py-2 text-sm text-klook-grey hover:bg-gray-100">Merchant Currency (AUD)</a>
+                        <a href="#" onclick="switchCurrency('Unified Currency (USD)')" class="block px-4 py-2 text-sm text-klook-grey hover:bg-gray-100">Unified Currency (USD)</a>
+                    </div>
+                </div>
+            </div>
+            <button onclick="showExportModal()" class="bg-klook-orange hover:bg-[#e04f00] text-white font-medium py-2 px-5 rounded transition shadow-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Export PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 no-print">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h2 class="text-lg font-semibold text-klook-grey">Global Filters</h2>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Time |</span>
+                <div class="filter-group">
+                    <span class="filter-label">Book Date:</span>
+                    <input type="text" id="bookDate" value="2023-03-01 ~ 2024-02-29" class="filter-input w-52 text-center">
+                </div>
+                <div class="filter-group ml-4">
+                    <span class="filter-label">Participation Date:</span>
+                    <input type="text" id="participationDate" class="filter-input w-52 text-center" readonly>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Supplier |</span>
+                <div class="filter-group">
+                    <span class="filter-label text-klook-purple">Merchant ID:</span>
+                    <div class="relative">
+                        <div class="filter-input w-56 border-klook-purple cursor-pointer flex items-center justify-between" id="merchantDropdown">
+                            <input type="text" placeholder="Select Merchants" class="flex-1 bg-transparent border-none outline-none" readonly>
+                            <span class="text-gray-500">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-56 bg-white border border-klook-purple rounded-md shadow-lg hidden" id="merchantOptions">
+                            <div class="p-2 border-b">
+                                <input type="text" placeholder="Search merchants..." class="w-full filter-input border border-gray-300 text-sm" id="merchantSearch">
+                            </div>
+                            <div class="max-h-60 overflow-y-auto p-2">
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="merchant-checkbox mr-2" value="1198 - Scenic World AU" checked>
+                                    <span>1198 - Scenic World AU</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="merchant-checkbox mr-2" value="1205 - Ocean Park">
+                                    <span>1205 - Ocean Park</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group ml-4">
+                    <span class="filter-label text-klook-purple">Activity (AID):</span>
+                    <div class="relative">
+                        <div class="filter-input w-64 border-klook-purple cursor-pointer flex items-center justify-between" id="activityDropdown">
+                            <input type="text" placeholder="Select Activities" class="flex-1 bg-transparent border-none outline-none" readonly>
+                            <span class="text-gray-500">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-64 bg-white border border-klook-purple rounded-md shadow-lg hidden" id="activityOptions">
+                            <div class="p-2 border-b">
+                                <input type="text" placeholder="Search activities..." class="w-full filter-input border border-gray-300 text-sm" id="activitySearch">
+                            </div>
+                            <div class="max-h-60 overflow-y-auto p-2">
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="activity-checkbox mr-2" value="41352 - Blue Mountains Day Tour" checked>
+                                    <span>41352 - Blue Mountains Day Tour</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="activity-checkbox mr-2" value="41353 - Scenic World Passes">
+                                    <span>41353 - Scenic World Passes</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Demand |</span>
+                <div class="filter-group">
+                    <span class="filter-label">Origin:</span>
+                    <div class="relative">
+                        <div class="filter-input w-32 cursor-pointer flex items-center relative" id="originDropdown">
+                            <input type="text" placeholder="Select Origins" class="flex-1 bg-transparent border-none outline-none pr-8" readonly>
+                            <span class="text-gray-500 absolute right-2">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-32 bg-white border border-gray-300 rounded-md shadow-lg hidden" id="originOptions">
+                            <div class="max-h-60 overflow-y-auto p-2">
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="All" checked>
+                                    <span>All</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="HK">
+                                    <span>HK</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="Japan">
+                                    <span>Japan</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="South Korea">
+                                    <span>South Korea</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="Taiwan">
+                                    <span>Taiwan</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="Singapore">
+                                    <span>Singapore</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="Malaysia">
+                                    <span>Malaysia</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="origin-checkbox mr-2" value="Thailand">
+                                    <span>Thailand</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group ml-2">
+                    <span class="filter-label">B2C/B2B:</span>
+                    <select class="filter-input w-24"><option>All</option><option>B2C</option><option>B2B</option></select>
+                </div>
+
+                <div class="filter-group ml-2">
+                    <span class="filter-label">Country:</span>
+                    <div class="relative">
+                        <div class="filter-input w-24 cursor-pointer flex items-center relative" id="countryDropdown">
+                            <input type="text" placeholder="Select Countries" class="flex-1 bg-transparent border-none outline-none pr-8" readonly>
+                            <span class="text-gray-500 absolute right-2">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-24 bg-white border border-gray-300 rounded-md shadow-lg hidden" id="countryOptions">
+                            <div class="max-h-60 overflow-y-auto p-2">
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="country-checkbox mr-2" value="All" checked>
+                                    <span>All</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="country-checkbox mr-2" value="China">
+                                    <span>China</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="country-checkbox mr-2" value="Japan">
+                                    <span>Japan</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="country-checkbox mr-2" value="South Korea">
+                                    <span>Korea</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="country-checkbox mr-2" value="Singapore">
+                                    <span>Singapore</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group ml-2">
+                    <span class="filter-label">City:</span>
+                    <div class="relative">
+                        <div class="filter-input w-24 cursor-pointer flex items-center relative" id="cityDropdown">
+                            <input type="text" placeholder="Select Cities" class="flex-1 bg-transparent border-none outline-none pr-8" readonly>
+                            <span class="text-gray-500 absolute right-2">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-24 bg-white border border-gray-300 rounded-md shadow-lg hidden" id="cityOptions">
+                            <div class="max-h-60 overflow-y-auto p-2">
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="city-checkbox mr-2" value="All" checked>
+                                    <span>All</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="city-checkbox mr-2" value="Hong Kong">
+                                    <span>Hong Kong</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="city-checkbox mr-2" value="Tokyo">
+                                    <span>Tokyo</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="city-checkbox mr-2" value="Seoul">
+                                    <span>Seoul</span>
+                                </label>
+                                <label class="flex items-center py-2 text-sm">
+                                    <input type="checkbox" class="city-checkbox mr-2" value="Singapore">
+                                    <span>Singapore</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end items-center pt-4 border-t mt-2">
+                <div class="flex gap-3">
+                    <button class="bg-white hover:bg-gray-50 text-klook-grey font-medium py-1.5 px-6 rounded transition text-sm border border-gray-300">Reset</button>
+                    <button class="bg-klook-purple hover:bg-klook-indigo text-white font-medium py-1.5 px-6 rounded transition text-sm shadow-sm">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4 text-klook-grey flex items-center gap-2">
+        <span class="inline-block w-1 h-6 bg-klook-orange mr-2"></span>
+        <span class="text-klook-grey font-bold">AI Insights</span>
+    </h2>
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange">
+        <div class="space-y-4">
+            <div class="flex items-start gap-3 pb-3 border-b border-gray-100">
+                <div class="w-6 h-6 rounded-full bg-klook-orange text-white flex items-center justify-center font-bold text-sm flex-shrink-0 mt-0.5">1</div>
+                <div>
+                    <span class="font-semibold text-klook-grey">Booking Trend Analysis</span>
+                    <span class="text-gray-600"> - Your bookings have increased by 56.6% compared to the previous period, significantly outperforming the market average.</span>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 pb-3 border-b border-gray-100">
+                <div class="w-6 h-6 rounded-full bg-klook-orange text-white flex items-center justify-center font-bold text-sm flex-shrink-0 mt-0.5">2</div>
+                <div>
+                    <span class="font-semibold text-klook-grey">Cancellation Rate Alert</span>
+                    <span class="text-gray-600"> - Your cancellation rate is 48.8%, which is higher than both compset (34.9%) and city average (23.6%). Consider implementing retention strategies.</span>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-klook-orange text-white flex items-center justify-center font-bold text-sm flex-shrink-0 mt-0.5">3</div>
+                <div>
+                    <span class="font-semibold text-klook-grey">Revenue Optimization</span>
+                    <span class="text-gray-600"> - Gross sales have grown by 70.5%, driven by both increased bookings and ADR improvement. Continue focusing on high-demand periods.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-purple pl-2">Sales Overview</h2>
+
+    <div class="grid grid-cols-4 gap-4 mb-8">
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">Gross Sales</div>
+            <div class="text-3xl font-black text-klook-grey mb-2">$4.03M</div>
+            <div class="text-green-500 font-semibold text-xs flex items-center gap-1">▲ 104% YOY</div>
+        </div>
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg></div>
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">Gross Units</div>
+            <div class="text-3xl font-black text-klook-grey mb-2">38,934</div>
+            <div class="text-green-500 font-semibold text-xs flex items-center gap-1">▲ 15.2% YOY</div>
+        </div>
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-purple-50 rounded-full flex items-center justify-center text-purple-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">ABV</div>
+            <div class="text-3xl font-black text-klook-grey mb-2">$208</div>
+            <div class="text-green-500 font-semibold text-xs flex items-center gap-1">▲ 4.8% YOY</div>
+        </div>
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-cyan-50 rounded-full flex items-center justify-center text-cyan-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg></div>
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">Activity CVR</div>
+            <div class="text-3xl font-black text-klook-grey mb-2">5.2%</div>
+            <div class="text-green-500 font-semibold text-xs flex items-center gap-1">▲ 0.6% pts YOY</div>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-purple pl-2">Sales Trend</h2>
+    <div class="grid grid-cols-2 gap-6 mb-8" id="tab-content">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Gross Sales</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button id="tab-book-date" onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button id="tab-participation-date" onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+            </div>
+            <div id="chart-bd-gs" class="chart-container"></div>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Gross Units</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+            </div>
+            <div id="chart-bd-gu" class="chart-container"></div>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Net Sales</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+            </div>
+            <div id="chart-bd-ns" class="chart-container"></div>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Net Units</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+            </div>
+            <div id="chart-bd-nu" class="chart-container"></div>
+        </div>
+    </div>
+
+
+
+    <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-orange pl-2">Activity & Performance Overview</h2>
+    
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-6 border-t-2 border-klook-orange">
+        <h3 class="text-md font-semibold text-klook-grey mb-4">2B/2C Split By Gross Unit</h3>
+        <table class="w-full text-sm text-left">
+            <thead class="text-gray-500 border-b border-gray-200">
+                <tr>
+                    <th class="py-3 px-4 font-bold tracking-wider">ACTIVITY NAME</th>
+                    <th class="py-3 px-4 font-bold tracking-wider text-center text-klook-purple">B2B % SPLIT</th>
+                    <th class="py-3 px-4 font-bold tracking-wider text-center text-klook-orange">B2C % SPLIT</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 font-bold text-gray-800">Private City Tour</td>
+                    <td class="py-4 px-4 text-center"><span class="bg-purple-50 text-klook-purple px-4 py-1.5 rounded-full font-bold">22%</span></td>
+                    <td class="py-4 px-4 text-center"><span class="bg-orange-50 text-klook-orange px-4 py-1.5 rounded-full font-bold">78%</span></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 font-bold text-gray-800">Island Hopping Exp</td>
+                    <td class="py-4 px-4 text-center"><span class="bg-purple-50 text-klook-purple px-4 py-1.5 rounded-full font-bold">12%</span></td>
+                    <td class="py-4 px-4 text-center"><span class="bg-orange-50 text-klook-orange px-4 py-1.5 rounded-full font-bold">88%</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+            <div class="text-sm text-gray-500">Showing 1-2 of 10 items</div>
+            <div class="flex items-center space-x-1">
+                <button class="page-link text-gray-400" disabled>Prev</button>
+                <button class="page-link active">1</button>
+                <button class="page-link">2</button>
+                <button class="page-link">3</button>
+                <span class="px-2 text-gray-400">...</span>
+                <button class="page-link">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange overflow-x-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-md font-semibold text-klook-grey">Activity & Package Breakdown</h3>
+
+        </div>
+        <table class="w-full text-xs text-right whitespace-nowrap">
+            <thead class="text-gray-400 border-b border-gray-200">
+                <tr>
+                    <th class="py-3 px-4 font-bold text-left w-1/4">ACTIVITY / PACKAGE</th>
+                    <th class="py-3 px-3 font-bold">GROSS SALES</th>
+                    <th class="py-3 px-3 font-bold">NET SALES</th>
+                    <th class="py-3 px-3 font-bold text-klook-purple">GROSS UNIT</th>
+                    <th class="py-3 px-3 font-bold text-klook-purple">NET UNIT</th>
+                    <th class="py-3 px-3 font-bold text-klook-purple">ACT CVR</th>
+                    <th class="py-3 px-3 font-bold text-red-500">CXL AMT</th>
+                    <th class="py-3 px-3 font-bold text-red-500">CXL %</th>
+                    <th class="py-3 px-3 font-bold text-klook-orange">REFUND AMT</th>
+                    <th class="py-3 px-3 font-bold text-klook-orange">REFUND %</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-gray-50 cursor-pointer bg-gray-50/50">
+                    <td class="py-3 px-4 text-left tree-level-1">v Private City Tour</td>
+                    <td class="py-3 px-3 font-bold">$125,000</td>
+                    <td class="py-3 px-3 font-bold text-green-600">$112,000</td>
+                    <td class="py-3 px-3 font-bold text-klook-purple">3080</td>
+                    <td class="py-3 px-3 font-bold text-klook-purple">2750</td>
+                    <td class="py-3 px-3 font-bold text-klook-purple">5.8%</td>
+                    <td class="py-3 px-3 font-bold text-red-500">$13,000</td>
+                    <td class="py-3 px-3 font-bold text-red-500">10.4%</td>
+                    <td class="py-3 px-3 font-bold text-klook-orange">$4,200</td>
+                    <td class="py-3 px-3 font-bold text-klook-orange">3.4%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-4 text-left tree-level-2 italic">Standard Day Tour</td>
+                    <td class="py-3 px-3 text-gray-500">$80,000</td>
+                    <td class="py-3 px-3 text-green-500">$72,000</td>
+                    <td class="py-3 px-3 text-blue-500">2000</td>
+                    <td class="py-3 px-3 text-blue-500">1800</td>
+                    <td class="py-3 px-3 text-purple-400">6.2%</td>
+                    <td class="py-3 px-3 text-red-400">$8,000</td>
+                    <td class="py-3 px-3 text-red-400">10.0%</td>
+                    <td class="py-3 px-3 text-orange-400">$2,500</td>
+                    <td class="py-3 px-3 text-orange-400">3.1%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-4 text-left tree-level-2 italic">Premium Night Tour</td>
+                    <td class="py-3 px-3 text-gray-500">$45,000</td>
+                    <td class="py-3 px-3 text-green-500">$40,000</td>
+                    <td class="py-3 px-3 text-blue-500">1080</td>
+                    <td class="py-3 px-3 text-blue-500">950</td>
+                    <td class="py-3 px-3 text-purple-400">5.1%</td>
+                    <td class="py-3 px-3 text-red-400">$5,000</td>
+                    <td class="py-3 px-3 text-red-400">11.1%</td>
+                    <td class="py-3 px-3 text-orange-400">$1,700</td>
+                    <td class="py-3 px-3 text-orange-400">3.8%</td>
+                </tr>
+                <tr class="hover:bg-gray-50 cursor-pointer bg-gray-50/50">
+                    <td class="py-3 px-4 text-left tree-level-1">> Island Hopping Exp</td>
+                    <td class="py-3 px-3 font-bold">$98,000</td>
+                    <td class="py-3 px-3 font-bold text-green-600">$89,000</td>
+                    <td class="py-3 px-3 font-bold text-klook-purple">2550</td>
+                    <td class="py-3 px-3 font-bold text-klook-purple">2310</td>
+                    <td class="py-3 px-3 font-bold text-klook-purple">4.9%</td>
+                    <td class="py-3 px-3 font-bold text-red-500">$9,000</td>
+                    <td class="py-3 px-3 font-bold text-red-500">9.2%</td>
+                    <td class="py-3 px-3 font-bold text-klook-orange">$3,100</td>
+                    <td class="py-3 px-3 font-bold text-klook-orange">3.2%</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+            <span class="text-xs text-gray-500">Showing 1 to 10 of 42 entries</span>
+            <div class="flex gap-1">
+                <button class="page-link text-gray-400" disabled>Prev</button>
+                <button class="page-link active">1</button>
+                <button class="page-link">2</button>
+                <button class="page-link">3</button>
+                <span class="px-2 text-gray-400">...</span>
+                <button class="page-link">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan col-span-2">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Traffic & CVR Performance</h3>
+                <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+            </div>
+            <div id="chart-traffic-cvr" class="chart-container"></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Traffic Device Breakdown</h3>
+            </div>
+            <div id="chart-device" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange col-span-2">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Sales Trend By Origin</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-28 py-1"><option selected>Monthly</option></select>
+            </div>
+            <div id="chart-origin-trend" class="chart-container"></div>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Sales Composition by Origin</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+            </div>
+            <div id="chart-origin-pie" class="chart-container"></div>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-purple pl-2">Booking Window Insights</h2>
+    <div class="grid grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Booking Window (Solo)</h3>
+            </div>
+            <div id="chart-bw-solo" class="chart-container"></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Booking Window (YoY)</h3>
+            </div>
+            <div id="chart-bw-yoy" class="chart-container"></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Booking Window by Top Origins</h3>
+            </div>
+            <div id="chart-bw-origin" class="chart-container"></div>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Monthly Booking Lead Time Distribution & Trends</h3>
+                <select class="filter-input w-28 py-1"><option selected>Monthly</option></select>
+            </div>
+            <div id="chart-bw-monthly" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-cyan">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-md font-semibold text-klook-grey">Future Booked Gross Units & YoY (Next 6 Months)</h3>
+        </div>
+        <div id="chart-future" class="chart-container"></div>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-orange pl-2">Operational Analytics (DOW & Timeslot)</h2>
+    <div class="grid grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Last Year Sales Comparison by Day of Week</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-40 py-1">
+                    <option selected>All</option>
+                    <option>Standard Day Tour</option>
+                    <option>Premium Night Tour</option>
+                </select>
+            </div>
+            <div id="chart-dow-ly" class="chart-container"></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Compset Sales by Day of Week</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
+                <select class="filter-input w-40 py-1">
+                    <option selected>All</option>
+                    <option>Standard Day Tour</option>
+                    <option>Premium Night Tour</option>
+                </select>
+            </div>
+            <div id="chart-dow-compset" class="chart-container"></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Last Year Package & Timeslot Distribution</h3>
+                <select class="filter-input w-40 py-1">
+                    <option selected>All</option>
+                    <option>Standard Day Tour</option>
+                    <option>Premium Night Tour</option>
+                </select>
+            </div>
+            <div id="chart-timeslot-ly" class="chart-container"></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Compset Package & Timeslot Distribution</h3>
+                <select class="filter-input w-40 py-1">
+                    <option selected>All</option>
+                    <option>Standard Day Tour</option>
+                    <option>Premium Night Tour</option>
+                </select>
+            </div>
+            <div id="chart-timeslot-compset" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <h3 class="text-md font-semibold text-klook-grey mb-4">Group Composition</h3>
+            <div id="chart-group" class="chart-container"></div>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+            <h3 class="text-md font-semibold text-klook-grey mb-4">Child vs. Adult Ticket Mix (vs YOY)</h3>
+            <div id="chart-mix" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-cyan overflow-x-auto">
+        <h3 class="text-md font-semibold text-klook-grey mb-4">Rate Plan Summary</h3>
+        <table class="w-full text-sm text-left whitespace-nowrap">
+            <thead class="text-gray-400 border-b border-gray-200 text-xs tracking-wider">
+                <tr>
+                    <th class="py-3 px-4 font-bold">PROMOTION NAME</th>
+                    <th class="py-3 px-3 font-bold">LIVE DATE</th>
+                    <th class="py-3 px-3 font-bold">FINISH DATE</th>
+                    <th class="py-3 px-3 font-bold text-center">OVERALL UNITS</th>
+                    <th class="py-3 px-3 font-bold text-center">TOTAL REVENUE</th>
+                    <th class="py-3 px-4 font-bold text-center text-klook-purple border-l">YOY CHANGE</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 font-bold">
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Early Bird Special 15%</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-15</td>
+                    <td class="py-4 px-3 text-center">1,250</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$45,000</td>
+                    <td class="py-4 px-4 text-green-500 text-center border-l">+12.4%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Lunar New Year Flash Sale</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-20</td>
+                    <td class="py-4 px-3 text-gray-500">2026-02-05</td>
+                    <td class="py-4 px-3 text-center">2,840</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$98,500</td>
+                    <td class="py-4 px-4 text-green-500 text-center border-l">+45.2%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Mobile App Exclusive</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
+                    <td class="py-4 px-3 text-gray-500">2026-03-31</td>
+                    <td class="py-4 px-3 text-center">5,400</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$152,000</td>
+                    <td class="py-4 px-4 text-green-500 text-center border-l">+8.7%</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+            <span class="text-xs text-gray-500">Showing 1 to 10 of 15 entries</span>
+            <div class="flex gap-1">
+                <button class="page-link active">1</button>
+                <button class="page-link">2</button>
+                <button class="page-link">Next</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange overflow-x-auto">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h3 class="text-md font-semibold text-klook-grey">Health Score Snapshot (vs Compset)</h3>
+            </div>
+        </div>
+
+        <table class="w-full text-sm text-left whitespace-nowrap">
+            <thead class="text-gray-400 border-b border-gray-200 text-xs tracking-wider">
+                <tr>
+                    <th class="py-3 px-4 font-bold">ACTIVITY / PACKAGE</th>
+                    <th class="py-3 px-3 font-bold">CXL POLICY</th>
+                    <th class="py-3 px-3 font-bold">CUT-OFF</th>
+                    <th class="py-3 px-3 font-bold text-center text-red-500">BAD REVIEW % <br><span class="text-[10px] text-gray-400">(ME VS COMP)</span></th>
+                    <th class="py-3 px-3 font-bold text-center text-red-500">BAD FF RATE % <br><span class="text-[10px] text-gray-400">(ME VS COMP)</span></th>
+                    <th class="py-3 px-4 font-bold text-center">STATUS</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 font-bold">
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Blue Mountains Guided Tour</td>
+                    <td class="py-4 px-3 text-gray-500">Flexible (24h)</td>
+                    <td class="py-4 px-3 text-gray-500">12 Hours</td>
+                    <td class="py-4 px-3 text-center"><span class="text-red-500">2.4%</span> <span class="text-gray-300 font-normal">| 1.8%</span></td>
+                    <td class="py-4 px-3 text-center"><span class="text-red-500">7.14%</span> <span class="text-gray-300 font-normal">| 4.2%</span></td>
+                    <td class="py-4 px-4 text-center"><span class="bg-orange-100 text-orange-600 px-3 py-1 rounded text-xs">ACTION REQ</span></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-500 font-normal pl-8">Standard Package</td>
+                    <td class="py-4 px-3 text-gray-500 font-normal">Flexible</td>
+                    <td class="py-4 px-3 text-gray-500 font-normal">12h</td>
+                    <td class="py-4 px-3 text-center"><span class="text-gray-600">1.2%</span> <span class="text-gray-300 font-normal">| 1.1%</span></td>
+                    <td class="py-4 px-3 text-center"><span class="text-gray-600">3.1%</span> <span class="text-gray-300 font-normal">| 3.5%</span></td>
+                    <td class="py-4 px-4 text-center"><span class="text-green-500 border border-green-500 rounded-full w-5 h-5 inline-flex items-center justify-center">✓</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const colors = {
+            orange: '#ff5b00', purple: '#4d40cc', cyan: '#00cbd1', 
+            yellow: '#ffc200', red: '#f43f5e', gray: '#cbd5e1', lightGray: '#e2e8f0',
+            organic: '#ffc200', paidSearch: '#3b82f6', paidSocial: '#8b5cf6', other: '#00cbd1'
+        };
+        const xMonths = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+
+        // Helper: Create 3.2 Sales Trend Charts (Bar + Bar + Line)
+        function initSalesChart(id, yName) {
+            let chart = echarts.init(document.getElementById(id));
+            chart.setOption({
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                legend: { bottom: 0, itemWidth: 10, itemHeight: 10, textStyle: {fontSize: 10} },
+                grid: { left: '3%', right: '10%', bottom: '15%', containLabel: true },
+                xAxis: [{ type: 'category', data: xMonths }],
+                yAxis: [
+                    { type: 'value', name: yName, axisLabel: { fontSize: 10 }, splitLine: { lineStyle: { type: 'dashed', color: '#f3f4f6' } } },
+                    { type: 'value', name: 'CXL %', axisLabel: { formatter: '{value}%', fontSize: 10, color: colors.red }, splitLine: {show: false} }
+                ],
+                series: [
+                    { name: 'LY ' + yName, type: 'bar', data: [350, 420, 450, 500, 380, 410], itemStyle: { color: colors.gray } },
+                    { name: 'Current ' + yName, type: 'bar', data: [420, 512, 640, 580, 490, 550], itemStyle: { color: colors.orange },
+                      label: { show: true, position: 'top', formatter: '{c}', color: colors.orange, fontSize: 10 } },
+                    { name: 'CXL Rate (%)', type: 'line', yAxisIndex: 1, data: [5.2, 5.6, 6.0, 5.5, 4.8, 5.1], itemStyle: { color: colors.red }, symbolSize: 8, lineStyle: { width: 3 } }
+                ]
+            });
+            return chart;
+        }
+
+        // Initialize 4 grids for 3.2.1 (Book Date only)
+        const charts3_2 = [
+            initSalesChart('chart-bd-gs', 'Gross Sales'), initSalesChart('chart-bd-gu', 'Gross Units'),
+            initSalesChart('chart-bd-ns', 'Net Sales'), initSalesChart('chart-bd-nu', 'Net Units')
+        ];
+
+        // 3.4 Traffic & CVR
+        var chartTraffic = echarts.init(document.getElementById('chart-traffic-cvr'));
+        chartTraffic.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { top: 0, right: 0, data: ['Organic', 'Other', 'Paid Search', 'Paid Social', 'CVR %'] },
+            grid: { left: '3%', right: '4%', bottom: '5%', containLabel: true },
+            xAxis: { type: 'category', boundaryGap: false, data: ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'] },
+            yAxis: [
+                { type: 'value', name: 'Sessions', splitLine: { lineStyle: { type: 'dashed', color: '#f3f4f6' } } },
+                { type: 'value', name: 'CVR %', axisLabel: { formatter: '{value}' }, splitLine: { show: false } }
+            ],
+            series: [
+                { name: 'Organic', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, itemStyle: {color: colors.organic}, data: [35000, 80000, 50000, 48000], smooth: true },
+                { name: 'Other', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, itemStyle: {color: colors.other}, data: [15000, 35000, 25000, 22000], smooth: true },
+                { name: 'Paid Search', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, itemStyle: {color: colors.paidSearch}, data: [45000, 95000, 60000, 55000], smooth: true },
+                { name: 'Paid Social', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, itemStyle: {color: colors.paidSocial}, data: [25000, 65000, 40000, 38000], smooth: true },
+                { name: 'CVR %', type: 'line', yAxisIndex: 1, data: [4.5, 8.2, 5.6, 5.8], itemStyle: {color: '#212121'}, symbol: 'circle', symbolSize: 8, lineStyle: {width: 3}, smooth: true}
+            ]
+        });
+
+        // 3.5 Device Breakdown
+        var chartDevice = echarts.init(document.getElementById('chart-device'));
+        chartDevice.setOption({
+            tooltip: { 
+                trigger: 'item',
+                formatter: '{b}: {c} ({d}%)'
+            },
+            legend: { bottom: '0%', left: 'center' },
+            color: [colors.orange, colors.yellow, colors.purple],
+            series: [{
+                type: 'pie', radius: ['50%', '70%'], center: ['50%', '45%'],
+                label: { 
+                    show: true, 
+                    formatter: '{d}%',
+                    fontSize: 12,
+                    fontWeight: 'bold'
+                },
+                labelLine: { show: false },
+                data: [{value: 58, name: 'App'}, {value: 27, name: 'Mobile Web'}, {value: 15, name: 'Desktop'}]
+            }]
+        });
+
+        // 3.6 Origin Pie
+        var chartOriginPie = echarts.init(document.getElementById('chart-origin-pie'));
+        chartOriginPie.setOption({
+            tooltip: { trigger: 'item' },
+            color: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#ff5b00', '#00cbd1', '#8b5cf6', '#64748b', '#f472b6', '#a1a1aa'],
+            series: [{
+                type: 'pie', radius: '65%', center: ['50%', '50%'],
+                label: { formatter: '{b}\n{d}%', fontSize: 10 },
+                data: [ {value: 22.5, name: 'South Korea'}, {value: 18.9, name: 'Greater China'}, {value: 14.7, name: 'India'}, 
+                        {value: 10.5, name: 'Middle East'}, {value: 7.9, name: 'Philippines'}, {value: 7.5, name: 'Singapore'}, 
+                        {value: 4.5, name: 'Europe'}, {value: 3.7, name: 'Americas'}, {value: 3.6, name: 'Malaysia'}, {value: 6.2, name: 'Others'} ]
+            }]
+        });
+
+        // 3.7 Origin Stacked Trend
+        var chartOriginTrend = echarts.init(document.getElementById('chart-origin-trend'));
+        chartOriginTrend.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: -5, itemWidth: 10, itemHeight: 10, textStyle: {fontSize: 10} },
+            color: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#ff5b00', '#00cbd1', '#8b5cf6', '#64748b', '#f472b6', '#a1a1aa'],
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+            yAxis: { type: 'value', axisLabel: {formatter: '${value}K'} },
+            series: [
+                {name: 'South Korea', type: 'bar', stack: 'total', data: [4, 2, 1.5, 2, 1.5, 2, 2, 1.8, 2, 3.5, 6, 6]},
+                {name: 'Greater China', type: 'bar', stack: 'total', data: [3, 2, 2, 2, 2, 1.5, 2, 1.8, 2, 3, 5, 6]},
+                {name: 'India', type: 'bar', stack: 'total', data: [2, 1, 1, 1, 1, 1, 1, 1, 1.5, 3, 4, 5]},
+                {name: 'Middle East', type: 'bar', stack: 'total', data: [1.5, 1, 0.8, 1, 0.8, 1, 0.5, 0.5, 1, 2, 3, 3]},
+                {name: 'Others', type: 'bar', stack: 'total', data: [1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1, 1.5, 2]}
+            ]
+        });
+
+        // 3.8 Booking Window (Solo)
+        var chartBwSolo = echarts.init(document.getElementById('chart-bw-solo'));
+        chartBwSolo.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { left: '3%', right: '4%', bottom: '5%', top: '5%', containLabel: true },
+            xAxis: { type: 'value', show: false },
+            yAxis: { type: 'category', data: ['1 Month+', '2 Weeks', '4-7 Days', '2-3 Days', '1 Day', '0 Days'], axisTick: {show: false}, axisLine: {show: false} },
+            series: [
+                { name: 'Merchant %', type: 'bar', data: [20, 30, 32, 55, 38, 70], itemStyle: { color: colors.orange, borderRadius: 4 }, barWidth: '50%' }
+            ]
+        });
+
+        // 3.9 Booking Window (YoY)
+        var chartBwYoy = echarts.init(document.getElementById('chart-bw-yoy'));
+        chartBwYoy.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0 },
+            grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+            xAxis: { type: 'value', show: false },
+            yAxis: { type: 'category', data: ['1 Month+', '2 Weeks', '4-7 Days', '2-3 Days', '1 Day', '0 Days'], axisTick: {show: false}, axisLine: {show: false} },
+            series: [
+                { name: 'Prev Year %', type: 'bar', data: [15, 35, 28, 48, 42, 60], itemStyle: { color: colors.lightGray, borderRadius: 4 }, barWidth: '30%', barGap: '20%' },
+                { name: 'Merchant %', type: 'bar', data: [20, 30, 32, 55, 38, 70], itemStyle: { color: colors.orange, borderRadius: 4 }, barWidth: '30%' }
+            ]
+        });
+
+        // 3.10 Booking Window by Origin
+        var chartBwOrigin = echarts.init(document.getElementById('chart-bw-origin'));
+        chartBwOrigin.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, itemWidth: 10, itemHeight: 10 },
+            grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+            xAxis: { type: 'category', data: ['Australia', 'China', 'Korea', 'Others'] },
+            yAxis: { type: 'value', axisLabel: {formatter: '{value}%'}, max: 100 },
+            color: ['#06b6d4', '#22d3ee', '#67e8f9', '#fdba74', '#fb923c', '#f97316'],
+            series: [
+                { name: '0D (Same Day)', type: 'bar', stack: 'total', data: [2, 10, 25, 10], barWidth: '50%' },
+                { name: '1D (Next Day)', type: 'bar', stack: 'total', data: [5, 15, 20, 5] },
+                { name: '2-3D', type: 'bar', stack: 'total', data: [15, 20, 15, 5] },
+                { name: '4-7D', type: 'bar', stack: 'total', data: [10, 15, 10, 5] },
+                { name: '8-30D', type: 'bar', stack: 'total', data: [15, 10, 5, 5] },
+                { name: '30D+', type: 'bar', stack: 'total', data: [20, 5, 2, 5] }
+            ]
+        });
+
+        // 3.11 Booking Window Monthly Stack
+        var chartBwMonthly = echarts.init(document.getElementById('chart-bw-monthly'));
+        chartBwMonthly.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, itemWidth: 10, itemHeight: 10 },
+            grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+            xAxis: { type: 'category', data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
+            yAxis: { type: 'value', axisLabel: {formatter: '{value}%'}, max: 100 },
+            color: ['#06b6d4', '#22d3ee', '#67e8f9', '#fdba74', '#fb923c', '#f97316'],
+            series: [
+                { name: '0D (Same Day)', type: 'bar', stack: 'total', data: [5, 10, 15, 20, 25, 30], barWidth: '50%' },
+                { name: '1D (Next Day)', type: 'bar', stack: 'total', data: [10, 15, 20, 15, 15, 15] },
+                { name: '2-3D', type: 'bar', stack: 'total', data: [15, 15, 15, 15, 15, 15] },
+                { name: '4-7D', type: 'bar', stack: 'total', data: [20, 20, 20, 20, 15, 10] },
+                { name: '8-30D', type: 'bar', stack: 'total', data: [30, 25, 20, 15, 15, 15] },
+                { name: '30D+', type: 'bar', stack: 'total', data: [20, 15, 10, 15, 15, 15] }
+            ]
+        });
+
+        // 3.12 Future Booked
+        var chartFuture = echarts.init(document.getElementById('chart-future'));
+        chartFuture.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0 },
+            grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'] },
+            yAxis: { type: 'value', show: false },
+            series: [
+                { name: 'LY Bookings', type: 'bar', data: [350, 380, 400, 480, 520, 550], itemStyle: { color: colors.lightGray } },
+                { name: 'Current Bookings', type: 'bar', data: [385, 412, 442, 456, 557, 379], itemStyle: { color: colors.orange },
+                  label: {show: true, position: 'top', formatter: function(p){
+                      let ly = chartFuture.getOption().series[0].data[p.dataIndex];
+                      let val = ((p.value - ly)/ly * 100).toFixed(1);
+                      return val > 0 ? '+' + val + '%' : val + '%';
+                  }, color: colors.orange, fontWeight: 'bold'}}
+            ]
+        });
+
+        // 3.13 Last Year Sales Comparison by Day of Week
+        var chartDowLy = echarts.init(document.getElementById('chart-dow-ly'));
+        chartDowLy.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0 },
+            grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], axisTick: {show: false} },
+            yAxis: { type: 'value', show: false },
+            series: [
+                { name: 'Prev Year %', type: 'bar', data: [11, 12, 13, 14, 17, 15, 11], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%' },
+                { name: 'Merchant %', type: 'bar', data: [12, 13, 14, 15, 18, 16, 12], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%' },
+            ]
+        });
+
+        // 3.14 Compset Sales by Day of Week
+        var chartDowCompset = echarts.init(document.getElementById('chart-dow-compset'));
+        chartDowCompset.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0 },
+            grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], axisTick: {show: false} },
+            yAxis: { type: 'value', show: false },
+            series: [
+                { name: 'Compset %', type: 'bar', data: [10, 11, 12, 13, 16, 14, 10], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%' },
+                { name: 'Merchant %', type: 'bar', data: [12, 13, 14, 15, 18, 16, 12], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%' },
+            ]
+        });
+
+        // 3.15 Last Year Package & Timeslot Distribution
+        var chartTimeslotLy = echarts.init(document.getElementById('chart-timeslot-ly'));
+        chartTimeslotLy.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, left: 'center' },
+            grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+            xAxis: { type: 'category', data: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'], axisLabel: {fontSize: 9, rotate: 45} },
+            yAxis: { type: 'value', show: false },
+            series: [
+                { name: 'Prev Year (%)', type: 'bar', data: [3, 3.5, 4, 4, 5, 5, 9, 11, 4, 3], itemStyle: { color: '#3b82f6' } },
+                { name: 'Merchant (%)', type: 'bar', data: [2, 2.5, 3, 3, 4, 4, 10, 12, 3, 2], itemStyle: { color: colors.orange } }
+            ]
+        });
+
+        // 3.16 Compset Package & Timeslot Distribution
+        var chartTimeslotCompset = echarts.init(document.getElementById('chart-timeslot-compset'));
+        chartTimeslotCompset.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, left: 'center' },
+            grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+            xAxis: { type: 'category', data: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'], axisLabel: {fontSize: 9, rotate: 45} },
+            yAxis: { type: 'value', show: false },
+            series: [
+                { name: 'Compset (%)', type: 'bar', data: [6, 7, 5, 4, 4, 5, 6, 6, 3, 3], itemStyle: { color: '#3b82f6' } },
+                { name: 'Merchant (%)', type: 'bar', data: [2, 2.5, 3, 3, 4, 4, 10, 12, 3, 2], itemStyle: { color: colors.orange } }
+            ]
+        });
+
+        // 3.17 Group Composition
+        var chartGroup = echarts.init(document.getElementById('chart-group'));
+        chartGroup.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { left: '3%', right: '10%', bottom: '5%', top: '5%', containLabel: true },
+            xAxis: { type: 'value', show: false },
+            yAxis: { type: 'category', data: ['Other', '1A', '2A2C', '2A', '2A1C'], axisTick: {show: false}, axisLine: {show: false}, axisLabel: {fontWeight: 'bold'} },
+            series: [
+                { name: 'Merchant %', type: 'bar', data: [4, 8, 15, 31, 42], itemStyle: { color: colors.orange, borderRadius: 4 }, barWidth: '40%',
+                  label: {show: true, position: 'right', formatter: '{c}%', color: '#212121', fontWeight: 'bold'} }
+            ]
+        });
+
+        // 3.18 Ticket Mix
+        var chartMix = echarts.init(document.getElementById('chart-mix'));
+        chartMix.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0 },
+            grid: { left: '3%', right: '4%', bottom: '15%', top: '5%', containLabel: true },
+            xAxis: { type: 'category', data: ['Adult', 'Child'] },
+            yAxis: { type: 'value', max: 100, axisLabel: {formatter: '{value}'} },
+            series: [
+                { name: 'Merchant', type: 'bar', data: [82, 18], itemStyle: { color: '#2563eb' }, label: {show: true, position: 'top', formatter: '{c}%'} },
+                { name: 'Compset Average', type: 'bar', data: [45, 55], itemStyle: { color: '#94a3b8' }, label: {show: true, position: 'top', formatter: '{c}%'} }
+            ]
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', function() {
+            charts3_2.forEach(c => c.resize());
+            chartTraffic.resize(); chartDevice.resize(); chartOriginPie.resize(); chartOriginTrend.resize();
+            chartBwSolo.resize(); chartBwYoy.resize(); chartBwOrigin.resize(); chartBwMonthly.resize(); chartFuture.resize();
+            chartDowLy.resize(); chartDowCompset.resize(); chartTimeslotLy.resize(); chartTimeslotCompset.resize(); chartGroup.resize(); chartMix.resize();
+        });
+
+        // Initialize date range picker for Book Date
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr('#bookDate', {
+                mode: 'range',
+                dateFormat: 'Y-m-d',
+                separator: ' ~ ',
+                locale: {
+                    rangeSeparator: ' ~ '
+                },
+                defaultDate: ['2023-03-01', '2024-02-29'],
+                maxDate: 'today',
+                onClose: function(selectedDates, dateStr, instance) {
+                    console.log('Selected date range:', dateStr);
+                }
+            });
+
+            // Initialize date range picker for Participation Date
+            flatpickr('#participationDate', {
+                mode: 'range',
+                dateFormat: 'Y-m-d',
+                separator: ' ~ ',
+                locale: {
+                    rangeSeparator: ' ~ '
+                },
+                defaultDate: null,
+                maxDate: 'today',
+                onClose: function(selectedDates, dateStr, instance) {
+                    console.log('Selected date range:', dateStr);
+                }
+            });
+
+            // Initialize activity dropdown with checkbox and search
+            const activityDropdown = document.getElementById('activityDropdown');
+            const activityOptions = document.getElementById('activityOptions');
+            const activityInput = activityDropdown.querySelector('input');
+            const activitySearch = document.getElementById('activitySearch');
+            const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
+
+            // Toggle dropdown
+            activityDropdown.addEventListener('click', function() {
+                activityOptions.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!activityDropdown.contains(event.target) && !activityOptions.contains(event.target)) {
+                    activityOptions.classList.add('hidden');
+                }
+            });
+
+            // Update input value when checkboxes change
+            function updateActivityInput() {
+                const selectedActivities = Array.from(activityCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedActivities.length > 0) {
+                    if (selectedActivities.length > 1) {
+                        activityInput.value = `${selectedActivities.length} selected`;
+                    } else {
+                        activityInput.value = selectedActivities[0];
+                    }
+                } else {
+                    activityInput.value = '';
+                    activityInput.placeholder = 'Select Activities';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            activityCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateActivityInput);
+            });
+
+            // Initial update
+            updateActivityInput();
+
+            // Search functionality
+            activitySearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const activityLabels = activityOptions.querySelectorAll('label');
+                
+                activityLabels.forEach(label => {
+                    const text = label.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        label.style.display = 'flex';
+                    } else {
+                        label.style.display = 'none';
+                    }
+                });
+            });
+
+            // Initialize merchant dropdown with checkbox and search
+            const merchantDropdown = document.getElementById('merchantDropdown');
+            const merchantOptions = document.getElementById('merchantOptions');
+            const merchantInput = merchantDropdown.querySelector('input');
+            const merchantSearch = document.getElementById('merchantSearch');
+            const merchantCheckboxes = document.querySelectorAll('.merchant-checkbox');
+
+            // Toggle dropdown
+            merchantDropdown.addEventListener('click', function() {
+                merchantOptions.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!merchantDropdown.contains(event.target) && !merchantOptions.contains(event.target)) {
+                    merchantOptions.classList.add('hidden');
+                }
+            });
+
+            // Update input value when checkboxes change
+            function updateMerchantInput() {
+                const selectedMerchants = Array.from(merchantCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedMerchants.length > 0) {
+                    if (selectedMerchants.length > 1) {
+                        merchantInput.value = `${selectedMerchants.length} selected`;
+                    } else {
+                        merchantInput.value = selectedMerchants[0];
+                    }
+                } else {
+                    merchantInput.value = '';
+                    merchantInput.placeholder = 'Select Merchants';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            merchantCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateMerchantInput);
+            });
+
+            // Initial update
+            updateMerchantInput();
+
+            // Search functionality
+            merchantSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const merchantLabels = merchantOptions.querySelectorAll('label');
+                
+                merchantLabels.forEach(label => {
+                    const text = label.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        label.style.display = 'flex';
+                    } else {
+                        label.style.display = 'none';
+                    }
+                });
+            });
+
+            // Initialize origin dropdown with checkbox
+            const originDropdown = document.getElementById('originDropdown');
+            const originOptions = document.getElementById('originOptions');
+            const originInput = originDropdown.querySelector('input');
+            const originCheckboxes = document.querySelectorAll('.origin-checkbox');
+
+            // Toggle dropdown
+            originDropdown.addEventListener('click', function() {
+                originOptions.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!originDropdown.contains(event.target) && !originOptions.contains(event.target)) {
+                    originOptions.classList.add('hidden');
+                }
+            });
+
+            // Update input value when checkboxes change
+            function updateOriginInput() {
+                const selectedOrigins = Array.from(originCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedOrigins.length > 0) {
+                    if (selectedOrigins.length > 1) {
+                        originInput.value = `${selectedOrigins.length} selected`;
+                    } else {
+                        originInput.value = selectedOrigins[0];
+                    }
+                } else {
+                    originInput.value = '';
+                    originInput.placeholder = 'Select Origins';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            originCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateOriginInput);
+            });
+
+            // Initial update
+            updateOriginInput();
+
+            // Initialize region dropdown with checkbox
+            const regionDropdown = document.getElementById('regionDropdown');
+            const regionOptions = document.getElementById('regionOptions');
+            const regionInput = regionDropdown.querySelector('input');
+            const regionCheckboxes = document.querySelectorAll('.region-checkbox');
+
+            // Toggle dropdown
+            regionDropdown.addEventListener('click', function() {
+                regionOptions.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!regionDropdown.contains(event.target) && !regionOptions.contains(event.target)) {
+                    regionOptions.classList.add('hidden');
+                }
+            });
+
+            // Update input value when checkboxes change
+            function updateRegionInput() {
+                const selectedRegions = Array.from(regionCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedRegions.length > 0) {
+                    if (selectedRegions.length > 1) {
+                        regionInput.value = `${selectedRegions.length} selected`;
+                    } else {
+                        regionInput.value = selectedRegions[0];
+                    }
+                } else {
+                    regionInput.value = '';
+                    regionInput.placeholder = 'Select Regions';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            regionCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateRegionInput);
+            });
+
+            // Initial update
+            updateRegionInput();
+
+            // Initialize country dropdown with checkbox
+            const countryDropdown = document.getElementById('countryDropdown');
+            const countryOptions = document.getElementById('countryOptions');
+            const countryInput = countryDropdown.querySelector('input');
+            const countryCheckboxes = document.querySelectorAll('.country-checkbox');
+
+            // Toggle dropdown
+            countryDropdown.addEventListener('click', function() {
+                countryOptions.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!countryDropdown.contains(event.target) && !countryOptions.contains(event.target)) {
+                    countryOptions.classList.add('hidden');
+                }
+            });
+
+            // Update input value when checkboxes change
+            function updateCountryInput() {
+                const selectedCountries = Array.from(countryCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedCountries.length > 0) {
+                    if (selectedCountries.length > 1) {
+                        countryInput.value = `${selectedCountries.length} selected`;
+                    } else {
+                        countryInput.value = selectedCountries[0];
+                    }
+                } else {
+                    countryInput.value = '';
+                    countryInput.placeholder = 'Select Countries';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            countryCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateCountryInput);
+            });
+
+            // Initial update
+            updateCountryInput();
+
+            // Initialize city dropdown with checkbox
+            const cityDropdown = document.getElementById('cityDropdown');
+            const cityOptions = document.getElementById('cityOptions');
+            const cityInput = cityDropdown.querySelector('input');
+            const cityCheckboxes = document.querySelectorAll('.city-checkbox');
+
+            // Toggle dropdown
+            cityDropdown.addEventListener('click', function() {
+                cityOptions.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!cityDropdown.contains(event.target) && !cityOptions.contains(event.target)) {
+                    cityOptions.classList.add('hidden');
+                }
+            });
+
+            // Update input value when checkboxes change
+            function updateCityInput() {
+                const selectedCities = Array.from(cityCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedCities.length > 0) {
+                    if (selectedCities.length > 1) {
+                        cityInput.value = `${selectedCities.length} selected`;
+                    } else {
+                        cityInput.value = selectedCities[0];
+                    }
+                } else {
+                    cityInput.value = '';
+                    cityInput.placeholder = 'Select Cities';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            cityCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateCityInput);
+            });
+
+            // Initial update
+            updateCityInput();
+
+        });
+
+        // Export PDF Modal functionality
+        function showExportModal() {
+            document.getElementById('exportModal').classList.remove('hidden');
+        }
+
+        function hideExportModal() {
+            document.getElementById('exportModal').classList.add('hidden');
+        }
+
+        function resetExportSelection() {
+            const checkboxes = document.querySelectorAll('#exportModal input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+        }
+
+        function generatePDF() {
+            // Get selected modules and charts
+            const selectedItems = [];
+            const checkboxes = document.querySelectorAll('#exportModal input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                if (!checkbox.classList.contains('module-checkbox')) {
+                    selectedItems.push(checkbox.nextElementSibling.textContent.trim());
+                }
+            });
+
+            console.log('Generating PDF with selected items:', selectedItems);
+            
+            // Simulate PDF generation
+            alert('PDF generation started. This would include the selected modules and charts.');
+            hideExportModal();
+        }
+
+        // Module checkbox functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const moduleCheckboxes = document.querySelectorAll('.module-checkbox');
+            moduleCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const moduleGroup = this.closest('.module-group');
+                    const itemCheckboxes = moduleGroup.querySelectorAll('input[type="checkbox"]:not(.module-checkbox)');
+                    itemCheckboxes.forEach(itemCheckbox => {
+                        itemCheckbox.checked = this.checked;
+                    });
+                });
+            });
+        });
+    </script>
+
+    <!-- Export PDF Modal -->
+    <div id="exportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b p-4">
+                <h2 class="text-lg font-bold text-klook-grey">Export Report to PDF</h2>
+                <button onclick="hideExportModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-6">Select the modules and charts you want to include in the PDF export.</p>
+                
+                <div class="space-y-6">
+                    <!-- Module 1: Sales Overview -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module1" class="module-checkbox mr-2" checked>
+                            <label for="module1" class="font-semibold">Module 1: Sales Overview</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module1-item1" class="mr-2" checked>
+                                <label for="module1-item1" class="text-sm">Sales Overview Metrics</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 2: Sales Trend (By Book Date) -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module2" class="module-checkbox mr-2" checked>
+                            <label for="module2" class="font-semibold">Module 2: Sales Trend (By Book Date)</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module2-item1" class="mr-2" checked>
+                                <label for="module2-item1" class="text-sm">Gross Sales</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module2-item2" class="mr-2" checked>
+                                <label for="module2-item2" class="text-sm">Gross Units</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module2-item3" class="mr-2" checked>
+                                <label for="module2-item3" class="text-sm">Net Sales</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module2-item4" class="mr-2" checked>
+                                <label for="module2-item4" class="text-sm">Net Units</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 3: Sales Trend (By Participation Date) -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module3" class="module-checkbox mr-2" checked>
+                            <label for="module3" class="font-semibold">Module 3: Sales Trend (By Participation Date)</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module3-item1" class="mr-2" checked>
+                                <label for="module3-item1" class="text-sm">Gross Sales</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module3-item2" class="mr-2" checked>
+                                <label for="module3-item2" class="text-sm">Gross Units</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module3-item3" class="mr-2" checked>
+                                <label for="module3-item3" class="text-sm">Net Sales</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module3-item4" class="mr-2" checked>
+                                <label for="module3-item4" class="text-sm">Net Units</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 4: Activity & Performance Overview -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module4" class="module-checkbox mr-2" checked>
+                            <label for="module4" class="font-semibold">Module 4: Activity & Performance Overview</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module4-item1" class="mr-2" checked>
+                                <label for="module4-item1" class="text-sm">Marketing Channel Split</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module4-item2" class="mr-2" checked>
+                                <label for="module4-item2" class="text-sm">Activity & Package Breakdown</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module4-item3" class="mr-2" checked>
+                                <label for="module4-item3" class="text-sm">Traffic & CVR Performance</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module4-item4" class="mr-2" checked>
+                                <label for="module4-item4" class="text-sm">Traffic Device Breakdown</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module4-item5" class="mr-2" checked>
+                                <label for="module4-item5" class="text-sm">Sales Trend By Origin</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module4-item6" class="mr-2" checked>
+                                <label for="module4-item6" class="text-sm">Sales Composition by Origin</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 5: Booking Window Insights -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module5" class="module-checkbox mr-2" checked>
+                            <label for="module5" class="font-semibold">Module 5: Booking Window Insights</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module5-item1" class="mr-2" checked>
+                                <label for="module5-item1" class="text-sm">Booking Window (Solo)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module5-item2" class="mr-2" checked>
+                                <label for="module5-item2" class="text-sm">Booking Window (YoY)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module5-item3" class="mr-2" checked>
+                                <label for="module5-item3" class="text-sm">Booking Window by Top Origins</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module5-item4" class="mr-2" checked>
+                                <label for="module5-item4" class="text-sm">Monthly Booking Lead Time Distribution & Trends</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module5-item5" class="mr-2" checked>
+                                <label for="module5-item5" class="text-sm">Future Booked Gross Units & YoY</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 6: Operational Analytics -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module6" class="module-checkbox mr-2" checked>
+                            <label for="module6" class="font-semibold">Module 6: Operational Analytics (DOW & Timeslot)</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module6-item1" class="mr-2" checked>
+                                <label for="module6-item1" class="text-sm">Last Year Sales Comparison by Day of Week</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module6-item2" class="mr-2" checked>
+                                <label for="module6-item2" class="text-sm">Compset Sales by Day of Week</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module6-item3" class="mr-2" checked>
+                                <label for="module6-item3" class="text-sm">Last Year Package & Timeslot Distribution</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module6-item4" class="mr-2" checked>
+                                <label for="module6-item4" class="text-sm">Compset Package & Timeslot Distribution</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 7: Other Reports -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module7" class="module-checkbox mr-2" checked>
+                            <label for="module7" class="font-semibold">Module 7: Other Reports</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module7-item1" class="mr-2" checked>
+                                <label for="module7-item1" class="text-sm">Group Composition</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module7-item2" class="mr-2" checked>
+                                <label for="module7-item2" class="text-sm">Child vs. Adult Ticket Mix (vs YOY)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module7-item3" class="mr-2" checked>
+                                <label for="module7-item3" class="text-sm">Rate Plan Summary</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module7-item4" class="mr-2" checked>
+                                <label for="module7-item4" class="text-sm">Health Score Snapshot</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module7-item5" class="mr-2" checked>
+                                <label for="module7-item5" class="text-sm">Health Score Snapshot (vs Compset)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-8">
+                    <button onclick="resetExportSelection()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded transition">
+                        Reset
+                    </button>
+                    <div class="flex gap-3">
+                        <button onclick="hideExportModal()" class="border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded transition">
+                            Cancel
+                        </button>
+                        <button onclick="generatePDF()" class="bg-klook-orange hover:bg-[#e04f00] text-white font-medium py-2 px-5 rounded transition shadow-sm">
+                            Generate PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Currency Switcher Functionality
+        function toggleCurrencyDropdown() {
+            const dropdown = document.getElementById('currencyDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function switchCurrency(currency) {
+            document.getElementById('currentCurrency').textContent = currency;
+            document.getElementById('currencyDropdown').classList.add('hidden');
+            
+            // Here you would add logic to update all currency values on the page
+            console.log('Switched to:', currency);
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const currencySwitcher = document.getElementById('currencySwitcher');
+            if (!currencySwitcher.contains(event.target)) {
+                document.getElementById('currencyDropdown').classList.add('hidden');
+            }
+        });
+
+        // Simulate merchant selection logic
+        function updateCurrencySwitcherStatus() {
+            // This would be replaced with actual logic based on merchant selection
+            const isSingleMerchant = true; // Simulating single merchant selected
+            const currencySwitcherBtn = document.querySelector('#currencySwitcher button');
+            
+            if (isSingleMerchant) {
+                // Enable currency switcher
+                currencySwitcherBtn.disabled = false;
+                currencySwitcherBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                // Disable currency switcher for multiple merchants
+                currencySwitcherBtn.disabled = true;
+                currencySwitcherBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('currentCurrency').textContent = 'Unified Currency (USD)';
+            }
+        }
+
+        // Initialize currency switcher status
+        updateCurrencySwitcherStatus();
+
+        // Tab Switching Functionality
+        function switchTab(tab) {
+            // Get all tab buttons
+            const bookDateButtons = document.querySelectorAll('button[onclick="switchTab(\'book-date\')"]');
+            const participationDateButtons = document.querySelectorAll('button[onclick="switchTab(\'participation-date\')"]');
+            
+            if (tab === 'book-date') {
+                // Update all Book Date buttons
+                bookDateButtons.forEach(button => {
+                    button.classList.add('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                    button.classList.remove('text-gray-500');
+                });
+                // Update all Participation Date buttons
+                participationDateButtons.forEach(button => {
+                    button.classList.add('text-gray-500');
+                    button.classList.remove('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                });
+            } else if (tab === 'participation-date') {
+                // Update all Participation Date buttons
+                participationDateButtons.forEach(button => {
+                    button.classList.add('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                    button.classList.remove('text-gray-500');
+                });
+                // Update all Book Date buttons
+                bookDateButtons.forEach(button => {
+                    button.classList.add('text-gray-500');
+                    button.classList.remove('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>
