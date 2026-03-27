@@ -29,6 +29,8 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
@@ -67,20 +69,7 @@
             <h1 class="text-2xl font-bold text-klook-grey">Merchant One AI Report - ATT</h1>
         </div>
         <div class="flex items-center gap-4">
-            <!-- Global Currency View Switcher -->
-            <div class="relative" id="currencySwitcher">
-                <button onclick="toggleCurrencyDropdown()" class="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-klook-grey font-medium py-2 px-4 rounded transition shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span id="currentCurrency">Currency: USD ($)</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div id="currencyDropdown" class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50 hidden">
-                    <div class="py-1">
-                        <a href="#" onclick="switchCurrency('Merchant Currency (AUD)')" class="block px-4 py-2 text-sm text-klook-grey hover:bg-gray-100">Merchant Currency (AUD)</a>
-                        <a href="#" onclick="switchCurrency('Unified Currency (USD)')" class="block px-4 py-2 text-sm text-klook-grey hover:bg-gray-100">Unified Currency (USD)</a>
-                    </div>
-                </div>
-            </div>
+
             <button onclick="showExportModal()" class="bg-klook-orange hover:bg-[#e04f00] text-white font-medium py-2 px-5 rounded transition shadow-sm flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Export PDF
@@ -159,7 +148,7 @@
             </div>
 
             <div class="filter-row">
-                <span class="font-medium text-klook-grey w-24">Demand |</span>
+                <span class="font-medium text-klook-grey w-24">OD |</span>
                 <div class="filter-group">
                     <span class="filter-label">Origin:</span>
                     <div class="relative">
@@ -211,7 +200,7 @@
                 </div>
 
                 <div class="filter-group ml-2">
-                    <span class="filter-label">Country:</span>
+                    <span class="filter-label">Destination Country:</span>
                     <div class="relative">
                         <div class="filter-input w-24 cursor-pointer flex items-center relative" id="countryDropdown">
                             <input type="text" placeholder="Select Countries" class="flex-1 bg-transparent border-none outline-none pr-8" readonly>
@@ -244,7 +233,7 @@
                     </div>
                 </div>
                 <div class="filter-group ml-2">
-                    <span class="filter-label">City:</span>
+                    <span class="filter-label">Destination City:</span>
                     <div class="relative">
                         <div class="filter-input w-24 cursor-pointer flex items-center relative" id="cityDropdown">
                             <input type="text" placeholder="Select Cities" class="flex-1 bg-transparent border-none outline-none pr-8" readonly>
@@ -353,8 +342,8 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Gross Sales</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button id="tab-book-date" onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button id="tab-participation-date" onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button id="tab-book-date" onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button id="tab-participation-date" onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
@@ -366,8 +355,8 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Gross Units</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
@@ -379,8 +368,8 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Net Sales</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
@@ -392,8 +381,8 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Net Units</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
@@ -529,7 +518,7 @@
     <div class="grid grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan col-span-2">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Traffic & CVR Performance</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Session-based Traffic & CVR Performance</h3>
                 <select class="filter-input w-28 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
             </div>
             <div id="chart-traffic-cvr" class="chart-container"></div>
@@ -537,7 +526,7 @@
 
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Traffic Device Breakdown</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Session-based Traffic Device Breakdown</h3>
             </div>
             <div id="chart-device" class="chart-container"></div>
         </div>
@@ -549,8 +538,8 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Sales Trend By Origin</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-28 py-1"><option selected>Monthly</option></select>
@@ -562,8 +551,8 @@
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Sales Composition by Origin</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
             </div>
@@ -575,27 +564,33 @@
     <div class="grid grid-cols-2 gap-6 mb-8">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Booking Window (Solo)</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Session-based Booking Window (Solo)</h3>
             </div>
             <div id="chart-bw-solo" class="chart-container"></div>
         </div>
 
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Booking Window (YoY)</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Session-based Booking Window (YoY)</h3>
             </div>
             <div id="chart-bw-yoy" class="chart-container"></div>
         </div>
 
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Booking Window by Top Origins</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Session-based Booking Window by Top Origins</h3>
             </div>
             <div id="chart-bw-origin" class="chart-container"></div>
         </div>
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Monthly Booking Lead Time Distribution & Trends</h3>
+                <div class="flex items-center gap-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Session-based Monthly Booking Lead Time Distribution & Trends</h3>
+                    <div class="flex border border-gray-200 rounded-md">
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                    </div>
+                </div>
                 <select class="filter-input w-28 py-1"><option selected>Monthly</option></select>
             </div>
             <div id="chart-bw-monthly" class="chart-container"></div>
@@ -614,10 +609,10 @@
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-4">
-                    <h3 class="text-md font-semibold text-klook-grey">Last Year Sales Comparison by Day of Week</h3>
+                    <h3 class="text-md font-semibold text-klook-grey">Last Year Gross Booking Comparison by Day of Week</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-40 py-1">
@@ -632,10 +627,10 @@
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-4">
-                    <h3 class="text-md font-semibold text-klook-grey">Compset Sales by Day of Week</h3>
+                    <h3 class="text-md font-semibold text-klook-grey">Compset Gross Booking by Day of Week</h3>
                     <div class="flex border border-gray-200 rounded-md">
-                        <button onclick="switchTab('book-date')" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
-                        <button onclick="switchTab('participation-date')" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
+                        <button onclick="switchTab('book-date', event)" class="px-3 py-1 text-sm font-medium text-klook-purple border-b-2 border-klook-purple">Book Date</button>
+                        <button onclick="switchTab('participation-date', event)" class="px-3 py-1 text-sm font-medium text-gray-500">Participation Date</button>
                     </div>
                 </div>
                 <select class="filter-input w-40 py-1">
@@ -649,7 +644,7 @@
 
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Last Year Package & Timeslot Distribution</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Last Year Gross Booking by Package & Timeslot Distribution</h3>
                 <select class="filter-input w-40 py-1">
                     <option selected>All</option>
                     <option>Standard Day Tour</option>
@@ -661,7 +656,7 @@
 
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Compset Package & Timeslot Distribution</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Compset Gross Booking by Package & Timeslot Distribution</h3>
                 <select class="filter-input w-40 py-1">
                     <option selected>All</option>
                     <option>Standard Day Tour</option>
@@ -674,11 +669,11 @@
 
     <div class="grid grid-cols-2 gap-6 mb-8">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
-            <h3 class="text-md font-semibold text-klook-grey mb-4">Group Composition</h3>
+            <h3 class="text-md font-semibold text-klook-grey mb-4">Group Composition by Gross Unit</h3>
             <div id="chart-group" class="chart-container"></div>
         </div>
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
-            <h3 class="text-md font-semibold text-klook-grey mb-4">Child vs. Adult Ticket Mix (vs YOY)</h3>
+            <h3 class="text-md font-semibold text-klook-grey mb-4">Child vs. Adult Ticket Mix by Gross Unit (vs YOY)</h3>
             <div id="chart-mix" class="chart-container"></div>
         </div>
     </div>
@@ -693,7 +688,6 @@
                     <th class="py-3 px-3 font-bold">FINISH DATE</th>
                     <th class="py-3 px-3 font-bold text-center">OVERALL UNITS</th>
                     <th class="py-3 px-3 font-bold text-center">TOTAL REVENUE</th>
-                    <th class="py-3 px-4 font-bold text-center text-klook-purple border-l">YOY CHANGE</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 font-bold">
@@ -703,7 +697,6 @@
                     <td class="py-4 px-3 text-gray-500">2026-01-15</td>
                     <td class="py-4 px-3 text-center">1,250</td>
                     <td class="py-4 px-3 text-green-600 text-center">$45,000</td>
-                    <td class="py-4 px-4 text-green-500 text-center border-l">+12.4%</td>
                 </tr>
                 <tr class="hover:bg-gray-50">
                     <td class="py-4 px-4 text-gray-800">Lunar New Year Flash Sale</td>
@@ -711,7 +704,6 @@
                     <td class="py-4 px-3 text-gray-500">2026-02-05</td>
                     <td class="py-4 px-3 text-center">2,840</td>
                     <td class="py-4 px-3 text-green-600 text-center">$98,500</td>
-                    <td class="py-4 px-4 text-green-500 text-center border-l">+45.2%</td>
                 </tr>
                 <tr class="hover:bg-gray-50">
                     <td class="py-4 px-4 text-gray-800">Mobile App Exclusive</td>
@@ -719,7 +711,6 @@
                     <td class="py-4 px-3 text-gray-500">2026-03-31</td>
                     <td class="py-4 px-3 text-center">5,400</td>
                     <td class="py-4 px-3 text-green-600 text-center">$152,000</td>
-                    <td class="py-4 px-4 text-green-500 text-center border-l">+8.7%</td>
                 </tr>
             </tbody>
         </table>
@@ -749,7 +740,6 @@
                     <th class="py-3 px-3 font-bold">CXL POLICY</th>
                     <th class="py-3 px-3 font-bold">CUT-OFF</th>
                     <th class="py-3 px-3 font-bold text-center text-red-500">BAD REVIEW % <br><span class="text-[10px] text-gray-400">(ME VS COMP)</span></th>
-                    <th class="py-3 px-3 font-bold text-center text-red-500">BAD FF RATE % <br><span class="text-[10px] text-gray-400">(ME VS COMP)</span></th>
                     <th class="py-3 px-4 font-bold text-center">STATUS</th>
                 </tr>
             </thead>
@@ -759,7 +749,6 @@
                     <td class="py-4 px-3 text-gray-500">Flexible (24h)</td>
                     <td class="py-4 px-3 text-gray-500">12 Hours</td>
                     <td class="py-4 px-3 text-center"><span class="text-red-500">2.4%</span> <span class="text-gray-300 font-normal">| 1.8%</span></td>
-                    <td class="py-4 px-3 text-center"><span class="text-red-500">7.14%</span> <span class="text-gray-300 font-normal">| 4.2%</span></td>
                     <td class="py-4 px-4 text-center"><span class="bg-orange-100 text-orange-600 px-3 py-1 rounded text-xs">ACTION REQ</span></td>
                 </tr>
                 <tr class="hover:bg-gray-50">
@@ -767,7 +756,6 @@
                     <td class="py-4 px-3 text-gray-500 font-normal">Flexible</td>
                     <td class="py-4 px-3 text-gray-500 font-normal">12h</td>
                     <td class="py-4 px-3 text-center"><span class="text-gray-600">1.2%</span> <span class="text-gray-300 font-normal">| 1.1%</span></td>
-                    <td class="py-4 px-3 text-center"><span class="text-gray-600">3.1%</span> <span class="text-gray-300 font-normal">| 3.5%</span></td>
                     <td class="py-4 px-4 text-center"><span class="text-green-500 border border-green-500 rounded-full w-5 h-5 inline-flex items-center justify-center">✓</span></td>
                 </tr>
             </tbody>
@@ -814,8 +802,8 @@
         var chartTraffic = echarts.init(document.getElementById('chart-traffic-cvr'));
         chartTraffic.setOption({
             tooltip: { trigger: 'axis' },
-            legend: { top: 0, right: 0, data: ['Organic', 'Other', 'Paid Search', 'Paid Social', 'CVR %'] },
-            grid: { left: '3%', right: '4%', bottom: '5%', containLabel: true },
+            legend: { bottom: 0, left: 'center', data: ['Organic', 'Other', 'Paid Search', 'Paid Social', 'CVR %'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', boundaryGap: false, data: ['Sep 2023', 'Oct 2023', 'Nov 2023', 'Dec 2023'] },
             yAxis: [
                 { type: 'value', name: 'Sessions', splitLine: { lineStyle: { type: 'dashed', color: '#f3f4f6' } } },
@@ -1041,12 +1029,104 @@
         chartMix.setOption({
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
             legend: { bottom: 0 },
-            grid: { left: '3%', right: '4%', bottom: '15%', top: '5%', containLabel: true },
+            grid: { left: '3%', right: '4%', bottom: '15%', top: '20%', containLabel: true },
             xAxis: { type: 'category', data: ['Adult', 'Child'] },
             yAxis: { type: 'value', max: 100, axisLabel: {formatter: '{value}'} },
             series: [
-                { name: 'Merchant', type: 'bar', data: [82, 18], itemStyle: { color: '#2563eb' }, label: {show: true, position: 'top', formatter: '{c}%'} },
-                { name: 'Compset Average', type: 'bar', data: [45, 55], itemStyle: { color: '#94a3b8' }, label: {show: true, position: 'top', formatter: '{c}%'} }
+                {
+                    name: 'Merchant',
+                    type: 'bar',
+                    data: [82, 18],
+                    itemStyle: { color: '#2563eb' },
+                    label: {show: true, position: 'top', formatter: '{c}%'},
+                    markPoint: {
+                        data: [
+                            {
+                                coord: [0, 82],
+                                value: '',
+                                itemStyle: { color: '#10b981' },
+                                symbol: 'path://M 0 0 L 10 10 L -10 10 Z',
+                                symbolSize: 10,
+                                label: {
+                                    formatter: '+3.1% YOY',
+                                    color: '#10b981',
+                                    position: 'top',
+                                    offset: [0, -20],
+                                    fontWeight: 'bold',
+                                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                                    padding: [3, 8, 3, 8],
+                                    borderRadius: 3,
+                                    fontSize: 11
+                                }
+                            },
+                            {
+                                coord: [1, 18],
+                                value: '',
+                                itemStyle: { color: '#ef4444' },
+                                symbol: 'path://M 0 10 L 10 0 L -10 0 Z',
+                                symbolSize: 10,
+                                label: {
+                                    formatter: '-3.1% YOY',
+                                    color: '#ef4444',
+                                    position: 'top',
+                                    offset: [0, -20],
+                                    fontWeight: 'bold',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                                    padding: [3, 8, 3, 8],
+                                    borderRadius: 3,
+                                    fontSize: 11
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'Compset Average',
+                    type: 'bar',
+                    data: [45, 55],
+                    itemStyle: { color: '#94a3b8' },
+                    label: {show: true, position: 'top', formatter: '{c}%'},
+                    markPoint: {
+                        data: [
+                            {
+                                coord: [0, 45],
+                                value: '',
+                                itemStyle: { color: '#10b981' },
+                                symbol: 'path://M 0 0 L 10 10 L -10 10 Z',
+                                symbolSize: 10,
+                                label: {
+                                    formatter: '+2.8% YOY',
+                                    color: '#10b981',
+                                    position: 'top',
+                                    offset: [0, -20],
+                                    fontWeight: 'bold',
+                                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                                    padding: [3, 8, 3, 8],
+                                    borderRadius: 3,
+                                    fontSize: 11
+                                }
+                            },
+                            {
+                                coord: [1, 55],
+                                value: '',
+                                itemStyle: { color: '#ef4444' },
+                                symbol: 'path://M 0 10 L 10 0 L -10 0 Z',
+                                symbolSize: 10,
+                                label: {
+                                    formatter: '-2.8% YOY',
+                                    color: '#ef4444',
+                                    position: 'top',
+                                    offset: [0, -20],
+                                    fontWeight: 'bold',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                                    padding: [3, 8, 3, 8],
+                                    borderRadius: 3,
+                                    fontSize: 11
+                                }
+                            }
+                        ]
+                    }
+                }
             ]
         });
 
@@ -1253,50 +1333,6 @@
             // Initial update
             updateOriginInput();
 
-            // Initialize region dropdown with checkbox
-            const regionDropdown = document.getElementById('regionDropdown');
-            const regionOptions = document.getElementById('regionOptions');
-            const regionInput = regionDropdown.querySelector('input');
-            const regionCheckboxes = document.querySelectorAll('.region-checkbox');
-
-            // Toggle dropdown
-            regionDropdown.addEventListener('click', function() {
-                regionOptions.classList.toggle('hidden');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!regionDropdown.contains(event.target) && !regionOptions.contains(event.target)) {
-                    regionOptions.classList.add('hidden');
-                }
-            });
-
-            // Update input value when checkboxes change
-            function updateRegionInput() {
-                const selectedRegions = Array.from(regionCheckboxes)
-                    .filter(checkbox => checkbox.checked)
-                    .map(checkbox => checkbox.value);
-                
-                if (selectedRegions.length > 0) {
-                    if (selectedRegions.length > 1) {
-                        regionInput.value = `${selectedRegions.length} selected`;
-                    } else {
-                        regionInput.value = selectedRegions[0];
-                    }
-                } else {
-                    regionInput.value = '';
-                    regionInput.placeholder = 'Select Regions';
-                }
-            }
-
-            // Add event listeners to checkboxes
-            regionCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateRegionInput);
-            });
-
-            // Initial update
-            updateRegionInput();
-
             // Initialize country dropdown with checkbox
             const countryDropdown = document.getElementById('countryDropdown');
             const countryOptions = document.getElementById('countryOptions');
@@ -1403,21 +1439,262 @@
             });
         }
 
-        function generatePDF() {
+        async function generatePDF() {
             // Get selected modules and charts
             const selectedItems = [];
             const checkboxes = document.querySelectorAll('#exportModal input[type="checkbox"]:checked');
+            const moduleMap = {
+                'module0-item1': 'ai-insights',
+                'module1-item1': 'sales-overview',
+                'module2-item1': 'chart-sales',
+                'module2-item2': 'chart-units',
+                'module2-item3': 'chart-net-sales',
+                'module2-item4': 'chart-net-units',
+                'module3-item1': 'chart-parti-sales',
+                'module3-item2': 'chart-parti-units',
+                'module3-item3': 'chart-parti-net-sales',
+                'module3-item4': 'chart-parti-net-units',
+                'module4-item1': 'chart-traffic',
+                'module4-item2': 'chart-activity',
+                'module4-item3': 'chart-traffic-cvr',
+                'module4-item4': 'chart-device',
+                'module4-item5': 'chart-origin-pie',
+                'module4-item6': 'chart-origin-trend',
+                'module5-item1': 'chart-bw-solo',
+                'module5-item2': 'chart-bw-yoy',
+                'module5-item3': 'chart-bw-origin',
+                'module5-item4': 'chart-bw-monthly',
+                'module5-item5': 'chart-future',
+                'module6-item1': 'chart-dow-ly',
+                'module6-item2': 'chart-dow-compset',
+                'module6-item3': 'chart-timeslot-ly',
+                'module6-item4': 'chart-timeslot-compset',
+                'module7-item1': 'chart-group',
+                'module7-item2': 'chart-mix',
+                'module7-item3': 'rate-plan-table',
+                'module7-item5': 'health-score-table'
+            };
+
             checkboxes.forEach(checkbox => {
-                if (!checkbox.classList.contains('module-checkbox')) {
-                    selectedItems.push(checkbox.nextElementSibling.textContent.trim());
+                if (!checkbox.classList.contains('module-checkbox') && moduleMap[checkbox.id]) {
+                    selectedItems.push(moduleMap[checkbox.id]);
                 }
             });
 
             console.log('Generating PDF with selected items:', selectedItems);
             
-            // Simulate PDF generation
-            alert('PDF generation started. This would include the selected modules and charts.');
-            hideExportModal();
+            // Show loading state
+            const generateBtn = document.querySelector('button[onclick="generatePDF()"]');
+            const originalText = generateBtn.innerHTML;
+            generateBtn.innerHTML = 'Generating...';
+            generateBtn.disabled = true;
+
+            try {
+                // Create PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const margin = 15;
+                const contentWidth = pageWidth - 2 * margin;
+                
+                // Add header
+                pdf.setFontSize(20);
+                pdf.setTextColor(33, 33, 33);
+                pdf.text('Merchant One AI Report - ATT', margin, margin + 5);
+                
+                pdf.setFontSize(10);
+                pdf.setTextColor(100, 100, 100);
+                const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                pdf.text(`Generated on ${currentDate}`, margin, margin + 10);
+                
+                let yPos = margin + 18;
+                
+                // Add filters section
+                pdf.setFontSize(11);
+                pdf.setTextColor(33, 33, 33);
+                pdf.setFont(undefined, 'bold');
+                pdf.text('Applied Filters', margin, yPos);
+                pdf.setFont(undefined, 'normal');
+                yPos += 5;
+                
+                // Get filter values
+                const bookDate = document.getElementById('bookDate').value;
+                const participationDate = document.getElementById('participationDate').value || 'Not selected';
+                const merchantInput = document.querySelector('#merchantDropdown input').value || 'All';
+                const activityInput = document.querySelector('#activityDropdown input').value || 'All';
+                const originInput = document.querySelector('#originDropdown input').value || 'All';
+                
+                // Add filter details with smaller font
+                pdf.setFontSize(9);
+                pdf.setTextColor(80, 80, 80);
+                const filterLines = [
+                    `Book Date: ${bookDate}`,
+                    `Participation Date: ${participationDate}`,
+                    `Merchant ID: ${merchantInput}`,
+                    `Activity: ${activityInput}`,
+                    `Origin: ${originInput}`
+                ];
+                
+                filterLines.forEach(line => {
+                    if (yPos > pageHeight - 20) {
+                        pdf.addPage();
+                        yPos = margin;
+                    }
+                    pdf.text(line, margin + 2, yPos);
+                    yPos += 4;
+                });
+                
+                yPos += 3;
+                
+                // Add AI Insights if selected
+                if (selectedItems.includes('ai-insights')) {
+                    if (yPos > pageHeight - 40) {
+                        pdf.addPage();
+                        yPos = margin;
+                    }
+                    
+                    // Add AI Insights header with orange background
+                    pdf.setFillColor(255, 91, 0);
+                    pdf.rect(margin, yPos - 3, contentWidth, 6, 'F');
+                    pdf.setFontSize(11);
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text('AI Insights', margin + 2, yPos + 1);
+                    
+                    pdf.setFontSize(9);
+                    pdf.setTextColor(33, 33, 33);
+                    pdf.setFont(undefined, 'normal');
+                    yPos += 8;
+                    
+                    // Add AI Insights content
+                    const aiInsights = [
+                        '1. Booking Trend Analysis - Your bookings have increased by 56.6% compared to the previous period, significantly outperforming the market average.',
+                        '2. Cancellation Rate Alert - Your cancellation rate is 48.8%, which is higher than both compset (34.9%) and city average (23.6%). Consider implementing retention strategies.',
+                        '3. Revenue Optimization - Gross sales have grown by 70.5%, driven by both increased bookings and ADR improvement. Continue focusing on high-demand periods.'
+                    ];
+                    
+                    aiInsights.forEach(insight => {
+                        const lines = pdf.splitTextToSize(insight, contentWidth - 2);
+                        lines.forEach(line => {
+                            if (yPos > pageHeight - 15) {
+                                pdf.addPage();
+                                yPos = margin;
+                            }
+                            pdf.text(line, margin + 2, yPos);
+                            yPos += 5;
+                        });
+                    });
+                    
+                    yPos += 3;
+                }
+                
+                // Add Sales Overview if selected
+                if (selectedItems.includes('sales-overview')) {
+                    if (yPos > pageHeight - 30) {
+                        pdf.addPage();
+                        yPos = margin;
+                    }
+                    
+                    // Add Sales Overview header with purple background
+                    pdf.setFillColor(77, 64, 204);
+                    pdf.rect(margin, yPos - 3, contentWidth, 6, 'F');
+                    pdf.setFontSize(11);
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text('Sales Overview', margin + 2, yPos + 1);
+                    
+                    pdf.setFontSize(9);
+                    pdf.setTextColor(33, 33, 33);
+                    pdf.setFont(undefined, 'normal');
+                    yPos += 8;
+                    
+                    // Add sales metrics
+                    const salesMetrics = [
+                        'Gross Sales: $4.03M (▲ 104% YOY)',
+                        'Gross Units: 38,934 (▲ 15.2% YOY)',
+                        'ABV: $103.5 (▲ 12.3% YOY)',
+                        'Activity CVR: 6.8% (▼ 2.1% YOY)'
+                    ];
+                    
+                    salesMetrics.forEach(metric => {
+                        if (yPos > pageHeight - 15) {
+                            pdf.addPage();
+                            yPos = margin;
+                        }
+                        pdf.text(metric, margin + 2, yPos);
+                        yPos += 5;
+                    });
+                    
+                    yPos += 3;
+                }
+                
+                // Compact layout for charts
+                const chartHeight = 90; // Reduced from 140 for more compact layout
+                const chartsPerPage = 5; // More charts per page
+                let chartCount = 0;
+                
+                // Add selected charts
+                for (const item of selectedItems) {
+                    // Skip AI Insights and Sales Overview as they're already added
+                    if (item === 'ai-insights' || item === 'sales-overview') continue;
+                    
+                    // Check if we need a new page
+                    if (chartCount % chartsPerPage === 0 && chartCount > 0) {
+                        pdf.addPage();
+                        yPos = margin;
+                    }
+                    
+                    const element = document.getElementById(item);
+                    if (element) {
+                        // Add section title
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(33, 33, 33);
+                        pdf.setFont(undefined, 'bold');
+                        const title = element.querySelector('h3')?.textContent?.trim() || item;
+                        
+                        if (yPos + chartHeight > pageHeight - margin) {
+                            pdf.addPage();
+                            yPos = margin;
+                        }
+                        
+                        pdf.text(title, margin, yPos + 4);
+                        
+                        // Capture element as canvas with higher quality
+                        const canvas = await html2canvas(element, {
+                            scale: 2,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#ffffff',
+                            windowWidth: 1200,
+                            windowHeight: 800
+                        });
+                        
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgWidth = contentWidth;
+                        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                        
+                        // Add image
+                        pdf.addImage(imgData, 'PNG', margin, yPos + 6, imgWidth, Math.min(imgHeight, chartHeight - 6));
+                        
+                        yPos += chartHeight;
+                        chartCount++;
+                    }
+                }
+                
+                // Save PDF
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                pdf.save(`Merchant_Report_ATT_${timestamp}.pdf`);
+                
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again.');
+            } finally {
+                // Reset button state
+                generateBtn.innerHTML = originalText;
+                generateBtn.disabled = false;
+                hideExportModal();
+            }
         }
 
         // Module checkbox functionality
@@ -1450,6 +1727,20 @@
                 <p class="text-sm text-gray-600 mb-6">Select the modules and charts you want to include in the PDF export.</p>
                 
                 <div class="space-y-6">
+                    <!-- Module 0: AI Insights -->
+                    <div class="module-group">
+                        <div class="flex items-center mb-3">
+                            <input type="checkbox" id="module0" class="module-checkbox mr-2" checked>
+                            <label for="module0" class="font-semibold">Module 0: AI Insights</label>
+                        </div>
+                        <div class="pl-6 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="module0-item1" class="mr-2" checked>
+                                <label for="module0-item1" class="text-sm">AI Insights</label>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Module 1: Sales Overview -->
                     <div class="module-group">
                         <div class="flex items-center mb-3">
@@ -1533,11 +1824,11 @@
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module4-item3" class="mr-2" checked>
-                                <label for="module4-item3" class="text-sm">Traffic & CVR Performance</label>
+                                <label for="module4-item3" class="text-sm">Session-based Traffic & CVR Performance</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module4-item4" class="mr-2" checked>
-                                <label for="module4-item4" class="text-sm">Traffic Device Breakdown</label>
+                                <label for="module4-item4" class="text-sm">Session-based Traffic Device Breakdown</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module4-item5" class="mr-2" checked>
@@ -1559,19 +1850,19 @@
                         <div class="pl-6 space-y-2">
                             <div class="flex items-center">
                                 <input type="checkbox" id="module5-item1" class="mr-2" checked>
-                                <label for="module5-item1" class="text-sm">Booking Window (Solo)</label>
+                                <label for="module5-item1" class="text-sm">Session-based Booking Window (Solo)</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module5-item2" class="mr-2" checked>
-                                <label for="module5-item2" class="text-sm">Booking Window (YoY)</label>
+                                <label for="module5-item2" class="text-sm">Session-based Booking Window (YoY)</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module5-item3" class="mr-2" checked>
-                                <label for="module5-item3" class="text-sm">Booking Window by Top Origins</label>
+                                <label for="module5-item3" class="text-sm">Session-based Booking Window by Top Origins</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module5-item4" class="mr-2" checked>
-                                <label for="module5-item4" class="text-sm">Monthly Booking Lead Time Distribution & Trends</label>
+                                <label for="module5-item4" class="text-sm">Session-based Monthly Booking Lead Time Distribution & Trends</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module5-item5" class="mr-2" checked>
@@ -1589,19 +1880,19 @@
                         <div class="pl-6 space-y-2">
                             <div class="flex items-center">
                                 <input type="checkbox" id="module6-item1" class="mr-2" checked>
-                                <label for="module6-item1" class="text-sm">Last Year Sales Comparison by Day of Week</label>
+                                <label for="module6-item1" class="text-sm">Last Year Gross Booking Comparison by Day of Week</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module6-item2" class="mr-2" checked>
-                                <label for="module6-item2" class="text-sm">Compset Sales by Day of Week</label>
+                                <label for="module6-item2" class="text-sm">Compset Gross Booking by Day of Week</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module6-item3" class="mr-2" checked>
-                                <label for="module6-item3" class="text-sm">Last Year Package & Timeslot Distribution</label>
+                                <label for="module6-item3" class="text-sm">Last Year Gross Booking by Package & Timeslot Distribution</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module6-item4" class="mr-2" checked>
-                                <label for="module6-item4" class="text-sm">Compset Package & Timeslot Distribution</label>
+                                <label for="module6-item4" class="text-sm">Compset Gross Booking by Package & Timeslot Distribution</label>
                             </div>
                         </div>
                     </div>
@@ -1615,19 +1906,15 @@
                         <div class="pl-6 space-y-2">
                             <div class="flex items-center">
                                 <input type="checkbox" id="module7-item1" class="mr-2" checked>
-                                <label for="module7-item1" class="text-sm">Group Composition</label>
+                                <label for="module7-item1" class="text-sm">Group Composition by Gross Unit</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module7-item2" class="mr-2" checked>
-                                <label for="module7-item2" class="text-sm">Child vs. Adult Ticket Mix (vs YOY)</label>
+                                <label for="module7-item2" class="text-sm">Child vs. Adult Ticket Mix by Gross Unit (vs YOY)</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module7-item3" class="mr-2" checked>
                                 <label for="module7-item3" class="text-sm">Rate Plan Summary</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="module7-item4" class="mr-2" checked>
-                                <label for="module7-item4" class="text-sm">Health Score Snapshot</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="checkbox" id="module7-item5" class="mr-2" checked>
@@ -1655,77 +1942,41 @@
     </div>
 
     <script>
-        // Currency Switcher Functionality
-        function toggleCurrencyDropdown() {
-            const dropdown = document.getElementById('currencyDropdown');
-            dropdown.classList.toggle('hidden');
-        }
 
-        function switchCurrency(currency) {
-            document.getElementById('currentCurrency').textContent = currency;
-            document.getElementById('currencyDropdown').classList.add('hidden');
-            
-            // Here you would add logic to update all currency values on the page
-            console.log('Switched to:', currency);
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const currencySwitcher = document.getElementById('currencySwitcher');
-            if (!currencySwitcher.contains(event.target)) {
-                document.getElementById('currencyDropdown').classList.add('hidden');
-            }
-        });
-
-        // Simulate merchant selection logic
-        function updateCurrencySwitcherStatus() {
-            // This would be replaced with actual logic based on merchant selection
-            const isSingleMerchant = true; // Simulating single merchant selected
-            const currencySwitcherBtn = document.querySelector('#currencySwitcher button');
-            
-            if (isSingleMerchant) {
-                // Enable currency switcher
-                currencySwitcherBtn.disabled = false;
-                currencySwitcherBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            } else {
-                // Disable currency switcher for multiple merchants
-                currencySwitcherBtn.disabled = true;
-                currencySwitcherBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                document.getElementById('currentCurrency').textContent = 'Unified Currency (USD)';
-            }
-        }
-
-        // Initialize currency switcher status
-        updateCurrencySwitcherStatus();
 
         // Tab Switching Functionality
-        function switchTab(tab) {
-            // Get all tab buttons
-            const bookDateButtons = document.querySelectorAll('button[onclick="switchTab(\'book-date\')"]');
-            const participationDateButtons = document.querySelectorAll('button[onclick="switchTab(\'participation-date\')"]');
+        function switchTab(tab, event) {
+            // Get the clicked button's parent container (the tab group)
+            const tabGroup = event.target.closest('.flex.border.border-gray-200.rounded-md');
+            
+            if (!tabGroup) return;
+            
+            // Get only the buttons within this tab group
+            const bookDateButton = tabGroup.querySelector('button[onclick*="book-date"]');
+            const participationDateButton = tabGroup.querySelector('button[onclick*="participation-date"]');
             
             if (tab === 'book-date') {
-                // Update all Book Date buttons
-                bookDateButtons.forEach(button => {
-                    button.classList.add('text-klook-purple', 'border-b-2', 'border-klook-purple');
-                    button.classList.remove('text-gray-500');
-                });
-                // Update all Participation Date buttons
-                participationDateButtons.forEach(button => {
-                    button.classList.add('text-gray-500');
-                    button.classList.remove('text-klook-purple', 'border-b-2', 'border-klook-purple');
-                });
+                // Update only this chart's Book Date button
+                if (bookDateButton) {
+                    bookDateButton.classList.add('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                    bookDateButton.classList.remove('text-gray-500');
+                }
+                // Update only this chart's Participation Date button
+                if (participationDateButton) {
+                    participationDateButton.classList.add('text-gray-500');
+                    participationDateButton.classList.remove('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                }
             } else if (tab === 'participation-date') {
-                // Update all Participation Date buttons
-                participationDateButtons.forEach(button => {
-                    button.classList.add('text-klook-purple', 'border-b-2', 'border-klook-purple');
-                    button.classList.remove('text-gray-500');
-                });
-                // Update all Book Date buttons
-                bookDateButtons.forEach(button => {
-                    button.classList.add('text-gray-500');
-                    button.classList.remove('text-klook-purple', 'border-b-2', 'border-klook-purple');
-                });
+                // Update only this chart's Participation Date button
+                if (participationDateButton) {
+                    participationDateButton.classList.add('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                    participationDateButton.classList.remove('text-gray-500');
+                }
+                // Update only this chart's Book Date button
+                if (bookDateButton) {
+                    bookDateButton.classList.add('text-gray-500');
+                    bookDateButton.classList.remove('text-klook-purple', 'border-b-2', 'border-klook-purple');
+                }
             }
         }
     </script>
