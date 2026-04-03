@@ -395,25 +395,50 @@
 
     <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-orange pl-2">Activity & Performance Overview</h2>
     
+    <!-- 指标卡 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">Activity Count</div>
+            <div class="text-3xl font-black text-klook-grey">10</div>
+        </div>
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">B2B % SPLIT</div>
+            <div class="text-3xl font-black text-klook-purple">17%</div>
+        </div>
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+            <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">B2C % SPLIT</div>
+            <div class="text-3xl font-black text-klook-orange">83%</div>
+        </div>
+    </div>
+    
     <div class="bg-white p-5 rounded-lg shadow-sm mb-6 border-t-2 border-klook-orange">
         <h3 class="text-md font-semibold text-klook-grey mb-4">2B/2C Split By Gross Unit</h3>
         <table class="w-full text-sm text-left">
             <thead class="text-gray-500 border-b border-gray-200">
                 <tr>
                     <th class="py-3 px-4 font-bold tracking-wider">ACTIVITY NAME</th>
+                    <th class="py-3 px-4 font-bold tracking-wider text-center">Gross Units</th>
+                    <th class="py-3 px-4 font-bold tracking-wider text-center text-klook-purple">B2B Gross Units</th>
                     <th class="py-3 px-4 font-bold tracking-wider text-center text-klook-purple">B2B % SPLIT</th>
+                    <th class="py-3 px-4 font-bold tracking-wider text-center text-klook-orange">B2C Gross Units</th>
                     <th class="py-3 px-4 font-bold tracking-wider text-center text-klook-orange">B2C % SPLIT</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
                 <tr class="hover:bg-gray-50">
                     <td class="py-4 px-4 font-bold text-gray-800">Private City Tour</td>
+                    <td class="py-4 px-4 text-center font-bold">5,400</td>
+                    <td class="py-4 px-4 text-center font-bold">1,200</td>
                     <td class="py-4 px-4 text-center"><span class="bg-purple-50 text-klook-purple px-4 py-1.5 rounded-full font-bold">22%</span></td>
+                    <td class="py-4 px-4 text-center font-bold">4,200</td>
                     <td class="py-4 px-4 text-center"><span class="bg-orange-50 text-klook-orange px-4 py-1.5 rounded-full font-bold">78%</span></td>
                 </tr>
                 <tr class="hover:bg-gray-50">
                     <td class="py-4 px-4 font-bold text-gray-800">Island Hopping Exp</td>
+                    <td class="py-4 px-4 text-center font-bold">7,050</td>
+                    <td class="py-4 px-4 text-center font-bold">850</td>
                     <td class="py-4 px-4 text-center"><span class="bg-purple-50 text-klook-purple px-4 py-1.5 rounded-full font-bold">12%</span></td>
+                    <td class="py-4 px-4 text-center font-bold">6,200</td>
                     <td class="py-4 px-4 text-center"><span class="bg-orange-50 text-klook-orange px-4 py-1.5 rounded-full font-bold">88%</span></td>
                 </tr>
             </tbody>
@@ -431,91 +456,347 @@
         </div>
     </div>
 
-    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange overflow-x-auto">
+    <!-- Package Sales Performance -->
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-6 border-t-2 border-klook-orange">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-md font-semibold text-klook-grey">Activity & Package Breakdown</h3>
-
+            <h3 class="text-md font-semibold text-klook-grey">Package Sales Performance</h3>
+            <div class="w-40">
+                <select class="w-full py-1 border border-gray-300 rounded">
+                    <option selected>All Activities</option>
+                    <option>Private City Tour</option>
+                    <option>Island Hopping Exp</option>
+                </select>
+            </div>
         </div>
-        <table class="w-full text-xs text-right whitespace-nowrap">
-            <thead class="text-gray-400 border-b border-gray-200">
-                <tr>
-                    <th class="py-3 px-4 font-bold text-left w-1/4">ACTIVITY / PACKAGE</th>
-                    <th class="py-3 px-3 font-bold">GROSS SALES</th>
-                    <th class="py-3 px-3 font-bold">NET SALES</th>
-                    <th class="py-3 px-3 font-bold text-klook-purple">GROSS UNIT</th>
-                    <th class="py-3 px-3 font-bold text-klook-purple">NET UNIT</th>
-                    <th class="py-3 px-3 font-bold text-klook-purple">ACT CVR</th>
-                    <th class="py-3 px-3 font-bold text-red-500">CXL AMT</th>
-                    <th class="py-3 px-3 font-bold text-red-500">CXL %</th>
-                    <th class="py-3 px-3 font-bold text-klook-orange">REFUND AMT</th>
-                    <th class="py-3 px-3 font-bold text-klook-orange">REFUND %</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                <tr class="hover:bg-gray-50 cursor-pointer bg-gray-50/50">
-                    <td class="py-3 px-4 text-left tree-level-1">v Private City Tour</td>
-                    <td class="py-3 px-3 font-bold">$125,000</td>
-                    <td class="py-3 px-3 font-bold text-green-600">$112,000</td>
-                    <td class="py-3 px-3 font-bold text-klook-purple">3080</td>
-                    <td class="py-3 px-3 font-bold text-klook-purple">2750</td>
-                    <td class="py-3 px-3 font-bold text-klook-purple">5.8%</td>
-                    <td class="py-3 px-3 font-bold text-red-500">$13,000</td>
-                    <td class="py-3 px-3 font-bold text-red-500">10.4%</td>
-                    <td class="py-3 px-3 font-bold text-klook-orange">$4,200</td>
-                    <td class="py-3 px-3 font-bold text-klook-orange">3.4%</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3 px-4 text-left tree-level-2 italic">Standard Day Tour</td>
-                    <td class="py-3 px-3 text-gray-500">$80,000</td>
-                    <td class="py-3 px-3 text-green-500">$72,000</td>
-                    <td class="py-3 px-3 text-blue-500">2000</td>
-                    <td class="py-3 px-3 text-blue-500">1800</td>
-                    <td class="py-3 px-3 text-purple-400">6.2%</td>
-                    <td class="py-3 px-3 text-red-400">$8,000</td>
-                    <td class="py-3 px-3 text-red-400">10.0%</td>
-                    <td class="py-3 px-3 text-orange-400">$2,500</td>
-                    <td class="py-3 px-3 text-orange-400">3.1%</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3 px-4 text-left tree-level-2 italic">Premium Night Tour</td>
-                    <td class="py-3 px-3 text-gray-500">$45,000</td>
-                    <td class="py-3 px-3 text-green-500">$40,000</td>
-                    <td class="py-3 px-3 text-blue-500">1080</td>
-                    <td class="py-3 px-3 text-blue-500">950</td>
-                    <td class="py-3 px-3 text-purple-400">5.1%</td>
-                    <td class="py-3 px-3 text-red-400">$5,000</td>
-                    <td class="py-3 px-3 text-red-400">11.1%</td>
-                    <td class="py-3 px-3 text-orange-400">$1,700</td>
-                    <td class="py-3 px-3 text-orange-400">3.8%</td>
-                </tr>
-                <tr class="hover:bg-gray-50 cursor-pointer bg-gray-50/50">
-                    <td class="py-3 px-4 text-left tree-level-1">> Island Hopping Exp</td>
-                    <td class="py-3 px-3 font-bold">$98,000</td>
-                    <td class="py-3 px-3 font-bold text-green-600">$89,000</td>
-                    <td class="py-3 px-3 font-bold text-klook-purple">2550</td>
-                    <td class="py-3 px-3 font-bold text-klook-purple">2310</td>
-                    <td class="py-3 px-3 font-bold text-klook-purple">4.9%</td>
-                    <td class="py-3 px-3 font-bold text-red-500">$9,000</td>
-                    <td class="py-3 px-3 font-bold text-red-500">9.2%</td>
-                    <td class="py-3 px-3 font-bold text-klook-orange">$3,100</td>
-                    <td class="py-3 px-3 font-bold text-klook-orange">3.2%</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
-            <span class="text-xs text-gray-500">Showing 1 to 10 of 42 entries</span>
-            <div class="flex gap-1">
+        <div class="space-y-6">
+            <!-- Standard Day Tour -->
+            <div class="flex items-center gap-6">
+                <div class="w-1/4 flex flex-col justify-center">
+                    <div class="font-bold text-gray-800 flex items-center">
+                        STANDARD DAY TOUR
+                        <span class="ml-2 text-klook-purple font-semibold">Share: 64%</span>
+                    </div>
+                    <div class="text-sm text-gray-500 flex items-center">
+                        Private City Tour
+                        <span class="ml-2 text-gray-600 font-semibold">ACT CVR: 12%</span>
+                    </div>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <!-- Revenue Performance -->
+                    <div class="flex items-center">
+                        <div class="w-48 mr-2 text-sm font-bold text-left whitespace-nowrap flex items-center">
+                            NS/GS
+                            <span class="ml-1 text-gray-400 cursor-help" title="Net Sales/Gross Sales">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-4 bg-gray-100 rounded-full overflow-hidden" style="width: 73.7%">
+                                <div class="flex h-full">
+                                    <div class="bg-klook-purple h-full rounded-l-full" style="width: 92.9%"></div>
+                                    <div class="bg-klook-orange h-full rounded-r-full" style="width: 7.1%"></div>
+                                </div>
+                                <div class="relative top-[-16px] left-2 text-xs font-bold text-white">26000 / 28000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Units -->
+                    <div class="flex items-center">
+                        <div class="w-48 mr-2 text-sm text-gray-500 text-left whitespace-nowrap flex items-center">
+                            NU/GU
+                            <span class="ml-1 text-gray-400 cursor-help" title="Net Unit/Gross Unit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-4 bg-gray-100 rounded-full overflow-hidden" style="width: 100%">
+                                <div class="flex h-full">
+                                    <div class="bg-gray-600 h-full rounded-l-full" style="width: 90%"></div>
+                                    <div class="bg-gray-300 h-full rounded-r-full" style="width: 10%"></div>
+                                </div>
+                                <div class="relative top-[-16px] left-2 text-xs font-bold text-white">1800 / 2000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/4 flex justify-center space-x-6">
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500">YOY GROWTH</div>
+                        <div class="text-sm font-bold text-green-500">↗ 5.2%</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500">POP GROWTH</div>
+                        <div class="text-sm font-bold text-green-500">↗ 1.1%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Premium Night Tour -->
+            <div class="flex items-center gap-6">
+                <div class="w-1/4 flex flex-col justify-center">
+                    <div class="font-bold text-gray-800 flex items-center">
+                        PREMIUM NIGHT TOUR
+                        <span class="ml-2 text-klook-purple font-semibold">Share: 36%</span>
+                    </div>
+                    <div class="text-sm text-gray-500 flex items-center">
+                        Private City Tour
+                        <span class="ml-2 text-gray-600 font-semibold">ACT CVR: 12%</span>
+                    </div>
+                </div>
+                <div class="flex-1 space-y-3">
+                    <!-- Revenue Performance -->
+                    <div class="flex items-center">
+                        <div class="w-48 mr-2 text-sm font-bold text-left whitespace-nowrap flex items-center">
+                            NS/GS
+                            <span class="ml-1 text-gray-400 cursor-help" title="Net Sales/Gross Sales">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-4 bg-gray-100 rounded-full overflow-hidden" style="width: 100%">
+                                <div class="flex h-full">
+                                    <div class="bg-klook-purple h-full rounded-l-full" style="width: 94.7%"></div>
+                                    <div class="bg-klook-orange h-full rounded-r-full" style="width: 5.3%"></div>
+                                </div>
+                                <div class="relative top-[-16px] left-2 text-xs font-bold text-white">36000 / 38000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Units -->
+                    <div class="flex items-center">
+                        <div class="w-48 mr-2 text-sm text-gray-500 text-left whitespace-nowrap flex items-center">
+                            NU/GU
+                            <span class="ml-1 text-gray-400 cursor-help" title="Net Unit/Gross Unit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-4 bg-gray-100 rounded-full overflow-hidden" style="width: 95%">
+                                <div class="flex h-full">
+                                    <div class="bg-gray-600 h-full rounded-l-full" style="width: 84.2%"></div>
+                                    <div class="bg-gray-300 h-full rounded-r-full" style="width: 15.8%"></div>
+                                </div>
+                                <div class="relative top-[-16px] left-2 text-xs font-bold text-white">1600 / 1900</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/4 flex justify-center space-x-6">
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500">YOY GROWTH</div>
+                        <div class="text-sm font-bold text-green-500">↗ 8.4%</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500">POP GROWTH</div>
+                        <div class="text-sm font-bold text-red-500">↘ 12%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+            <div class="text-sm text-gray-500">Showing 1-2 of 2 items</div>
+            <div class="flex items-center space-x-1">
                 <button class="page-link text-gray-400" disabled>Prev</button>
                 <button class="page-link active">1</button>
-                <button class="page-link">2</button>
-                <button class="page-link">3</button>
-                <span class="px-2 text-gray-400">...</span>
-                <button class="page-link">Next</button>
+                <button class="page-link text-gray-400" disabled>Next</button>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-6 mb-8">
+    <!-- Metrics Cards -->
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-md font-semibold text-klook-grey">Activity Operation Health Performance</h3>
+        </div>
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <!-- Activity Count -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="text-sm text-gray-500">Activity Count</div>
+                <div class="text-2xl font-bold text-gray-800">15</div>
+            </div>
+            <!-- AVG. CXL RATE -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="text-sm text-gray-500">AVG. CXL RATE</div>
+                <div class="text-2xl font-bold text-red-500">8.5%</div>
+            </div>
+            <!-- AVG. REFUND RATE -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="text-sm text-gray-500">AVG. REFUND RATE</div>
+                <div class="text-2xl font-bold text-klook-orange">3.2%</div>
+            </div>
+        </div>
+        
+        <!-- Leakage Performance Per Activity -->
+        <div class="border-t border-gray-200 pt-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">LEAKAGE PERFORMANCE PER ACTIVITY</h3>
+                <div class="w-40">
+                    <select class="w-full py-1 border border-gray-300 rounded">
+                        <option selected>All Activities</option>
+                        <option>Private City Tour</option>
+                        <option>Island Hopping Exp</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex space-x-4 text-sm">
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-1"></span>
+                        <span>NET REVENUE</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span>
+                        <span>CXL EROSION</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-1"></span>
+                        <span>REFUND EROSION</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Private City Tour -->
+                <div class="flex items-start">
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">PACKAGE1</div>
+                        <div class="text-sm text-gray-500">AD8001 | GROSS: $125,000</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 89.6%"></div>
+                                <div class="bg-red-500 h-full" style="width: 8%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 2.4%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="mr-4">CXL RATE: 8%</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-4">REFUND %: 2.4%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Healthy</span>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">89.6%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+                
+                <!-- Island Hopping Exp -->
+                <div class="flex items-start">
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">PACKAGE2</div>
+                        <div class="text-sm text-gray-500">AD8004 | GROSS: $98,000</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 87.7%"></div>
+                                <div class="bg-red-500 h-full" style="width: 9.2%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 3.1%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="mr-4">CXL RATE: 9.2%</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-4">REFUND %: 3.2%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">+0.2% vs CompSet</span>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">87.7%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+                
+                <!-- Standard Day Tour -->
+                <div class="flex items-start">
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">STANDARD DAY TOUR</div>
+                        <div class="text-sm text-gray-500">AD8002 | GROSS: $80,000</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 86.9%"></div>
+                                <div class="bg-red-500 h-full" style="width: 10%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 3.1%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="mr-4">CXL RATE: 10%</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-4">REFUND %: 3.1%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Healthy</span>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">86.9%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+                <!-- Premium Night Tour -->
+                <div class="flex items-start">
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">PREMIUM NIGHT TOUR</div>
+                        <div class="text-sm text-gray-500">AD8003 | GROSS: $45,000</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 85.1%"></div>
+                                <div class="bg-red-500 h-full" style="width: 11.1%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 3.8%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="mr-4">CXL RATE: 11.1%</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">+2.1% vs CompSet</span>
+                            <span class="mr-4">REFUND %: 3.8%</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">+0.8% vs CompSet</span>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">85.1%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                <div class="text-sm text-gray-500">Showing 1-4 of 4 items</div>
+                <div class="flex items-center space-x-1">
+                    <button class="page-link text-gray-400" disabled>Prev</button>
+                    <button class="page-link active">1</button>
+                    <button class="page-link text-gray-400" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Session-based Traffic & CVR Performance (Hidden) -->
+    <div class="hidden">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan col-span-2">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-md font-semibold text-klook-grey">Session-based Traffic & CVR Performance</h3>
@@ -523,17 +804,11 @@
             </div>
             <div id="chart-traffic-cvr" class="chart-container"></div>
         </div>
-
-        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Session-based Traffic Device Breakdown</h3>
-            </div>
-            <div id="chart-device" class="chart-container"></div>
-        </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange col-span-2">
+    <!-- Sales Trend By Origin (1*1) -->
+    <div class="grid grid-cols-1 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-4">
                     <h3 class="text-md font-semibold text-klook-grey">Sales Trend By Origin</h3>
@@ -545,6 +820,16 @@
                 <select class="filter-input w-28 py-1"><option selected>Monthly</option></select>
             </div>
             <div id="chart-origin-trend" class="chart-container"></div>
+        </div>
+    </div>
+
+    <!-- Session-based Traffic Device Breakdown and Sales Composition by Origin (1*2) -->
+    <div class="grid grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Session-based Traffic Device Breakdown</h3>
+            </div>
+            <div id="chart-device" class="chart-container"></div>
         </div>
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-orange">
             <div class="flex justify-between items-center mb-4">
@@ -562,12 +847,7 @@
 
     <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-purple pl-2">Booking Window Insights</h2>
     <div class="grid grid-cols-2 gap-6 mb-8">
-        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">Session-based Booking Window (Solo)</h3>
-            </div>
-            <div id="chart-bw-solo" class="chart-container"></div>
-        </div>
+
 
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
@@ -582,6 +862,9 @@
             </div>
             <div id="chart-bw-origin" class="chart-container"></div>
         </div>
+    </div>
+
+    <div class="mb-8">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-4">
@@ -669,7 +952,14 @@
 
     <div class="grid grid-cols-2 gap-6 mb-8">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
-            <h3 class="text-md font-semibold text-klook-grey mb-4">Group Composition by Gross Unit</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Group Composition by Gross Unit</h3>
+                <select class="filter-input w-40 py-1">
+                    <option selected>All</option>
+                    <option>Standard Day Tour</option>
+                    <option>Premium Night Tour</option>
+                </select>
+            </div>
             <div id="chart-group" class="chart-container"></div>
         </div>
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
@@ -780,13 +1070,14 @@
                 xAxis: [{ type: 'category', data: xMonths }],
                 yAxis: [
                     { type: 'value', name: yName, axisLabel: { fontSize: 10 }, splitLine: { lineStyle: { type: 'dashed', color: '#f3f4f6' } } },
-                    { type: 'value', name: 'CXL %', axisLabel: { formatter: '{value}%', fontSize: 10, color: colors.red }, splitLine: {show: false} }
+                    { type: 'value', name: 'YOY %', axisLabel: { formatter: '{value}%', fontSize: 10, color: colors.red }, splitLine: {show: false} }
                 ],
                 series: [
-                    { name: 'LY ' + yName, type: 'bar', data: [350, 420, 450, 500, 380, 410], itemStyle: { color: colors.gray } },
+                    { name: 'LY ' + yName, type: 'bar', data: [350, 420, 450, 500, 380, 410], itemStyle: { color: colors.gray },
+                      label: { show: true, position: 'top', formatter: '{c}', color: '#666666', fontSize: 10 } },
                     { name: 'Current ' + yName, type: 'bar', data: [420, 512, 640, 580, 490, 550], itemStyle: { color: colors.orange },
                       label: { show: true, position: 'top', formatter: '{c}', color: colors.orange, fontSize: 10 } },
-                    { name: 'CXL Rate (%)', type: 'line', yAxisIndex: 1, data: [5.2, 5.6, 6.0, 5.5, 4.8, 5.1], itemStyle: { color: colors.red }, symbolSize: 8, lineStyle: { width: 3 } }
+                    { name: 'YOY (%)', type: 'line', yAxisIndex: 1, data: [5.2, 5.6, 6.0, 5.5, 4.8, 5.1], itemStyle: { color: colors.red }, symbolSize: 8, lineStyle: { width: 3 } }
                 ]
             });
             return chart;
@@ -840,18 +1131,56 @@
             }]
         });
 
-        // 3.6 Origin Pie
+        // 3.6 Origin Stacked Bar Chart
         var chartOriginPie = echarts.init(document.getElementById('chart-origin-pie'));
+        // 模拟 gross bookings 数据
+        var grossBookingsData = {
+            'South Korea': [1250, 1320, 1280, 1450, 1420, 1380],
+            'Greater China': [1050, 1100, 1080, 1020, 1050, 1120],
+            'India': [820, 850, 830, 900, 880, 870],
+            'Middle East': [580, 600, 620, 590, 570, 610],
+            'Philippines': [440, 460, 430, 450, 440, 460],
+            'Singapore': [420, 390, 430, 400, 420, 410],
+            'Europe': [250, 230, 260, 250, 240, 250],
+            'Americas': [200, 190, 210, 200, 200, 190],
+            'Malaysia': [200, 210, 190, 200, 200, 190],
+            'Others': [340, 330, 350, 320, 340, 330]
+        };
         chartOriginPie.setOption({
-            tooltip: { trigger: 'item' },
+            tooltip: { 
+                trigger: 'axis', 
+                axisPointer: { type: 'shadow' },
+                formatter: function(params) {
+                    let result = params[0].name + '<br/>';
+                    let total = 0;
+                    params.forEach(item => {
+                        total += grossBookingsData[item.seriesName][item.dataIndex];
+                    });
+                    params.forEach(item => {
+                        let value = grossBookingsData[item.seriesName][item.dataIndex];
+                        let percentage = ((value / total) * 100).toFixed(1);
+                        result += item.marker + item.seriesName + ': ' + value + ' (' + percentage + '%)<br/>';
+                    });
+                    return result;
+                }
+            },
+            legend: { bottom: -5, itemWidth: 10, itemHeight: 10, textStyle: {fontSize: 10} },
             color: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#ff5b00', '#00cbd1', '#8b5cf6', '#64748b', '#f472b6', '#a1a1aa'],
-            series: [{
-                type: 'pie', radius: '65%', center: ['50%', '50%'],
-                label: { formatter: '{b}\n{d}%', fontSize: 10 },
-                data: [ {value: 22.5, name: 'South Korea'}, {value: 18.9, name: 'Greater China'}, {value: 14.7, name: 'India'}, 
-                        {value: 10.5, name: 'Middle East'}, {value: 7.9, name: 'Philippines'}, {value: 7.5, name: 'Singapore'}, 
-                        {value: 4.5, name: 'Europe'}, {value: 3.7, name: 'Americas'}, {value: 3.6, name: 'Malaysia'}, {value: 6.2, name: 'Others'} ]
-            }]
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
+            yAxis: { type: 'value', axisLabel: { formatter: '{value}%' }, max: 100 },
+            series: [
+                {name: 'South Korea', type: 'bar', stack: 'total', data: [22.5, 23.1, 21.8, 24.2, 23.5, 22.8]},
+                {name: 'Greater China', type: 'bar', stack: 'total', data: [18.9, 19.5, 18.2, 17.8, 18.5, 19.2]},
+                {name: 'India', type: 'bar', stack: 'total', data: [14.7, 15.2, 14.5, 15.8, 15.0, 14.8]},
+                {name: 'Middle East', type: 'bar', stack: 'total', data: [10.5, 10.8, 11.2, 10.5, 10.2, 11.0]},
+                {name: 'Philippines', type: 'bar', stack: 'total', data: [7.9, 8.2, 7.5, 8.0, 7.8, 8.1]},
+                {name: 'Singapore', type: 'bar', stack: 'total', data: [7.5, 7.0, 7.8, 7.2, 7.5, 7.3]},
+                {name: 'Europe', type: 'bar', stack: 'total', data: [4.5, 4.2, 4.8, 4.5, 4.3, 4.6]},
+                {name: 'Americas', type: 'bar', stack: 'total', data: [3.7, 3.5, 3.8, 3.6, 3.7, 3.5]},
+                {name: 'Malaysia', type: 'bar', stack: 'total', data: [3.6, 3.8, 3.5, 3.7, 3.6, 3.4]},
+                {name: 'Others', type: 'bar', stack: 'total', data: [6.2, 5.9, 6.3, 5.7, 6.0, 5.8]}
+            ]
         });
 
         // 3.7 Origin Stacked Trend
@@ -872,17 +1201,7 @@
             ]
         });
 
-        // 3.8 Booking Window (Solo)
-        var chartBwSolo = echarts.init(document.getElementById('chart-bw-solo'));
-        chartBwSolo.setOption({
-            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-            grid: { left: '3%', right: '4%', bottom: '5%', top: '5%', containLabel: true },
-            xAxis: { type: 'value', show: false },
-            yAxis: { type: 'category', data: ['1 Month+', '2 Weeks', '4-7 Days', '2-3 Days', '1 Day', '0 Days'], axisTick: {show: false}, axisLine: {show: false} },
-            series: [
-                { name: 'Merchant %', type: 'bar', data: [20, 30, 32, 55, 38, 70], itemStyle: { color: colors.orange, borderRadius: 4 }, barWidth: '50%' }
-            ]
-        });
+
 
         // 3.9 Booking Window (YoY)
         var chartBwYoy = echarts.init(document.getElementById('chart-bw-yoy'));
@@ -908,12 +1227,12 @@
             yAxis: { type: 'value', axisLabel: {formatter: '{value}%'}, max: 100 },
             color: ['#06b6d4', '#22d3ee', '#67e8f9', '#fdba74', '#fb923c', '#f97316'],
             series: [
-                { name: '0D (Same Day)', type: 'bar', stack: 'total', data: [2, 10, 25, 10], barWidth: '50%' },
-                { name: '1D (Next Day)', type: 'bar', stack: 'total', data: [5, 15, 20, 5] },
-                { name: '2-3D', type: 'bar', stack: 'total', data: [15, 20, 15, 5] },
-                { name: '4-7D', type: 'bar', stack: 'total', data: [10, 15, 10, 5] },
-                { name: '8-30D', type: 'bar', stack: 'total', data: [15, 10, 5, 5] },
-                { name: '30D+', type: 'bar', stack: 'total', data: [20, 5, 2, 5] }
+                { name: '0D (Same Day)', type: 'bar', stack: 'total', data: [10, 20, 30, 15], barWidth: '50%' },
+                { name: '1D (Next Day)', type: 'bar', stack: 'total', data: [15, 25, 25, 20] },
+                { name: '2-3D', type: 'bar', stack: 'total', data: [20, 20, 20, 25] },
+                { name: '4-7D', type: 'bar', stack: 'total', data: [20, 15, 15, 20] },
+                { name: '8-30D', type: 'bar', stack: 'total', data: [20, 10, 8, 15] },
+                { name: '30D+', type: 'bar', stack: 'total', data: [15, 10, 2, 5] }
             ]
         });
 
@@ -945,7 +1264,8 @@
             xAxis: { type: 'category', data: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'] },
             yAxis: { type: 'value', show: false },
             series: [
-                { name: 'LY Bookings', type: 'bar', data: [350, 380, 400, 480, 520, 550], itemStyle: { color: colors.lightGray } },
+                { name: 'LY Bookings', type: 'bar', data: [350, 380, 400, 480, 520, 550], itemStyle: { color: colors.lightGray },
+                  label: { show: true, position: 'top', formatter: '{c}', color: '#666666', fontSize: 10 } },
                 { name: 'Current Bookings', type: 'bar', data: [385, 412, 442, 456, 557, 379], itemStyle: { color: colors.orange },
                   label: {show: true, position: 'top', formatter: function(p){
                       let ly = chartFuture.getOption().series[0].data[p.dataIndex];
@@ -964,8 +1284,10 @@
             xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], axisTick: {show: false} },
             yAxis: { type: 'value', show: false },
             series: [
-                { name: 'Prev Year %', type: 'bar', data: [11, 12, 13, 14, 17, 15, 11], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%' },
-                { name: 'Merchant %', type: 'bar', data: [12, 13, 14, 15, 18, 16, 12], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%' },
+                { name: 'Prev Year %', type: 'bar', data: [14, 14, 15, 15, 16, 10, 16], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
+                { name: 'Merchant %', type: 'bar', data: [14, 14, 15, 15, 16, 10, 16], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } },
             ]
         });
 
@@ -978,8 +1300,10 @@
             xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], axisTick: {show: false} },
             yAxis: { type: 'value', show: false },
             series: [
-                { name: 'Compset %', type: 'bar', data: [10, 11, 12, 13, 16, 14, 10], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%' },
-                { name: 'Merchant %', type: 'bar', data: [12, 13, 14, 15, 18, 16, 12], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%' },
+                { name: 'Compset %', type: 'bar', data: [13, 13, 14, 14, 15, 12, 15], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
+                { name: 'Merchant %', type: 'bar', data: [14, 14, 15, 15, 16, 10, 16], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } },
             ]
         });
 
@@ -992,8 +1316,10 @@
             xAxis: { type: 'category', data: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'], axisLabel: {fontSize: 9, rotate: 45} },
             yAxis: { type: 'value', show: false },
             series: [
-                { name: 'Prev Year (%)', type: 'bar', data: [3, 3.5, 4, 4, 5, 5, 9, 11, 4, 3], itemStyle: { color: '#3b82f6' } },
-                { name: 'Merchant (%)', type: 'bar', data: [2, 2.5, 3, 3, 4, 4, 10, 12, 3, 2], itemStyle: { color: colors.orange } }
+                { name: 'Prev Year %', type: 'bar', data: [2, 3, 5, 8, 10, 12, 15, 18, 12, 5], itemStyle: { color: '#3b82f6' },
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#3b82f6', fontSize: 10 } },
+                { name: 'Merchant %', type: 'bar', data: [1, 2, 4, 7, 9, 11, 16, 19, 13, 6], itemStyle: { color: colors.orange },
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
             ]
         });
 
@@ -1006,8 +1332,10 @@
             xAxis: { type: 'category', data: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'], axisLabel: {fontSize: 9, rotate: 45} },
             yAxis: { type: 'value', show: false },
             series: [
-                { name: 'Compset (%)', type: 'bar', data: [6, 7, 5, 4, 4, 5, 6, 6, 3, 3], itemStyle: { color: '#3b82f6' } },
-                { name: 'Merchant (%)', type: 'bar', data: [2, 2.5, 3, 3, 4, 4, 10, 12, 3, 2], itemStyle: { color: colors.orange } }
+                { name: 'Compset %', type: 'bar', data: [3, 4, 6, 9, 11, 13, 14, 17, 11, 4], itemStyle: { color: '#3b82f6' },
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#3b82f6', fontSize: 10 } },
+                { name: 'Merchant %', type: 'bar', data: [1, 2, 4, 7, 9, 11, 16, 19, 13, 6], itemStyle: { color: colors.orange },
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
             ]
         });
 
@@ -1015,12 +1343,15 @@
         var chartGroup = echarts.init(document.getElementById('chart-group'));
         chartGroup.setOption({
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-            grid: { left: '3%', right: '10%', bottom: '5%', top: '5%', containLabel: true },
-            xAxis: { type: 'value', show: false },
-            yAxis: { type: 'category', data: ['Other', '1A', '2A2C', '2A', '2A1C'], axisTick: {show: false}, axisLine: {show: false}, axisLabel: {fontWeight: 'bold'} },
+            legend: { bottom: 0 },
+            grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+            xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'Others'], axisTick: {show: false} },
+            yAxis: { type: 'value', show: false },
             series: [
-                { name: 'Merchant %', type: 'bar', data: [4, 8, 15, 31, 42], itemStyle: { color: colors.orange, borderRadius: 4 }, barWidth: '40%',
-                  label: {show: true, position: 'right', formatter: '{c}%', color: '#212121', fontWeight: 'bold'} }
+                { name: 'Prev Year %', type: 'bar', data: [18, 16, 14, 12, 10, 30], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
+                { name: 'Merchant %', type: 'bar', data: [22, 20, 18, 14, 12, 14], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                  label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
             ]
         });
 
@@ -1034,98 +1365,18 @@
             yAxis: { type: 'value', max: 100, axisLabel: {formatter: '{value}'} },
             series: [
                 {
+                    name: 'Prev Year %',
+                    type: 'bar',
+                    data: [85, 15],
+                    itemStyle: { color: '#e2e8f0' },
+                    label: {show: true, position: 'top', formatter: '{c}%'}
+                },
+                {
                     name: 'Merchant',
                     type: 'bar',
                     data: [82, 18],
                     itemStyle: { color: '#2563eb' },
-                    label: {show: true, position: 'top', formatter: '{c}%'},
-                    markPoint: {
-                        data: [
-                            {
-                                coord: [0, 82],
-                                value: '',
-                                itemStyle: { color: '#10b981' },
-                                symbol: 'path://M 0 0 L 10 10 L -10 10 Z',
-                                symbolSize: 10,
-                                label: {
-                                    formatter: '+3.1% YOY',
-                                    color: '#10b981',
-                                    position: 'top',
-                                    offset: [0, -20],
-                                    fontWeight: 'bold',
-                                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                                    padding: [3, 8, 3, 8],
-                                    borderRadius: 3,
-                                    fontSize: 11
-                                }
-                            },
-                            {
-                                coord: [1, 18],
-                                value: '',
-                                itemStyle: { color: '#ef4444' },
-                                symbol: 'path://M 0 10 L 10 0 L -10 0 Z',
-                                symbolSize: 10,
-                                label: {
-                                    formatter: '-3.1% YOY',
-                                    color: '#ef4444',
-                                    position: 'top',
-                                    offset: [0, -20],
-                                    fontWeight: 'bold',
-                                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                                    padding: [3, 8, 3, 8],
-                                    borderRadius: 3,
-                                    fontSize: 11
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    name: 'Compset Average',
-                    type: 'bar',
-                    data: [45, 55],
-                    itemStyle: { color: '#94a3b8' },
-                    label: {show: true, position: 'top', formatter: '{c}%'},
-                    markPoint: {
-                        data: [
-                            {
-                                coord: [0, 45],
-                                value: '',
-                                itemStyle: { color: '#10b981' },
-                                symbol: 'path://M 0 0 L 10 10 L -10 10 Z',
-                                symbolSize: 10,
-                                label: {
-                                    formatter: '+2.8% YOY',
-                                    color: '#10b981',
-                                    position: 'top',
-                                    offset: [0, -20],
-                                    fontWeight: 'bold',
-                                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                                    padding: [3, 8, 3, 8],
-                                    borderRadius: 3,
-                                    fontSize: 11
-                                }
-                            },
-                            {
-                                coord: [1, 55],
-                                value: '',
-                                itemStyle: { color: '#ef4444' },
-                                symbol: 'path://M 0 10 L 10 0 L -10 0 Z',
-                                symbolSize: 10,
-                                label: {
-                                    formatter: '-2.8% YOY',
-                                    color: '#ef4444',
-                                    position: 'top',
-                                    offset: [0, -20],
-                                    fontWeight: 'bold',
-                                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                                    padding: [3, 8, 3, 8],
-                                    borderRadius: 3,
-                                    fontSize: 11
-                                }
-                            }
-                        ]
-                    }
+                    label: {show: true, position: 'top', formatter: '{c}%'}
                 }
             ]
         });
@@ -1194,15 +1445,78 @@
                     .filter(checkbox => checkbox.checked)
                     .map(checkbox => checkbox.value);
                 
+                // Get the dropdown element
+                const groupDropdown = document.querySelector('#chart-group').parentElement.querySelector('select');
+                
                 if (selectedActivities.length > 0) {
                     if (selectedActivities.length > 1) {
                         activityInput.value = `${selectedActivities.length} selected`;
+                        // Hide dropdown
+                        if (groupDropdown) {
+                            groupDropdown.style.display = 'none';
+                        }
+                        // Clear chart and show error message
+                        chartGroup.clear();
+                        chartGroup.setOption({
+                            title: {
+                                text: 'Error: This chart only supports displaying data for one AID. Please reselect.',
+                                textStyle: {
+                                    color: '#ff0000',
+                                    fontSize: 14,
+                                    fontWeight: 'bold'
+                                },
+                                left: 'center',
+                                top: 'center'
+                            }
+                        });
                     } else {
                         activityInput.value = selectedActivities[0];
+                        // Show dropdown
+                        if (groupDropdown) {
+                            groupDropdown.style.display = 'block';
+                        }
+                        // Restore Group Composition chart
+                        chartGroup.setOption({
+                            title: {
+                                text: ''
+                            },
+                            legend: { bottom: 0 },
+                            grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+                            xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'Others'], axisTick: {show: false} },
+                            yAxis: { type: 'value', show: false },
+                            series: [
+                                { name: 'Prev Year %', type: 'bar', data: [18, 16, 14, 12, 10, 30], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                                  label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
+                                { name: 'Merchant %', type: 'bar', data: [22, 20, 18, 14, 12, 14], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                                  label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
+                            ],
+                            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } }
+                        });
                     }
                 } else {
                     activityInput.value = '';
                     activityInput.placeholder = 'Select Activities';
+                    // Show dropdown
+                    if (groupDropdown) {
+                        groupDropdown.style.display = 'block';
+                    }
+                    // Restore Group Composition chart
+                    chartGroup.setOption({
+                        title: {
+                            text: ''
+                        },
+                        legend: { bottom: 0 },
+                        grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
+                        xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'Others'], axisTick: {show: false} },
+                        yAxis: { type: 'value', show: false },
+                        series: [
+                            { name: 'Prev Year %', type: 'bar', data: [18, 16, 14, 12, 10, 30], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                              label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
+                            { name: 'Merchant %', type: 'bar', data: [22, 20, 18, 14, 12, 14], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                              label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
+                        ],
+                        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } }
+                    });
                 }
             }
 
@@ -1460,7 +1774,6 @@
                 'module4-item4': 'chart-device',
                 'module4-item5': 'chart-origin-pie',
                 'module4-item6': 'chart-origin-trend',
-                'module5-item1': 'chart-bw-solo',
                 'module5-item2': 'chart-bw-yoy',
                 'module5-item3': 'chart-bw-origin',
                 'module5-item4': 'chart-bw-monthly',
