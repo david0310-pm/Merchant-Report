@@ -461,11 +461,28 @@
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-md font-semibold text-klook-grey">Package Sales Performance</h3>
             <div class="w-40">
-                <select class="w-full py-1 border border-gray-300 rounded">
-                    <option selected>All Activities</option>
-                    <option>Private City Tour</option>
-                    <option>Island Hopping Exp</option>
-                </select>
+                <div class="relative">
+                    <div class="custom-checkbox-dropdown w-full py-1 border border-gray-300 rounded cursor-pointer flex justify-between items-center px-2" onclick="toggleDropdown(this)">
+                        <span>All Activities</span>
+                        <span class="text-gray-400">▼</span>
+                    </div>
+                    <div class="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 shadow-lg hidden">
+                        <div class="p-2">
+                            <div class="flex items-center mb-2">
+                                <input type="checkbox" id="activity1" class="mr-2" checked>
+                                <label for="activity1">All Activities</label>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <input type="checkbox" id="activity2" class="mr-2">
+                                <label for="activity2">Private City Tour</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="activity3" class="mr-2">
+                                <label for="activity3">Island Hopping Exp</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="space-y-6">
@@ -484,10 +501,10 @@
                 <div class="flex-1 space-y-3">
                     <!-- Revenue Performance -->
                     <div class="flex items-center">
-                        <div class="w-48 mr-2 text-sm font-bold text-left whitespace-nowrap flex items-center">
+                        <div class="w-19 mr-2 text-sm font-bold text-left whitespace-nowrap flex items-center">
                             NS/GS
-                            <span class="ml-1 text-gray-400 cursor-help" title="Net Sales/Gross Sales">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span class="ml-1 text-gray-400 cursor-help">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Net Sales/Gross Sales">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="12" y1="16" x2="12" y2="12"></line>
                                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -506,10 +523,10 @@
                     </div>
                     <!-- Units -->
                     <div class="flex items-center">
-                        <div class="w-48 mr-2 text-sm text-gray-500 text-left whitespace-nowrap flex items-center">
+                        <div class="w-19 mr-2 text-sm text-gray-500 text-left whitespace-nowrap flex items-center">
                             NU/GU
-                            <span class="ml-1 text-gray-400 cursor-help" title="Net Unit/Gross Unit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span class="ml-1 text-gray-400 cursor-help">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Net Unit/Gross Unit">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="12" y1="16" x2="12" y2="12"></line>
                                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -554,10 +571,10 @@
                 <div class="flex-1 space-y-3">
                     <!-- Revenue Performance -->
                     <div class="flex items-center">
-                        <div class="w-48 mr-2 text-sm font-bold text-left whitespace-nowrap flex items-center">
+                        <div class="w-19 mr-2 text-sm font-bold text-left whitespace-nowrap flex items-center">
                             NS/GS
-                            <span class="ml-1 text-gray-400 cursor-help" title="Net Sales/Gross Sales">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span class="ml-1 text-gray-400 cursor-help">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Net Sales/Gross Sales">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="12" y1="16" x2="12" y2="12"></line>
                                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -576,10 +593,10 @@
                     </div>
                     <!-- Units -->
                     <div class="flex items-center">
-                        <div class="w-48 mr-2 text-sm text-gray-500 text-left whitespace-nowrap flex items-center">
+                        <div class="w-19 mr-2 text-sm text-gray-500 text-left whitespace-nowrap flex items-center">
                             NU/GU
-                            <span class="ml-1 text-gray-400 cursor-help" title="Net Unit/Gross Unit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span class="ml-1 text-gray-400 cursor-help">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Net Unit/Gross Unit">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="12" y1="16" x2="12" y2="12"></line>
                                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -625,21 +642,21 @@
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-md font-semibold text-klook-grey">Activity Operation Health Performance</h3>
         </div>
-        <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Activity Count -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <div class="text-sm text-gray-500">Activity Count</div>
-                <div class="text-2xl font-bold text-gray-800">15</div>
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">Activity Count</div>
+                <div class="text-3xl font-black text-klook-grey">10</div>
             </div>
             <!-- AVG. CXL RATE -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <div class="text-sm text-gray-500">AVG. CXL RATE</div>
-                <div class="text-2xl font-bold text-red-500">8.5%</div>
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">AVG. CXL RATE</div>
+                <div class="text-3xl font-black text-red-500">8.5%</div>
             </div>
             <!-- AVG. REFUND RATE -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <div class="text-sm text-gray-500">AVG. REFUND RATE</div>
-                <div class="text-2xl font-bold text-klook-orange">3.2%</div>
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">AVG. REFUND RATE</div>
+                <div class="text-3xl font-black text-klook-orange">3.2%</div>
             </div>
         </div>
         
@@ -648,39 +665,64 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-md font-semibold text-klook-grey">LEAKAGE PERFORMANCE PER ACTIVITY</h3>
                 <div class="w-40">
-                    <select class="w-full py-1 border border-gray-300 rounded">
-                        <option selected>All Activities</option>
-                        <option>Private City Tour</option>
-                        <option>Island Hopping Exp</option>
-                    </select>
+                    <div class="relative">
+                        <div class="custom-checkbox-dropdown w-full py-1 border border-gray-300 rounded cursor-pointer flex justify-between items-center px-2" onclick="toggleDropdown(this)">
+                            <span>All Activities</span>
+                            <span class="text-gray-400">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 shadow-lg hidden">
+                            <div class="p-2">
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="leakage1" class="mr-2" checked>
+                                    <label for="leakage1">All Activities</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="leakage2" class="mr-2">
+                                    <label for="leakage2">Private City Tour</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="leakage3" class="mr-2">
+                                    <label for="leakage3">Island Hopping Exp</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="flex justify-between items-center mb-4">
                 <div class="flex space-x-4 text-sm">
                     <div class="flex items-center">
                         <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-1"></span>
-                        <span>NET REVENUE</span>
+                        <span>Net Sales</span>
                     </div>
                     <div class="flex items-center">
                         <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span>
-                        <span>CXL EROSION</span>
+                        <span>Cancellation Amount</span>
                     </div>
                     <div class="flex items-center">
                         <span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-1"></span>
-                        <span>REFUND EROSION</span>
+                        <span>Refund Amount</span>
                     </div>
                 </div>
             </div>
             
             <div class="space-y-6">
                 <!-- Private City Tour -->
-                <div class="flex items-start">
+                <div class="flex items-start bg-green-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="green" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
                     <div class="w-1/4 pr-4">
-                        <div class="font-bold">PACKAGE1</div>
-                        <div class="text-sm text-gray-500">AD8001 | GROSS: $125,000</div>
+                        <div class="font-bold">Package1</div>
+                        <div class="text-sm text-gray-500">Activity1</div>
                     </div>
                     <div class="flex-1">
-                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $125,000
+Net Sales: $112,000
+Cancellation Amount: $10,000
+Refund Amount: $3,000">
                             <div class="flex h-full">
                                 <div class="bg-green-500 h-full" style="width: 89.6%"></div>
                                 <div class="bg-red-500 h-full" style="width: 8%"></div>
@@ -689,9 +731,11 @@
                         </div>
                         <div class="flex items-center text-sm">
                             <span class="mr-4">CXL RATE: 8%</span>
-                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-1.6%</span>
                             <span class="mr-4">REFUND %: 2.4%</span>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Healthy</span>
+                            <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.7%</span>
                         </div>
                     </div>
                     <div class="w-1/4 text-right">
@@ -701,13 +745,23 @@
                 </div>
                 
                 <!-- Island Hopping Exp -->
-                <div class="flex items-start">
+                <div class="flex items-start bg-yellow-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="yellow" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
                     <div class="w-1/4 pr-4">
-                        <div class="font-bold">PACKAGE2</div>
-                        <div class="text-sm text-gray-500">AD8004 | GROSS: $98,000</div>
+                        <div class="font-bold">Package2</div>
+                        <div class="text-sm text-gray-500">Activity1</div>
                     </div>
                     <div class="flex-1">
-                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $98,000
+Net Sales: $87,700
+Cancellation Amount: $9,016
+Refund Amount: $3,038">
                             <div class="flex h-full">
                                 <div class="bg-green-500 h-full" style="width: 87.7%"></div>
                                 <div class="bg-red-500 h-full" style="width: 9.2%"></div>
@@ -716,9 +770,11 @@
                         </div>
                         <div class="flex items-center text-sm">
                             <span class="mr-4">CXL RATE: 9.2%</span>
-                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.4%</span>
                             <span class="mr-4">REFUND %: 3.2%</span>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">+0.2% vs CompSet</span>
+                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
+                            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">+0.1%</span>
                         </div>
                     </div>
                     <div class="w-1/4 text-right">
@@ -728,13 +784,23 @@
                 </div>
                 
                 <!-- Standard Day Tour -->
-                <div class="flex items-start">
+                <div class="flex items-start bg-yellow-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="yellow" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
                     <div class="w-1/4 pr-4">
                         <div class="font-bold">STANDARD DAY TOUR</div>
-                        <div class="text-sm text-gray-500">AD8002 | GROSS: $80,000</div>
+                        <div class="text-sm text-gray-500">Private City Tour</div>
                     </div>
                     <div class="flex-1">
-                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $80,000
+Net Sales: $69,520
+Cancellation Amount: $8,000
+Refund Amount: $2,480">
                             <div class="flex h-full">
                                 <div class="bg-green-500 h-full" style="width: 86.9%"></div>
                                 <div class="bg-red-500 h-full" style="width: 10%"></div>
@@ -743,9 +809,11 @@
                         </div>
                         <div class="flex items-center text-sm">
                             <span class="mr-4">CXL RATE: 10%</span>
-                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
+                            <span class="mr-4 px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">+0.4%</span>
                             <span class="mr-4">REFUND %: 3.1%</span>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Healthy</span>
+                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
+                            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">-0.0%</span>
                         </div>
                     </div>
                     <div class="w-1/4 text-right">
@@ -754,13 +822,23 @@
                     </div>
                 </div>
                 <!-- Premium Night Tour -->
-                <div class="flex items-start">
+                <div class="flex items-start bg-red-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
                     <div class="w-1/4 pr-4">
                         <div class="font-bold">PREMIUM NIGHT TOUR</div>
-                        <div class="text-sm text-gray-500">AD8003 | GROSS: $45,000</div>
+                        <div class="text-sm text-gray-500">Private City Tour</div>
                     </div>
                     <div class="flex-1">
-                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $45,000
+Net Sales: $38,295
+Cancellation Amount: $4,995
+Refund Amount: $1,710">
                             <div class="flex h-full">
                                 <div class="bg-green-500 h-full" style="width: 85.1%"></div>
                                 <div class="bg-red-500 h-full" style="width: 11.1%"></div>
@@ -769,9 +847,11 @@
                         </div>
                         <div class="flex items-center text-sm">
                             <span class="mr-4">CXL RATE: 11.1%</span>
-                            <span class="mr-4 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">+2.1% vs CompSet</span>
+                            <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Avg</span>
+                            <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+1.5%</span>
                             <span class="mr-4">REFUND %: 3.8%</span>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">+0.8% vs CompSet</span>
+                            <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Avg</span>
+                            <span class="px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.7%</span>
                         </div>
                     </div>
                     <div class="w-1/4 text-right">
@@ -2294,5 +2374,22 @@
         }
     </script>
 
+    <script>
+        function toggleDropdown(element) {
+            const dropdown = element.nextElementSibling;
+            dropdown.classList.toggle('hidden');
+        }
+        
+        // 点击其他地方关闭下拉框
+        document.addEventListener('click', function(event) {
+            const dropdowns = document.querySelectorAll('.custom-checkbox-dropdown');
+            dropdowns.forEach(dropdown => {
+                const menu = dropdown.nextElementSibling;
+                if (!dropdown.contains(event.target) && !menu.contains(event.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
