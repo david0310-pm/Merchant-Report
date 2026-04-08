@@ -57,6 +57,12 @@
             button, .no-print { display: none !important; }
             .chart-container, .border, .bg-white { page-break-inside: avoid; box-shadow: none !important; border-color: #e5e7eb !important; }
         }
+        
+        /* 帮助提示样式 */
+        .help-tooltip:hover .tooltip-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
     </style>
 </head>
 <body class="p-6">
@@ -495,7 +501,7 @@
                     </div>
                     <div class="text-sm text-gray-500 flex items-center">
                         Private City Tour
-                        <span class="ml-2 text-gray-600 font-semibold">ACT CVR: 12%</span>
+
                     </div>
                 </div>
                 <div class="flex-1 space-y-3">
@@ -545,13 +551,25 @@
                     </div>
                 </div>
                 <div class="w-1/4 flex justify-center space-x-6">
-                    <div class="text-center">
-                        <div class="text-sm text-gray-500">YOY GROWTH</div>
-                        <div class="text-sm font-bold text-green-500">↗ 5.2%</div>
+                    <div class="flex flex-col items-start">
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Gross YOY</div>
+                            <div class="text-sm font-bold text-green-500">↗ 5.2%</div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Unit YOY</div>
+                            <div class="text-sm font-bold text-green-500">↗ 3.5%</div>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-sm text-gray-500">POP GROWTH</div>
-                        <div class="text-sm font-bold text-green-500">↗ 1.1%</div>
+                    <div class="flex flex-col items-start">
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Gross POP</div>
+                            <div class="text-sm font-bold text-green-500">↗ 1.1%</div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Unit POP</div>
+                            <div class="text-sm font-bold text-green-500">↗ 0.8%</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -565,7 +583,7 @@
                     </div>
                     <div class="text-sm text-gray-500 flex items-center">
                         Private City Tour
-                        <span class="ml-2 text-gray-600 font-semibold">ACT CVR: 12%</span>
+
                     </div>
                 </div>
                 <div class="flex-1 space-y-3">
@@ -615,13 +633,25 @@
                     </div>
                 </div>
                 <div class="w-1/4 flex justify-center space-x-6">
-                    <div class="text-center">
-                        <div class="text-sm text-gray-500">YOY GROWTH</div>
-                        <div class="text-sm font-bold text-green-500">↗ 8.4%</div>
+                    <div class="flex flex-col items-start">
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Gross YOY</div>
+                            <div class="text-sm font-bold text-green-500">↗ 8.4%</div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Unit YOY</div>
+                            <div class="text-sm font-bold text-green-500">↗ 6.2%</div>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-sm text-gray-500">POP GROWTH</div>
-                        <div class="text-sm font-bold text-red-500">↘ 12%</div>
+                    <div class="flex flex-col items-start">
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Gross POP</div>
+                            <div class="text-sm font-bold text-red-500">↘ 12%</div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="text-sm text-gray-500 mr-2">Unit POP</div>
+                            <div class="text-sm font-bold text-red-500">↘ 9.5%</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -637,33 +667,240 @@
         </div>
     </div>
 
+    <!-- Merchant vs Compset Activity CVR -->
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-6 border-t-2 border-klook-orange">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-md font-semibold text-klook-grey">Merchant vs Compset Activity CVR</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="py-3 px-4 font-bold text-gray-700">ACTIVITY NAME</th>
+                        <th class="py-3 px-4 font-bold text-gray-700">CVR VS. COMPSET</th>
+                        <th class="py-3 px-4 font-bold text-gray-700">GROWTH STATUS</th>
+                        <th class="py-3 px-4 font-bold text-gray-700 text-right">NET SALES</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <!-- Private City Tour -->
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-4 px-4">
+                            <div class="font-bold">Private City Tour</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-32 h-4 flex rounded-full overflow-hidden">
+                                    <div class="bg-green-500" style="width: 58%"></div>
+                                    <div class="bg-gray-300" style="width: 42%"></div>
+                                </div>
+                                <div class="text-sm">
+                                    <div>COMPSET: 5.2%</div>
+                                    <div class="flex items-center">
+                                        <span>MERCHANT: 5.8%</span>
+                                        <span class="ml-2 text-red-600 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                            +0.6%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <div class="text-xs text-gray-500">YOY</div>
+                                    <div class="text-sm font-bold text-green-600">+12.5%</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500">POP</div>
+                                    <div class="text-sm font-bold text-red-600">-2.3%</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <div class="font-bold">$112,000</div>
+                            <div class="text-sm text-gray-500">2,750 UNITS</div>
+                        </td>
+                    </tr>
+                    <!-- Standard Day Tour -->
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-4 px-4">
+                            <div class="font-bold">Activity1</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-32 h-4 flex rounded-full overflow-hidden">
+                                    <div class="bg-green-500" style="width: 62%"></div>
+                                    <div class="bg-gray-300" style="width: 38%"></div>
+                                </div>
+                                <div class="text-sm">
+                                    <div>COMPSET: 6%</div>
+                                    <div class="flex items-center">
+                                        <span>MERCHANT: 6.2%</span>
+                                        <span class="ml-2 text-red-600 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                            +0.2%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <div class="text-xs text-gray-500">YOY</div>
+                                    <div class="text-sm font-bold text-green-600">+5.2%</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500">POP</div>
+                                    <div class="text-sm font-bold text-green-600">+1.1%</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <div class="font-bold">$72,000</div>
+                            <div class="text-sm text-gray-500">1,800 UNITS</div>
+                        </td>
+                    </tr>
+                    <!-- Premium Night Tour -->
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-4 px-4">
+                            <div class="font-bold">Activity2</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-32 h-4 flex rounded-full overflow-hidden">
+                                    <div class="bg-red-500" style="width: 51%"></div>
+                                    <div class="bg-gray-300" style="width: 49%"></div>
+                                </div>
+                                <div class="text-sm">
+                                    <div>COMPSET: 5.6%</div>
+                                    <div class="flex items-center">
+                                        <span>MERCHANT: 5.1%</span>
+                                        <span class="ml-2 text-green-600 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                                <polyline points="9 6 15 12 9 18"></polyline>
+                                            </svg>
+                                            -0.5%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <div class="text-xs text-gray-500">YOY</div>
+                                    <div class="text-sm font-bold text-red-600">-8.4%</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500">POP</div>
+                                    <div class="text-sm font-bold text-red-600">-12%</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <div class="font-bold">$40,000</div>
+                            <div class="text-sm text-gray-500">950 UNITS</div>
+                        </td>
+                    </tr>
+                    <!-- Island Hopping Exp -->
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-4 px-4">
+                            <div class="font-bold">Island Hopping Exp</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-32 h-4 flex rounded-full overflow-hidden">
+                                    <div class="bg-green-500" style="width: 49%"></div>
+                                    <div class="bg-gray-300" style="width: 51%"></div>
+                                </div>
+                                <div class="text-sm">
+                                    <div>COMPSET: 4.5%</div>
+                                    <div class="flex items-center">
+                                        <span>MERCHANT: 4.9%</span>
+                                        <span class="ml-2 text-red-600 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                            +0.4%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <div class="text-xs text-gray-500">YOY</div>
+                                    <div class="text-sm font-bold text-green-600">+22.1%</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500">POP</div>
+                                    <div class="text-sm font-bold text-green-600">+15.4%</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <div class="font-bold">$89,000</div>
+                            <div class="text-sm text-gray-500">2,310 UNITS</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                <div class="text-sm text-gray-500">Showing 1-4 of 4 items</div>
+                <div class="flex items-center space-x-1">
+                    <button class="page-link text-gray-400" disabled>Prev</button>
+                    <button class="page-link active">1</button>
+                    <button class="page-link text-gray-400" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Metrics Cards -->
     <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-md font-semibold text-klook-grey">Activity Operation Health Performance</h3>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
             <!-- Activity Count -->
             <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
                 <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">Activity Count</div>
                 <div class="text-3xl font-black text-klook-grey">10</div>
             </div>
-            <!-- AVG. CXL RATE -->
+            <!-- MERCHANT AVG. CXL RATE -->
             <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
-                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">AVG. CXL RATE</div>
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">MERCHANT AVG. CXL RATE</div>
                 <div class="text-3xl font-black text-red-500">8.5%</div>
             </div>
-            <!-- AVG. REFUND RATE -->
+            <!-- MERCHANT AVG. REFUND RATE -->
             <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
-                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">AVG. REFUND RATE</div>
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">MERCHANT AVG. REFUND RATE</div>
                 <div class="text-3xl font-black text-klook-orange">3.2%</div>
+            </div>
+            <!-- COMPSET AVG. CXL RATE -->
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">COMPSET AVG. CXL RATE</div>
+                <div class="text-3xl font-black text-blue-500">7.8%</div>
+            </div>
+            <!-- COMPSET AVG. REFUND RATE -->
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">COMPSET AVG. REFUND RATE</div>
+                <div class="text-3xl font-black text-blue-500">3.0%</div>
             </div>
         </div>
         
         <!-- Leakage Performance Per Activity -->
         <div class="border-t border-gray-200 pt-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-semibold text-klook-grey">LEAKAGE PERFORMANCE PER ACTIVITY</h3>
+                <h3 class="text-md font-semibold text-klook-grey">Leakage Performance Per Activity</h3>
                 <div class="w-40">
                     <div class="relative">
                         <div class="custom-checkbox-dropdown w-full py-1 border border-gray-300 rounded cursor-pointer flex justify-between items-center px-2" onclick="toggleDropdown(this)">
@@ -707,16 +944,15 @@
             </div>
             
             <div class="space-y-6">
-                <!-- Private City Tour -->
-                <div class="flex items-start bg-green-50 rounded-lg p-3">
+                <!-- Activity1 -->
+                <div class="flex items-center bg-green-50 rounded-lg p-3">
                     <div class="mr-3 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="green" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
                     <div class="w-1/4 pr-4">
-                        <div class="font-bold">Package1</div>
-                        <div class="text-sm text-gray-500">Activity1</div>
+                        <div class="font-bold">Activity1</div>
                     </div>
                     <div class="flex-1">
                         <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $125,000
@@ -730,12 +966,12 @@ Refund Amount: $3,000">
                             </div>
                         </div>
                         <div class="flex items-center text-sm">
-                            <span class="mr-4">CXL RATE: 8%</span>
+                            <span class="mr-4">CXL RATE: 7.8%</span>
                             <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
-                            <span class="mr-4 px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-1.6%</span>
-                            <span class="mr-4">REFUND %: 2.4%</span>
+                            <span class="mr-4 px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.7%</span>
+                            <span class="mr-4">REFUND %: 3.0%</span>
                             <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
-                            <span class="px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.7%</span>
+                            <span class="px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.2%</span>
                         </div>
                     </div>
                     <div class="w-1/4 text-right">
@@ -744,18 +980,17 @@ Refund Amount: $3,000">
                     </div>
                 </div>
                 
-                <!-- Island Hopping Exp -->
-                <div class="flex items-start bg-yellow-50 rounded-lg p-3">
+                <!-- Activity2 -->
+                <div class="flex items-center bg-red-50 rounded-lg p-3">
                     <div class="mr-3 flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="yellow" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="8" x2="12" y2="12"></line>
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
                     </div>
                     <div class="w-1/4 pr-4">
-                        <div class="font-bold">Package2</div>
-                        <div class="text-sm text-gray-500">Activity1</div>
+                        <div class="font-bold">Activity2</div>
                     </div>
                     <div class="flex-1">
                         <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $98,000
@@ -769,13 +1004,13 @@ Refund Amount: $3,038">
                             </div>
                         </div>
                         <div class="flex items-center text-sm">
-                            <span class="mr-4">CXL RATE: 9.2%</span>
-                            <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
-                            <span class="mr-4 px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.4%</span>
-                            <span class="mr-4">REFUND %: 3.2%</span>
-                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
-                            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">+0.1%</span>
-                        </div>
+                                <span class="mr-4">CXL RATE: 9.2%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Avg</span>
+                                <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.7%</span>
+                                <span class="mr-4">REFUND %: 3.2%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
+                                <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">0.0%</span>
+                            </div>
                     </div>
                     <div class="w-1/4 text-right">
                         <div class="font-bold">87.7%</div>
@@ -783,18 +1018,17 @@ Refund Amount: $3,038">
                     </div>
                 </div>
                 
-                <!-- Standard Day Tour -->
-                <div class="flex items-start bg-yellow-50 rounded-lg p-3">
+                <!-- Private City Tour -->
+                <div class="flex items-center bg-red-50 rounded-lg p-3">
                     <div class="mr-3 flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="yellow" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="8" x2="12" y2="12"></line>
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
                     </div>
                     <div class="w-1/4 pr-4">
-                        <div class="font-bold">STANDARD DAY TOUR</div>
-                        <div class="text-sm text-gray-500">Private City Tour</div>
+                        <div class="font-bold">Private City Tour</div>
                     </div>
                     <div class="flex-1">
                         <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $80,000
@@ -808,21 +1042,21 @@ Refund Amount: $2,480">
                             </div>
                         </div>
                         <div class="flex items-center text-sm">
-                            <span class="mr-4">CXL RATE: 10%</span>
-                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
-                            <span class="mr-4 px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">+0.4%</span>
-                            <span class="mr-4">REFUND %: 3.1%</span>
-                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Avg</span>
-                            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">-0.0%</span>
-                        </div>
+                                <span class="mr-4">CXL RATE: 10%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Avg</span>
+                                <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+1.5%</span>
+                                <span class="mr-4">REFUND %: 3.1%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Below Avg</span>
+                                <span class="px-2 py-0.5 bg-green-50 text-green-800 rounded text-xs">-0.1%</span>
+                            </div>
                     </div>
                     <div class="w-1/4 text-right">
                         <div class="font-bold">86.9%</div>
                         <div class="text-sm text-gray-500">REALIZATION RATE</div>
                     </div>
                 </div>
-                <!-- Premium Night Tour -->
-                <div class="flex items-start bg-red-50 rounded-lg p-3">
+                <!-- Island Hopping Exp -->
+                <div class="flex items-center bg-red-50 rounded-lg p-3">
                     <div class="mr-3 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -831,8 +1065,7 @@ Refund Amount: $2,480">
                         </svg>
                     </div>
                     <div class="w-1/4 pr-4">
-                        <div class="font-bold">PREMIUM NIGHT TOUR</div>
-                        <div class="text-sm text-gray-500">Private City Tour</div>
+                        <div class="font-bold">Island Hopping Exp</div>
                     </div>
                     <div class="flex-1">
                         <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $45,000
@@ -848,10 +1081,220 @@ Refund Amount: $1,710">
                         <div class="flex items-center text-sm">
                             <span class="mr-4">CXL RATE: 11.1%</span>
                             <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Avg</span>
-                            <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+1.5%</span>
+                            <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+2.6%</span>
                             <span class="mr-4">REFUND %: 3.8%</span>
                             <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Avg</span>
-                            <span class="px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.7%</span>
+                            <span class="px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.6%</span>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">85.1%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                <div class="text-sm text-gray-500">Showing 1-4 of 4 items</div>
+                <div class="flex items-center space-x-1">
+                    <button class="page-link text-gray-400" disabled>Prev</button>
+                    <button class="page-link active">1</button>
+                    <button class="page-link text-gray-400" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Leakage Performance Per Activity (vs Compset) -->
+        <div class="border-t border-gray-200 pt-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-semibold text-klook-grey">Leakage Performance Per Activity(vs Compset)</h3>
+                <div class="w-40">
+                    <div class="relative">
+                        <div class="custom-checkbox-dropdown w-full py-1 border border-gray-300 rounded cursor-pointer flex justify-between items-center px-2" onclick="toggleDropdown(this)">
+                            <span>All Activities</span>
+                            <span class="text-gray-400">▼</span>
+                        </div>
+                        <div class="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 shadow-lg hidden">
+                            <div class="p-2">
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="leakageCompset1" class="mr-2" checked>
+                                    <label for="leakageCompset1">All Activities</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="leakageCompset2" class="mr-2">
+                                    <label for="leakageCompset2">Private City Tour</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="leakageCompset3" class="mr-2">
+                                    <label for="leakageCompset3">Island Hopping Exp</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex space-x-4 text-sm">
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-1"></span>
+                        <span>Net Sales</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-red-500 rounded-full mr-1"></span>
+                        <span>Cancellation Amount</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-purple-500 rounded-full mr-1"></span>
+                        <span>Refund Amount</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Activity1 -->
+                <div class="flex items-center bg-yellow-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="yellow" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">Activity1</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $125,000
+Net Sales: $112,000
+Cancellation Amount: $10,000
+Refund Amount: $3,000">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 89.6%"></div>
+                                <div class="bg-red-500 h-full" style="width: 8%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 2.4%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="mr-4">CXL RATE: 7.8%</span>
+                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Compset Avg</span>
+                            <span class="mr-4 px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">0.0%</span>
+                            <span class="mr-4">REFUND %: 3.0%</span>
+                            <span class="mr-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Equal Compset Avg</span>
+                            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-800 rounded text-xs">0.0%</span>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">89.6%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+                
+                <!-- Activity2 -->
+                <div class="flex items-center bg-red-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">Activity2</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $98,000
+Net Sales: $87,700
+Cancellation Amount: $9,016
+Refund Amount: $3,038">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 87.7%"></div>
+                                <div class="bg-red-500 h-full" style="width: 9.2%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 3.1%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                                <span class="mr-4">CXL RATE: 9.2%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Compset Avg</span>
+                                <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+1.4%</span>
+                                <span class="mr-4">REFUND %: 3.2%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Compset Avg</span>
+                                <span class="px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.2%</span>
+                            </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">87.7%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+                
+                <!-- Private City Tour -->
+                <div class="flex items-center bg-red-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">Private City Tour</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $80,000
+Net Sales: $69,520
+Cancellation Amount: $8,000
+Refund Amount: $2,480">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 86.9%"></div>
+                                <div class="bg-red-500 h-full" style="width: 10%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 3.1%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                                <span class="mr-4">CXL RATE: 10%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Compset Avg</span>
+                                <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+2.2%</span>
+                                <span class="mr-4">REFUND %: 3.1%</span>
+                                <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Compset Avg</span>
+                                <span class="px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.1%</span>
+                            </div>
+                    </div>
+                    <div class="w-1/4 text-right">
+                        <div class="font-bold">86.9%</div>
+                        <div class="text-sm text-gray-500">REALIZATION RATE</div>
+                    </div>
+                </div>
+                <!-- Island Hopping Exp -->
+                <div class="flex items-center bg-red-50 rounded-lg p-3">
+                    <div class="mr-3 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="red" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="w-1/4 pr-4">
+                        <div class="font-bold">Island Hopping Exp</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden mb-2" title="Gross Sales: $45,000
+Net Sales: $38,295
+Cancellation Amount: $4,995
+Refund Amount: $1,710">
+                            <div class="flex h-full">
+                                <div class="bg-green-500 h-full" style="width: 85.1%"></div>
+                                <div class="bg-red-500 h-full" style="width: 11.1%"></div>
+                                <div class="bg-purple-500 h-full" style="width: 3.8%"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="mr-4">CXL RATE: 11.1%</span>
+                            <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Compset Avg</span>
+                            <span class="mr-4 px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+3.3%</span>
+                            <span class="mr-4">REFUND %: 3.8%</span>
+                            <span class="mr-2 px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs">Above Compset Avg</span>
+                            <span class="px-2 py-0.5 bg-red-50 text-red-800 rounded text-xs">+0.8%</span>
                         </div>
                     </div>
                     <div class="w-1/4 text-right">
@@ -1030,7 +1473,7 @@ Refund Amount: $1,710">
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 gap-6 mb-8">
         <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-md font-semibold text-klook-grey">Group Composition by Gross Unit</h3>
@@ -1042,59 +1485,142 @@ Refund Amount: $1,710">
             </div>
             <div id="chart-group" class="chart-container"></div>
         </div>
-        <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
-            <h3 class="text-md font-semibold text-klook-grey mb-4">Child vs. Adult Ticket Mix by Gross Unit (vs YOY)</h3>
-            <div id="chart-mix" class="chart-container"></div>
-        </div>
+
     </div>
 
-    <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-cyan overflow-x-auto">
+
+
+    <!-- Rate Plan Summary Metrics Cards -->
+    <div id="rate-plan-metrics" class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-cyan">
         <h3 class="text-md font-semibold text-klook-grey mb-4">Rate Plan Summary</h3>
-        <table class="w-full text-sm text-left whitespace-nowrap">
-            <thead class="text-gray-400 border-b border-gray-200 text-xs tracking-wider">
-                <tr>
-                    <th class="py-3 px-4 font-bold">PROMOTION NAME</th>
-                    <th class="py-3 px-3 font-bold">LIVE DATE</th>
-                    <th class="py-3 px-3 font-bold">FINISH DATE</th>
-                    <th class="py-3 px-3 font-bold text-center">OVERALL UNITS</th>
-                    <th class="py-3 px-3 font-bold text-center">TOTAL REVENUE</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 font-bold">
-                <tr class="hover:bg-gray-50">
-                    <td class="py-4 px-4 text-gray-800">Early Bird Special 15%</td>
-                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
-                    <td class="py-4 px-3 text-gray-500">2026-01-15</td>
-                    <td class="py-4 px-3 text-center">1,250</td>
-                    <td class="py-4 px-3 text-green-600 text-center">$45,000</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="py-4 px-4 text-gray-800">Lunar New Year Flash Sale</td>
-                    <td class="py-4 px-3 text-gray-500">2026-01-20</td>
-                    <td class="py-4 px-3 text-gray-500">2026-02-05</td>
-                    <td class="py-4 px-3 text-center">2,840</td>
-                    <td class="py-4 px-3 text-green-600 text-center">$98,500</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="py-4 px-4 text-gray-800">Mobile App Exclusive</td>
-                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
-                    <td class="py-4 px-3 text-gray-500">2026-03-31</td>
-                    <td class="py-4 px-3 text-center">5,400</td>
-                    <td class="py-4 px-3 text-green-600 text-center">$152,000</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
-            <span class="text-xs text-gray-500">Showing 1 to 10 of 15 entries</span>
-            <div class="flex gap-1">
-                <button class="page-link active">1</button>
-                <button class="page-link">2</button>
-                <button class="page-link">Next</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Activity Count -->
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="flex items-center">
+                    <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase flex items-center">
+                        Activity Count
+                        <div class="ml-2 relative help-tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 cursor-help inline-block align-middle">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <div class="tooltip-content absolute right-0 top-full mt-1 w-64 bg-gray-800 text-white text-xs p-2 rounded shadow-lg opacity-0 invisible transition-all duration-200 z-50">
+                                Only counts activities that participate in Rate Plan
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-3xl font-black text-klook-grey">4</div>
+            </div>
+            
+            <!-- Gross Sales -->
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">GROSS SALES</div>
+                <div class="text-3xl font-black text-klook-grey">$295,500</div>
+                <div class="flex mt-2 space-x-4">
+                    <div class="text-sm font-bold text-green-600 flex items-center">
+                        <span class="mr-1">▲</span>
+                        12.5% YOY
+                    </div>
+                    <div class="text-sm font-bold text-red-600 flex items-center">
+                        <span class="mr-1">▼</span>
+                        2.3% POP
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gross Units -->
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col justify-center relative overflow-hidden">
+                <div class="text-gray-500 font-bold text-xs tracking-wider mb-2 uppercase">GROSS UNITS</div>
+                <div class="text-3xl font-black text-klook-grey">9,490</div>
+                <div class="flex mt-2 space-x-4">
+                    <div class="text-sm font-bold text-green-600 flex items-center">
+                        <span class="mr-1">▲</span>
+                        15.2% YOY
+                    </div>
+                    <div class="text-sm font-bold text-green-600 flex items-center">
+                        <span class="mr-1">▲</span>
+                        10.8% POP
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-
+    <!-- Rate Plan Breakdown -->
+    <div id="rate-plan-breakdown" class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-cyan overflow-x-auto">
+        <h3 class="text-md font-semibold text-klook-grey mb-4">Rate Plan Breakdown</h3>
+        <table class="w-full text-sm text-left whitespace-nowrap">
+            <thead class="text-gray-400 border-b border-gray-200 text-xs tracking-wider">
+                <tr>
+                    <th class="py-3 px-4 font-bold">ACTIVITY NAME</th>
+                    <th class="py-3 px-3 font-bold">PROMOTION NAME</th>
+                    <th class="py-3 px-3 font-bold">LIVE DATE</th>
+                    <th class="py-3 px-3 font-bold">FINISH DATE</th>
+                    <th class="py-3 px-3 font-bold text-center">GROSS SALES</th>
+                    <th class="py-3 px-3 font-bold text-center">GROSS UNIT</th>
+                    <th class="py-3 px-3 font-bold text-center">RP sales%</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 font-bold">
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Activity1</td>
+                    <td class="py-4 px-3 text-gray-800">Early Bird Special 15%</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-15</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$45,000</td>
+                    <td class="py-4 px-3 text-center">1,250</td>
+                    <td class="py-4 px-3 text-blue-600 text-center">15.23%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Activity1</td>
+                    <td class="py-4 px-3 text-gray-800">Lunar New Year Flash Sale</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-20</td>
+                    <td class="py-4 px-3 text-gray-500">2026-02-05</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$98,500</td>
+                    <td class="py-4 px-3 text-center">2,840</td>
+                    <td class="py-4 px-3 text-blue-600 text-center">33.33%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Activity2</td>
+                    <td class="py-4 px-3 text-gray-800">Mobile App Exclusive</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
+                    <td class="py-4 px-3 text-gray-500">2026-03-31</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$152,000</td>
+                    <td class="py-4 px-3 text-center">5,400</td>
+                    <td class="py-4 px-3 text-blue-600 text-center">51.44%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Private City Tour</td>
+                    <td class="py-4 px-3 text-gray-800">Early Bird Special 15%</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-01</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-15</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$32,000</td>
+                    <td class="py-4 px-3 text-center">850</td>
+                    <td class="py-4 px-3 text-blue-600 text-center">12.80%</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="py-4 px-4 text-gray-800">Island Hopping Exp</td>
+                    <td class="py-4 px-3 text-gray-800">Lunar New Year Flash Sale</td>
+                    <td class="py-4 px-3 text-gray-500">2026-01-20</td>
+                    <td class="py-4 px-3 text-gray-500">2026-02-05</td>
+                    <td class="py-4 px-3 text-green-600 text-center">$65,000</td>
+                    <td class="py-4 px-3 text-center">1,800</td>
+                    <td class="py-4 px-3 text-blue-600 text-center">24.50%</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+            <span class="text-xs text-gray-500">Showing 1 to 5 of 12 entries</span>
+            <div class="flex gap-1">
+                <button class="page-link active">1</button>
+                <button class="page-link">2</button>
+                <button class="page-link">3</button>
+                <button class="page-link">Next</button>
+            </div>
+        </div>
+    </div>
 
     <div class="bg-white p-5 rounded-lg shadow-sm mb-8 border-t-2 border-klook-orange overflow-x-auto">
         <div class="flex justify-between items-center mb-4">
@@ -1425,48 +1951,29 @@ Refund Amount: $1,710">
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
             legend: { bottom: 0 },
             grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
-            xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'Others'], axisTick: {show: false} },
+            xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'SKU6', 'SKU7', 'SKU8', 'SKU9', 'Others'], axisTick: {show: false} },
             yAxis: { type: 'value', show: false },
             series: [
-                { name: 'Prev Year %', type: 'bar', data: [18, 16, 14, 12, 10, 30], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                { name: 'Prev Year %', type: 'bar', data: [15, 13, 11, 9, 8, 7, 6, 5, 4, 22], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
                   label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
-                { name: 'Merchant %', type: 'bar', data: [22, 20, 18, 14, 12, 14], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                { name: 'Merchant %', type: 'bar', data: [18, 16, 14, 12, 10, 9, 8, 7, 6, 9], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
                   label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
             ]
         });
+        
+        // Force chart to resize and redraw
+        setTimeout(function() {
+            chartGroup.resize();
+        }, 100);
 
-        // 3.18 Ticket Mix
-        var chartMix = echarts.init(document.getElementById('chart-mix'));
-        chartMix.setOption({
-            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-            legend: { bottom: 0 },
-            grid: { left: '3%', right: '4%', bottom: '15%', top: '20%', containLabel: true },
-            xAxis: { type: 'category', data: ['Adult', 'Child'] },
-            yAxis: { type: 'value', max: 100, axisLabel: {formatter: '{value}'} },
-            series: [
-                {
-                    name: 'Prev Year %',
-                    type: 'bar',
-                    data: [85, 15],
-                    itemStyle: { color: '#e2e8f0' },
-                    label: {show: true, position: 'top', formatter: '{c}%'}
-                },
-                {
-                    name: 'Merchant',
-                    type: 'bar',
-                    data: [82, 18],
-                    itemStyle: { color: '#2563eb' },
-                    label: {show: true, position: 'top', formatter: '{c}%'}
-                }
-            ]
-        });
+
 
         // Responsive handling
         window.addEventListener('resize', function() {
             charts3_2.forEach(c => c.resize());
             chartTraffic.resize(); chartDevice.resize(); chartOriginPie.resize(); chartOriginTrend.resize();
-            chartBwSolo.resize(); chartBwYoy.resize(); chartBwOrigin.resize(); chartBwMonthly.resize(); chartFuture.resize();
-            chartDowLy.resize(); chartDowCompset.resize(); chartTimeslotLy.resize(); chartTimeslotCompset.resize(); chartGroup.resize(); chartMix.resize();
+            chartBwYoy.resize(); chartBwOrigin.resize(); chartBwMonthly.resize(); chartFuture.resize();
+            chartDowLy.resize(); chartDowCompset.resize(); chartTimeslotLy.resize(); chartTimeslotCompset.resize(); chartGroup.resize();
         });
 
         // Initialize date range picker for Book Date
@@ -1562,12 +2069,12 @@ Refund Amount: $1,710">
                             },
                             legend: { bottom: 0 },
                             grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
-                            xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'Others'], axisTick: {show: false} },
+                            xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'SKU6', 'SKU7', 'SKU8', 'SKU9', 'Others'], axisTick: {show: false} },
                             yAxis: { type: 'value', show: false },
                             series: [
-                                { name: 'Prev Year %', type: 'bar', data: [18, 16, 14, 12, 10, 30], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                                { name: 'Prev Year %', type: 'bar', data: [15, 13, 11, 9, 8, 7, 6, 5, 4, 22], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
                                   label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
-                                { name: 'Merchant %', type: 'bar', data: [22, 20, 18, 14, 12, 14], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                                { name: 'Merchant %', type: 'bar', data: [18, 16, 14, 12, 10, 9, 8, 7, 6, 9], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
                                   label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
                             ],
                             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } }
@@ -1587,12 +2094,12 @@ Refund Amount: $1,710">
                         },
                         legend: { bottom: 0 },
                         grid: { left: '3%', right: '4%', bottom: '10%', top: '5%', containLabel: true },
-                        xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'Others'], axisTick: {show: false} },
+                        xAxis: { type: 'category', data: ['SKU2', 'SKU1', 'SKU4', 'SKU5', 'SKU3', 'SKU6', 'SKU7', 'SKU8', 'SKU9', 'Others'], axisTick: {show: false} },
                         yAxis: { type: 'value', show: false },
                         series: [
-                            { name: 'Prev Year %', type: 'bar', data: [18, 16, 14, 12, 10, 30], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
+                            { name: 'Prev Year %', type: 'bar', data: [15, 13, 11, 9, 8, 7, 6, 5, 4, 22], itemStyle: { color: colors.lightGray, borderRadius: [4,4,0,0] }, barWidth: '40%', barGap: '20%',
                               label: { show: true, position: 'top', formatter: '{c}%', color: '#666666', fontSize: 10 } },
-                            { name: 'Merchant %', type: 'bar', data: [22, 20, 18, 14, 12, 14], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
+                            { name: 'Merchant %', type: 'bar', data: [18, 16, 14, 12, 10, 9, 8, 7, 6, 9], itemStyle: { color: colors.orange, borderRadius: [4,4,0,0] }, barWidth: '40%',
                               label: { show: true, position: 'top', formatter: '{c}%', color: '#ff5b00', fontSize: 10 } }
                         ],
                         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } }
@@ -1863,14 +2370,18 @@ Refund Amount: $1,710">
                 'module6-item3': 'chart-timeslot-ly',
                 'module6-item4': 'chart-timeslot-compset',
                 'module7-item1': 'chart-group',
-                'module7-item2': 'chart-mix',
-                'module7-item3': 'rate-plan-table',
+                'module7-item3': ['rate-plan-metrics', 'rate-plan-breakdown'],
                 'module7-item5': 'health-score-table'
             };
 
             checkboxes.forEach(checkbox => {
                 if (!checkbox.classList.contains('module-checkbox') && moduleMap[checkbox.id]) {
-                    selectedItems.push(moduleMap[checkbox.id]);
+                    const value = moduleMap[checkbox.id];
+                    if (Array.isArray(value)) {
+                        selectedItems.push(...value);
+                    } else {
+                        selectedItems.push(value);
+                    }
                 }
             });
 
@@ -2032,46 +2543,51 @@ Refund Amount: $1,710">
                     // Skip AI Insights and Sales Overview as they're already added
                     if (item === 'ai-insights' || item === 'sales-overview') continue;
                     
-                    // Check if we need a new page
-                    if (chartCount % chartsPerPage === 0 && chartCount > 0) {
-                        pdf.addPage();
-                        yPos = margin;
-                    }
+                    // Handle array items (multiple elements for a single checkbox)
+                    const itemsToProcess = Array.isArray(item) ? item : [item];
                     
-                    const element = document.getElementById(item);
-                    if (element) {
-                        // Add section title
-                        pdf.setFontSize(10);
-                        pdf.setTextColor(33, 33, 33);
-                        pdf.setFont(undefined, 'bold');
-                        const title = element.querySelector('h3')?.textContent?.trim() || item;
-                        
-                        if (yPos + chartHeight > pageHeight - margin) {
+                    for (const singleItem of itemsToProcess) {
+                        // Check if we need a new page
+                        if (chartCount % chartsPerPage === 0 && chartCount > 0) {
                             pdf.addPage();
                             yPos = margin;
                         }
                         
-                        pdf.text(title, margin, yPos + 4);
-                        
-                        // Capture element as canvas with higher quality
-                        const canvas = await html2canvas(element, {
-                            scale: 2,
-                            useCORS: true,
-                            logging: false,
-                            backgroundColor: '#ffffff',
-                            windowWidth: 1200,
-                            windowHeight: 800
-                        });
-                        
-                        const imgData = canvas.toDataURL('image/png');
-                        const imgWidth = contentWidth;
-                        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                        
-                        // Add image
-                        pdf.addImage(imgData, 'PNG', margin, yPos + 6, imgWidth, Math.min(imgHeight, chartHeight - 6));
-                        
-                        yPos += chartHeight;
-                        chartCount++;
+                        const element = document.getElementById(singleItem);
+                        if (element) {
+                            // Add section title
+                            pdf.setFontSize(10);
+                            pdf.setTextColor(33, 33, 33);
+                            pdf.setFont(undefined, 'bold');
+                            const title = element.querySelector('h3')?.textContent?.trim() || singleItem;
+                            
+                            if (yPos + chartHeight > pageHeight - margin) {
+                                pdf.addPage();
+                                yPos = margin;
+                            }
+                            
+                            pdf.text(title, margin, yPos + 4);
+                            
+                            // Capture element as canvas with higher quality
+                            const canvas = await html2canvas(element, {
+                                scale: 2,
+                                useCORS: true,
+                                logging: false,
+                                backgroundColor: '#ffffff',
+                                windowWidth: 1200,
+                                windowHeight: 800
+                            });
+                            
+                            const imgData = canvas.toDataURL('image/png');
+                            const imgWidth = contentWidth;
+                            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                            
+                            // Add image
+                            pdf.addImage(imgData, 'PNG', margin, yPos + 6, imgWidth, Math.min(imgHeight, chartHeight - 6));
+                            
+                            yPos += chartHeight;
+                            chartCount++;
+                        }
                     }
                 }
                 
@@ -2301,10 +2817,7 @@ Refund Amount: $1,710">
                                 <input type="checkbox" id="module7-item1" class="mr-2" checked>
                                 <label for="module7-item1" class="text-sm">Group Composition by Gross Unit</label>
                             </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="module7-item2" class="mr-2" checked>
-                                <label for="module7-item2" class="text-sm">Child vs. Adult Ticket Mix by Gross Unit (vs YOY)</label>
-                            </div>
+
                             <div class="flex items-center">
                                 <input type="checkbox" id="module7-item3" class="mr-2" checked>
                                 <label for="module7-item3" class="text-sm">Rate Plan Summary</label>
