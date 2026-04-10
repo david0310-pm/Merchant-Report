@@ -107,7 +107,15 @@
     <h1 class="text-xl font-bold text-klook-grey">Merchant One AI Report - ATT</h1>
   </div>
   <div class="flex items-center gap-3">
-    <button onclick="window.print()" class="bg-klook-orange hover:bg-orange-700 text-white font-medium py-2 px-4 rounded text-sm transition">🖨 Export PDF</button>
+    <button onclick="openExportModal()" class="bg-klook-orange hover:bg-orange-700 text-white font-medium py-2 px-4 rounded text-sm transition flex items-center gap-2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="12" y1="18" x2="12" y2="12"></line>
+        <polyline points="9 15 12 18 15 15"></polyline>
+      </svg>
+      Export PDF
+    </button>
   </div>
 </div>
 
@@ -220,12 +228,8 @@
             <button class="tg-btn" onclick="setTG(this,'tg-comp')">PoP</button>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="flex items-start border-b pb-4">
-      <div class="filter-row-label">METRICS</div>
-      <div class="flex flex-wrap gap-4 flex-1">
+        <div class="w-px h-8 bg-gray-200 self-center mt-4"></div>
+        <div class="filter-row-label">METRICS</div>
         <div>
           <span class="filter-label">Sales &amp; Unit Basis</span>
           <div class="tg" id="tg-metric">
@@ -233,8 +237,11 @@
             <button class="tg-btn" onclick="setTG(this,'tg-metric')">Net</button>
           </div>
         </div>
+
       </div>
     </div>
+
+
     
     <div class="flex justify-end gap-3 mt-1">
       <button onclick="window.location.reload()" class="bg-white border border-gray-200 text-gray-600 hover:border-klook-orange hover:text-klook-orange font-medium py-1.5 px-6 rounded text-sm transition">Reset</button>
@@ -302,6 +309,11 @@
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="flex justify-between items-start mb-3">
         <div><h4 class="font-semibold text-sm text-gray-800"><span class="lbl-metric-cap">Gross</span> Sales (<span class="lbl-comp">YoY</span>)</h4><div class="text-xs text-gray-400 mt-0.5">by Booking Date · line = <span class="lbl-comp">YoY</span>%</div></div>
+        <div class="tg" id="tg-gran-sales">
+          <button class="tg-btn" onclick="setTG(this,'tg-gran-sales')">D</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-gran-sales')">W</button>
+          <button class="tg-btn active" onclick="setTG(this,'tg-gran-sales')">M</button>
+        </div>
       </div>
       <div id="chart-sales" class="chart-container"></div>
       <div class="ai-box ai-or">💡 <strong>AI:</strong> H2 recovery strong — Aug and Sep outpacing LY. Protect Q4 momentum with early campaigns.</div>
@@ -309,6 +321,11 @@
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="flex justify-between items-start mb-3">
         <div><h4 class="font-semibold text-sm text-gray-800"><span class="lbl-metric-cap">Gross</span> Units (<span class="lbl-comp">YoY</span>)</h4><div class="text-xs text-gray-400 mt-0.5">by Booking Date · line = <span class="lbl-comp">YoY</span>%</div></div>
+        <div class="tg" id="tg-gran-units">
+          <button class="tg-btn" onclick="setTG(this,'tg-gran-units')">D</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-gran-units')">W</button>
+          <button class="tg-btn active" onclick="setTG(this,'tg-gran-units')">M</button>
+        </div>
       </div>
       <div id="chart-units" class="chart-container"></div>
       <div class="ai-box ai-or">💡 <strong>AI:</strong> May (+25%) sole H1 outperformer. Jul ▼19% mid-year dip before H2 recovery.</div>
@@ -323,7 +340,7 @@
       <div class="ai-box ai-bl">💡 <strong>AI:</strong> India leads with 17% share. Korea still large at 12% but trending down. SEA markets collectively ~25%.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Activity CVR by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">blue = compset</div></div>
+      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Activity CVR by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">Top 11 + Others · blue = compset</div></div>
       <div id="chart-cvr-origin" class="chart-container-sm"></div>
       <div class="ai-box ai-bl">💡 <strong>AI:</strong> India and HK over-index on CVR vs compset. Korea and ANZ below comp — investigate pricing and content localisation.</div>
     </div>
@@ -343,7 +360,6 @@
 
   <div class="sec-hd mb-4 sec-hd-purple">🕐 User Booking Behavior</div>
   
-  <!-- Booking Window by Origin - Full Width with Scroll -->
   <div class="bg-white p-5 rounded-lg shadow-sm mb-5">
     <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Booking Window by Origin</h4><div class="text-xs text-gray-400">Lead day distribution</div></div>
     <div class="overflow-x-auto mb-3" style="max-height: 260px;">
@@ -370,16 +386,16 @@
     <div class="ai-box ai-or">💡 <strong>AI:</strong> Median lead 3d (comp 4d). Taiwan (9d) and Korea (6d) book earlier. HK (2d) → same-day app push Fri/Sat.</div>
   </div>
   
-  <!-- 2x2 Grid: Overall Window, Group Composition, DOW, Timeslot -->
   <div class="grid grid-cols-2 gap-4 mb-5">
     <div class="bg-white p-5 rounded-lg shadow-sm flex flex-col">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Overall Window</h4><div class="text-xs text-gray-400">Booking lead-time distribution</div></div>
+      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Overall Window <span class="text-xs text-gray-400 font-normal">· blue = compset</span></h4></div>
       <div id="chart-overall-window" class="chart-container-sm flex-1"></div>
       <div class="ai-box ai-or">💡 <strong>AI:</strong> 32% same-day bookings. Compset books earlier (4d median vs 3d). H2: Push early-bird bundles for TW/KR.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Group Composition by <span class="lbl-metric-cap">Gross</span> Unit</h4><div class="text-xs text-gray-400">Current <span class="lbl-metric-cap">Gross</span> Unit vs LY <span class="lbl-metric-cap">Gross</span> Unit</div></div>
       <div id="chart-group-comp" class="chart-container-sm"></div>
+      <div class="text-xs text-gray-400 mb-2">others = unclassified unit type, not adult or child.</div>
       <div class="ai-box ai-gr">💡 <strong>AI:</strong> Family combos (2A1C, 2A2C) growing <span class="lbl-comp">YoY</span>. Family bundle with child ticket would resonate for IN and KR.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
@@ -413,13 +429,13 @@
       </div>
       <div class="flex-1">
         <table class="rpt-tbl" id="b2b-table">
-          <thead><tr><th>AID</th><th>Package</th><th>Total Units</th><th>B2C Units</th><th>B2C%</th><th>B2B Units</th><th>B2B%</th></tr></thead>
+          <thead><tr><th>Activity</th><th>Package</th><th>Total Units</th><th>B2C Units</th><th>B2C%</th><th>B2B Units</th><th>B2B%</th></tr></thead>
           <tbody>
-            <tr data-pkg="386583"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">1D 2Parks Dated</td><td>8,200</td><td>6,560</td><td><span class="badge badge-up">80%</span></td><td>1,640</td><td>20%</td></tr>
-            <tr data-pkg="386478"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">1D 1Park Dated</td><td>7,100</td><td>5,964</td><td><span class="badge badge-up">84%</span></td><td>1,136</td><td>16%</td></tr>
-            <tr data-pkg="8908"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">Regular 1D 2Parks</td><td>5,400</td><td>3,780</td><td><span class="badge badge-nu">70%</span></td><td>1,620</td><td>30%</td></tr>
-            <tr data-pkg="25476"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">MINI Ticket 1D</td><td>4,300</td><td>3,870</td><td><span class="badge badge-up">90%</span></td><td>430</td><td>10%</td></tr>
-            <tr data-pkg="253741"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">1D 2Parks+Premier</td><td>2,100</td><td>1,470</td><td><span class="badge badge-nu">70%</span></td><td>630</td><td>30%</td></tr>
+            <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks Dated</td><td>8,200</td><td>6,560</td><td><span class="badge badge-up">80%</span></td><td>1,640</td><td>20%</td></tr>
+            <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 1Park Dated</td><td>7,100</td><td>5,964</td><td><span class="badge badge-up">84%</span></td><td>1,136</td><td>16%</td></tr>
+            <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Regular 1D 2Parks</td><td>5,400</td><td>3,780</td><td><span class="badge badge-nu">70%</span></td><td>1,620</td><td>30%</td></tr>
+            <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">MINI Ticket 1D</td><td>4,300</td><td>3,870</td><td><span class="badge badge-up">90%</span></td><td>430</td><td>10%</td></tr>
+            <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks+Premier</td><td>2,100</td><td>1,470</td><td><span class="badge badge-nu">70%</span></td><td>630</td><td>30%</td></tr>
             <tr style="background:#f9fafb;font-weight:700"><td colspan="2">All Packages Total</td><td>38,934</td><td>32,314</td><td><span class="badge badge-up">83%</span></td><td>6,620</td><td>17%</td></tr>
           </tbody>
         </table>
@@ -448,13 +464,13 @@
       </div>
       <div class="flex-1">
         <table class="rpt-tbl" id="psc-table">
-          <thead><tr><th>AID</th><th>Package</th><th>Sales</th><th>Units</th><th>ABV</th><th>% to AID Sales</th></tr></thead>
+          <thead><tr><th>Activity</th><th>Package</th><th>Sales</th><th>Units</th><th>ABV</th><th>% to AID Sales</th></tr></thead>
           <tbody>
-            <tr data-pkg="386583"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">1D 2Parks Dated (386583)</td><td class="text-green-700 font-medium">$876K</td><td>8,200</td><td>$107</td><td><span class="font-semibold text-klook-orange text-xs">21%</span></td></tr>
-            <tr data-pkg="386478"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">1D 1Park Dated (386478)</td><td class="text-green-700 font-medium">$723K</td><td>7,100</td><td>$102</td><td><span class="font-semibold text-klook-orange text-xs">18%</span></td></tr>
-            <tr data-pkg="8908"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">Regular 1D 2Parks (8908)</td><td class="text-green-700 font-medium">$564K</td><td>5,400</td><td>$104</td><td><span class="font-semibold text-klook-purple text-xs">14%</span></td></tr>
-            <tr data-pkg="25476"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">MINI Ticket 1D (25476)</td><td class="text-orange-600 font-medium">$443K</td><td>4,300</td><td>$103</td><td><span class="font-semibold text-xs" style="color:#ff9800">11%</span></td></tr>
-            <tr data-pkg="253741"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs font-semibold">1D 2Parks+Premier (253741)</td><td class="text-gray-600 font-medium">$201K</td><td>2,100</td><td>$96</td><td><span class="font-semibold text-gray-500 text-xs">5%</span></td></tr>
+            <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks Dated (386583)</td><td class="text-green-700 font-medium">$876K</td><td>8,200</td><td>$107</td><td><span class="font-semibold text-klook-orange text-xs">21%</span></td></tr>
+            <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 1Park Dated (386478)</td><td class="text-green-700 font-medium">$723K</td><td>7,100</td><td>$102</td><td><span class="font-semibold text-klook-orange text-xs">18%</span></td></tr>
+            <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Regular 1D 2Parks (8908)</td><td class="text-green-700 font-medium">$564K</td><td>5,400</td><td>$104</td><td><span class="font-semibold text-klook-purple text-xs">14%</span></td></tr>
+            <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">MINI Ticket 1D (25476)</td><td class="text-orange-600 font-medium">$443K</td><td>4,300</td><td>$103</td><td><span class="font-semibold text-xs" style="color:#ff9800">11%</span></td></tr>
+            <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks+Premier (253741)</td><td class="text-gray-600 font-medium">$201K</td><td>2,100</td><td>$96</td><td><span class="font-semibold text-gray-500 text-xs">5%</span></td></tr>
             <tr style="background:#f9fafb;font-weight:700"><td colspan="2">All Packages Total</td><td class="text-green-700">$4.03M</td><td>38,934</td><td>$104</td><td><strong>100%</strong></td></tr>
           </tbody>
         </table>
@@ -474,12 +490,12 @@
       <div class="pkg-dd-wrap">
         <div class="pkg-dd-btn" onclick="togglePkgDd('supply-pkg-dd')" id="supply-dd-btn">All Packages</div>
         <div class="pkg-dd-menu" id="supply-pkg-dd">
-          <div class="pkg-dd-item"><input type="radio" name="spkg" value="all" checked onchange="filterSupplyTable('all')"> All Packages</div>
-          <div class="pkg-dd-item"><input type="radio" name="spkg" value="386583" onchange="filterSupplyTable('386583')"> 1D 2Parks Dated</div>
-          <div class="pkg-dd-item"><input type="radio" name="spkg" value="386478" onchange="filterSupplyTable('386478')"> 1D 1Park Dated</div>
-          <div class="pkg-dd-item"><input type="radio" name="spkg" value="8908" onchange="filterSupplyTable('8908')"> Regular 1D 2Parks</div>
-          <div class="pkg-dd-item"><input type="radio" name="spkg" value="25476" onchange="filterSupplyTable('25476')"> MINI Ticket 1D</div>
-          <div class="pkg-dd-item"><input type="radio" name="spkg" value="253741" onchange="filterSupplyTable('253741')"> 1D 2Parks+Premier</div>
+          <div class="pkg-dd-item"><input type="checkbox" id="supply-all" checked onchange="filterSupplyTable(this,'all')"> All Packages</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="supply-cb" data-pkg="386583" onchange="filterSupplyTable(this,'single')"> 1D 2Parks Dated</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="supply-cb" data-pkg="386478" onchange="filterSupplyTable(this,'single')"> 1D 1Park Dated</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="supply-cb" data-pkg="8908" onchange="filterSupplyTable(this,'single')"> Regular 1D 2Parks</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="supply-cb" data-pkg="25476" onchange="filterSupplyTable(this,'single')"> MINI Ticket 1D</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="supply-cb" data-pkg="253741" onchange="filterSupplyTable(this,'single')"> 1D 2Parks+Premier</div>
         </div>
       </div>
     </div>
@@ -501,13 +517,13 @@
       </div>
     </div>
     <table class="rpt-tbl" id="supply-table">
-      <thead><tr><th>AID</th><th>Package</th><th>CXL Policy</th><th>CXL Rate</th><th class="comp-col">vs Comp</th><th>Avg. Refund Rate</th><th class="comp-col">vs Comp</th><th>Bad Review</th><th>Status</th></tr></thead>
+      <thead><tr><th>ACTIVITY NAME</th><th>PACKAGE NAME</th><th>CXL Policy</th><th>CXL Rate</th><th class="comp-col">vs Comp</th><th>Avg. Refund Rate</th><th class="comp-col">vs Comp</th><th>Bad Review</th><th>Status</th></tr></thead>
       <tbody>
-        <tr data-pkg="386583"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs">1D 2Parks Dated</td><td class="text-xs">No cancel</td><td>8.0%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>1.8%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>1.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="386478"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs">1D 1Park Dated</td><td class="text-xs">No cancel</td><td>7.5%</td><td class="comp-col text-green-600 text-xs">-1.0pp</td><td>2.0%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>1.2%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="8908"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs">Regular 1D 2Parks</td><td class="text-xs">Flexible 12h</td><td>10.0%</td><td class="comp-col text-orange-500 text-xs">+0.4pp</td><td>2.3%</td><td class="comp-col text-orange-500 text-xs">+0.9pp</td><td>2.1%</td><td><span class="tp tp-wn">Watch</span></td></tr>
-        <tr data-pkg="25476"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs">MINI Ticket 1D</td><td class="text-xs">No cancel</td><td>6.8%</td><td class="comp-col text-green-600 text-xs">-1.5pp</td><td>1.5%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>0.9%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="253741"><td class="text-xs text-gray-400 font-semibold">3969</td><td class="text-xs">1D 2Parks+Premier</td><td class="text-xs">No cancel</td><td class="text-red-600 font-bold">11.1%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.1pp</td><td class="text-red-600 font-bold">3.8%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.4pp</td><td class="text-red-600">3.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks Dated</td><td class="text-xs">No cancel</td><td>8.0%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>1.8%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>1.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 1Park Dated</td><td class="text-xs">No cancel</td><td>7.5%</td><td class="comp-col text-green-600 text-xs">-1.0pp</td><td>2.0%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>1.2%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Regular 1D 2Parks</td><td class="text-xs">Flexible 12h</td><td>10.0%</td><td class="comp-col text-orange-500 text-xs">+0.4pp</td><td>2.3%</td><td class="comp-col text-orange-500 text-xs">+0.9pp</td><td>2.1%</td><td><span class="tp tp-wn">Watch</span></td></tr>
+        <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">MINI Ticket 1D</td><td class="text-xs">No cancel</td><td>6.8%</td><td class="comp-col text-green-600 text-xs">-1.5pp</td><td>1.5%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>0.9%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks+Premier</td><td class="text-xs">No cancel</td><td class="text-red-600 font-bold">11.1%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.1pp</td><td class="text-red-600 font-bold">3.8%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.4pp</td><td class="text-red-600">3.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
@@ -524,20 +540,20 @@
       <div class="pkg-dd-wrap">
         <div class="pkg-dd-btn" onclick="togglePkgDd('rate-pkg-dd')" id="rate-dd-btn">All Packages</div>
         <div class="pkg-dd-menu" id="rate-pkg-dd">
-          <div class="pkg-dd-item"><input type="radio" name="rpkg" value="all" checked onchange="filterRateTable('all')"> All Packages</div>
-          <div class="pkg-dd-item"><input type="radio" name="rpkg" value="386583" onchange="filterRateTable('386583')"> 1D 2Parks Dated</div>
-          <div class="pkg-dd-item"><input type="radio" name="rpkg" value="386478" onchange="filterRateTable('386478')"> 1D 1Park Dated</div>
+          <div class="pkg-dd-item"><input type="checkbox" id="rate-all" checked onchange="filterRateTable(this,'all')"> All Packages</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="rate-cb" data-pkg="386583" onchange="filterRateTable(this,'single')"> 1D 2Parks Dated</div>
+          <div class="pkg-dd-item"><input type="checkbox" class="rate-cb" data-pkg="386478" onchange="filterRateTable(this,'single')"> 1D 1Park Dated</div>
         </div>
       </div>
     </div>
     <table class="rpt-tbl" id="rate-table">
-      <thead><tr><th>Package Name</th><th>Period</th><th>Discount</th><th>Net Sales</th><th>% to AID Sales</th><th>Units</th></tr></thead>
+      <thead><tr><th>Activity Name</th><th>Package Name</th><th>Period</th><th>Discount</th><th>Net Sales</th><th>% to AID Sales</th><th>Units</th></tr></thead>
       <tbody>
-        <tr><td class="text-xs font-semibold">App Exclusive — 1D 2Parks</td><td class="text-xs">Jan–Mar</td><td><span class="badge badge-nu text-xs">No cost</span></td><td class="text-green-600 font-semibold">$152K</td><td><strong>9.4%</strong></td><td>5,400</td></tr>
-        <tr><td class="text-xs font-semibold">6% off — KR/JP/TW/CN/HK</td><td class="text-xs">May–Jul</td><td><span class="badge badge-dn text-xs">6% off</span></td><td class="text-green-600 font-semibold">$155K</td><td><strong>9.6%</strong></td><td>729</td></tr>
-        <tr><td class="text-xs font-semibold">LNY Flash — 1D 1Park</td><td class="text-xs">Jan 20–Feb 5</td><td><span class="badge badge-dn text-xs">Flash</span></td><td class="text-orange-500 font-semibold">$98K</td><td><strong>6.1%</strong></td><td>2,840</td></tr>
-        <tr><td class="text-xs font-semibold">2% off All — 1D 2Parks</td><td class="text-xs">May 6–27</td><td><span class="badge badge-dn text-xs">2% off</span></td><td class="text-orange-500 font-semibold">$104K</td><td><strong>6.4%</strong></td><td>162</td></tr>
-        <tr><td class="text-xs font-semibold">Early Bird 15% — 1D 2Parks</td><td class="text-xs">Jan 1–15</td><td><span class="badge badge-dn text-xs">15% off</span></td><td class="text-orange-500 font-semibold">$45K</td><td><strong>2.8%</strong></td><td>136</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">App Exclusive — 1D 2Parks</td><td class="text-xs">Jan–Mar</td><td><span class="badge badge-nu text-xs">No cost</span></td><td class="text-green-600 font-semibold">$152K</td><td><strong>9.4%</strong></td><td>5,400</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">6% off — KR/JP/TW/CN/HK</td><td class="text-xs">May–Jul</td><td><span class="badge badge-dn text-xs">6% off</span></td><td class="text-green-600 font-semibold">$155K</td><td><strong>9.6%</strong></td><td>729</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">LNY Flash — 1D 1Park</td><td class="text-xs">Jan 20–Feb 5</td><td><span class="badge badge-dn text-xs">Flash</span></td><td class="text-orange-500 font-semibold">$98K</td><td><strong>6.1%</strong></td><td>2,840</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">2% off All — 1D 2Parks</td><td class="text-xs">May 6–27</td><td><span class="badge badge-dn text-xs">2% off</span></td><td class="text-orange-500 font-semibold">$104K</td><td><strong>6.4%</strong></td><td>162</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Early Bird 15% — 1D 2Parks</td><td class="text-xs">Jan 1–15</td><td><span class="badge badge-dn text-xs">15% off</span></td><td class="text-orange-500 font-semibold">$45K</td><td><strong>2.8%</strong></td><td>136</td></tr>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
@@ -551,9 +567,17 @@
   <div class="grid grid-cols-2 gap-4 mb-5">
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="flex justify-between items-start mb-3">
-        <div><h4 class="font-semibold text-sm text-gray-800">OTB Units — Next 6 Months vs LY</h4><div class="text-xs text-gray-400">by Participation Date · CY OTB vs LY pace</div></div>
+        <div><h4 class="font-semibold text-sm text-gray-800">Next 6 Months Pace by Participation Date (OTB)</h4><div class="text-xs text-gray-400">Confirmed bookings for future travel dates as of today vs. same day last year</div></div>
+        <div class="tg">
+          <button class="tg-btn" onclick="setTG(this,'tg-gran')">D</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-gran')">W</button>
+          <button class="tg-btn active" onclick="setTG(this,'tg-gran')">M</button>
+        </div>
       </div>
       <div id="chart-otb" class="chart-container-sm"></div>
+      <div class="bg-gray-50 p-3 rounded-lg mb-3 text-xs text-gray-700">
+        If you are viewing this report on April 10, the bars represent how many bookings you have secured today for upcoming months compared to your standing on April 10 last year. For instance, if your June "Current" bar is lower than "Last Year," it means you have fewer tickets sold for June participation than you did last year Apr 10. This indicates a slowing booking pace, signaling that you should launch a promotion now to fill those future slots before the travel dates actually arrive.
+      </div>
       <div class="ai-box ai-rd">🚨 <strong>AI:</strong> Dec ▼24% — peak Christmas month. Booking window closing fast. Campaign must launch within 7 days.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
@@ -568,6 +592,27 @@
   <div class="bg-white rounded-lg p-3 flex justify-between text-xs text-gray-400 shadow-sm">
     <div>Powered by <strong class="text-klook-orange">Klook Merchant OneReport AI</strong> · Jan 1 – Sep 30, 2026 · Generated Oct 2026</div>
     <div>Confidential · For BD internal use only · Do not circulate</div>
+  </div>
+</div>
+
+<div id="exportModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-[9999] flex justify-center items-center hidden no-print">
+  <div class="bg-white rounded-lg shadow-xl w-[640px] max-h-[85vh] flex flex-col font-sans">
+    <div class="flex justify-between items-center p-4 border-b">
+      <h3 class="text-base font-bold text-gray-800">Export Report to PDF</h3>
+      <button onclick="closeExportModal()" class="text-gray-400 hover:text-gray-600 text-lg">&times;</button>
+    </div>
+    <div class="p-5 overflow-y-auto flex-1">
+      <p class="text-sm text-gray-500 mb-4">Select the modules and charts you want to include in the PDF export.</p>
+      <div id="exportChecklist" class="flex flex-col gap-5">
+        </div>
+    </div>
+    <div class="p-4 border-t flex justify-between items-center bg-gray-50 rounded-b-lg">
+      <button onclick="resetExportModal()" class="px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded text-sm font-medium transition">Reset</button>
+      <div class="flex gap-2">
+        <button onclick="closeExportModal()" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded text-sm font-medium transition">Cancel</button>
+        <button onclick="confirmExportPDF()" class="px-4 py-2 bg-klook-orange hover:bg-orange-700 text-white rounded text-sm font-medium transition">Generate PDF</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -601,9 +646,9 @@ const BUBBLE_DATA=[
   [5,34,5,'Europe'],[4,13,4,'Mid. East'],[4,42,4,'Others'],
 ];
 
-const CVR_NAMES=['India','HK & Macau','Singapore','S. Korea','Others'];
-const CVR_MERCH=[6.8,6.0,5.3,4.6,3.0];
-const CVR_COMP=[5.8,5.1,4.9,5.8,3.6];
+const CVR_NAMES=['India','S. Korea','HK & Macau','Japan','Singapore','Taiwan','Malaysia','Philippines','Mainland CN','Europe','Mid. East','Others'];
+const CVR_MERCH=[6.8,4.6,6.0,5.1,5.3,4.9,5.0,4.7,5.2,4.8,4.2,3.0];
+const CVR_COMP=[5.8,5.8,5.1,5.3,4.9,5.2,5.1,5.0,5.4,5.0,4.5,3.6];
 
 const GROUP_CATS=['2A (Couple)','1A (Solo)','2A2C','2A1C','4A (Group)','Others'];
 const GROUP_CY=[22,20,20,18,14,6];
@@ -745,7 +790,6 @@ function buildOriginShare(){
   const revNames=[...ORIG_NAMES].reverse();
   const revCy=[...ORIG_CY_PCT].reverse();
   const revComp=[...ORIG_COMP_PCT].reverse();
-  const revColors=[...ORIG_COLORS].reverse();
   initChart('chart-origin-share',{
     tooltip:{...TT,trigger:'axis'},
     legend:{show:false},
@@ -753,7 +797,7 @@ function buildOriginShare(){
     xAxis:{type:'value',axisLabel:{formatter:v=>v+'%',fontSize:10},splitLine:{lineStyle:{color:'#f0f0f0'}}},
     yAxis:{type:'category',data:revNames,axisLabel:{fontSize:9}},
     series:[
-      {name:'Merchant %',type:'bar',data:revCy.map((v,i)=>({value:v,itemStyle:{color:revColors[i]}})),barMaxWidth:14,
+      {name:'Merchant %',type:'bar',data:revCy.map(v=>({value:v,itemStyle:{color:'#ff5b00'}})),barMaxWidth:14,
        label:{show:true,position:'right',fontSize:9,formatter:p=>p.value+'%'}},
       {name:'Compset %',type:'scatter',data:revComp,symbol:'rect',symbolSize:[3, 16],itemStyle:{color:'#2196f3'},z:10}
     ]
@@ -1075,30 +1119,197 @@ function updatePkgDdLabel(labelId,selected,total){
 }
 
 const PKG_LABELS={'386583':'1D 2Parks Dated','386478':'1D 1Park Dated','8908':'Regular 1D 2Parks','25476':'MINI Ticket 1D','253741':'1D 2Parks+Premier'};
-function filterSupplyTable(pkg){
+function filterSupplyTable(el,mode){
   const table=document.getElementById('supply-table');
   const btn=document.getElementById('supply-dd-btn');
-  if(pkg==='all'){
-    table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>r.style.display='');
-    if(btn) btn.textContent='All Packages';
+  const allCb=document.getElementById('supply-all');
+  const cbs=document.querySelectorAll('.supply-cb');
+  
+  if(mode==='all'){
+    if(el.checked){
+      cbs.forEach(cb=>cb.checked=true);
+      table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>r.style.display='');
+      if(btn) btn.textContent='All Packages';
+    } else {
+      cbs.forEach(cb=>cb.checked=false);
+      table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>r.style.display='none');
+      if(btn) btn.textContent='Select Packages';
+    }
   } else {
-    table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>r.style.display=r.dataset.pkg===pkg?'':'none');
-    if(btn) btn.textContent=PKG_LABELS[pkg]||pkg;
+    const selected=[...cbs].filter(cb=>cb.checked).map(cb=>cb.dataset.pkg);
+    const allChecked=[...cbs].every(cb=>cb.checked);
+    
+    if(allCb && !el.checked){
+      allCb.checked=false;
+    }
+    if(allCb && allChecked){
+      allCb.checked=true;
+    }
+    
+    if(selected.length===0){
+      table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>r.style.display='none');
+      if(btn) btn.textContent='Select Packages';
+    } else if(selected.length===cbs.length){
+      table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>r.style.display='');
+      if(btn) btn.textContent='All Packages';
+    } else {
+      table.querySelectorAll('tbody tr[data-pkg]').forEach(r=>{
+        r.style.display=selected.includes(r.dataset.pkg)?'':'none';
+      });
+      if(btn) btn.textContent=`${selected.length} Packages`;
+    }
   }
   document.getElementById('supply-pkg-dd').classList.remove('open');
 }
 
-function filterRateTable(pkg){
+function filterRateTable(el,mode){
   const table=document.getElementById('rate-table');
   const btn=document.getElementById('rate-dd-btn');
-  if(pkg==='all'){
-    if(btn) btn.textContent='All Packages';
+  const allCb=document.getElementById('rate-all');
+  const cbs=document.querySelectorAll('.rate-cb');
+  
+  if(mode==='all'){
+    if(el.checked){
+      cbs.forEach(cb=>cb.checked=true);
+      table.querySelectorAll('tbody tr').forEach(r=>r.style.display='');
+      if(btn) btn.textContent='All Packages';
+    } else {
+      cbs.forEach(cb=>cb.checked=false);
+      table.querySelectorAll('tbody tr').forEach(r=>r.style.display='none');
+      if(btn) btn.textContent='Select Packages';
+    }
   } else {
-    if(btn) btn.textContent=PKG_LABELS[pkg]||pkg;
+    const selected=[...cbs].filter(cb=>cb.checked).map(cb=>cb.dataset.pkg);
+    const allChecked=[...cbs].every(cb=>cb.checked);
+    
+    if(allCb && !el.checked){
+      allCb.checked=false;
+    }
+    if(allCb && allChecked){
+      allCb.checked=true;
+    }
+    
+    if(selected.length===0){
+      table.querySelectorAll('tbody tr').forEach(r=>r.style.display='none');
+      if(btn) btn.textContent='Select Packages';
+    } else if(selected.length===cbs.length){
+      table.querySelectorAll('tbody tr').forEach(r=>r.style.display='');
+      if(btn) btn.textContent='All Packages';
+    } else {
+      table.querySelectorAll('tbody tr').forEach(r=>{
+        const pkgName=r.querySelector('td:nth-child(2)')?.textContent||'';
+        const matches=selected.some(pkg=>PKG_LABELS[pkg]&&pkgName.includes(PKG_LABELS[pkg]));
+        r.style.display=matches?'':'none';
+      });
+      if(btn) btn.textContent=`${selected.length} Packages`;
+    }
   }
   document.getElementById('rate-pkg-dd').classList.remove('open');
 }
 
+/* ═══════════════════════════════ EXPORT MODAL ═══════════════════════════════ */
+function openExportModal() {
+  const listContainer = document.getElementById('exportChecklist');
+  listContainer.innerHTML = '';
+
+  let modules = [];
+
+  let aiHeader = document.querySelector('.bg-gray-900 h3');
+  if (aiHeader) {
+    modules.push({ title: 'Module 0: AI Insights', items: [aiHeader.innerText.replace(/🤖\s*/, '').replace(/—.*/, '').trim()] });
+  }
+
+  let kpiCards = document.querySelectorAll('.kpi-card');
+  if (kpiCards.length > 0) {
+    modules.push({ title: 'Module 1: Sales Overview', items: ['Sales Overview Metrics'] });
+  }
+
+  let modCounter = 2;
+  const bodyElements = document.getElementById('reportBody').children;
+  let currentModule = null;
+
+  for (let el of bodyElements) {
+    if (el.classList.contains('sec-hd')) {
+       let rawText = (el.innerText || el.textContent).replace(/^[^\w\s]+/, '').trim();
+       currentModule = {
+          title: `Module ${modCounter}: ${rawText}`,
+          items: []
+       };
+       modules.push(currentModule);
+       modCounter++;
+    } else if (currentModule && el.tagName === 'DIV' && !el.classList.contains('sec-hd')) {
+       let h4s = el.querySelectorAll('h4');
+       h4s.forEach(h4 => {
+         let text = (h4.innerText || h4.textContent).replace(/·.*/, '').split('\n')[0].trim();
+         if (text && text !== 'Recommended Actions') {
+            currentModule.items.push(text);
+         }
+       });
+    }
+  }
+
+  modules.forEach((mod, modIdx) => {
+     if (mod.items.length === 0) return;
+
+     let modDiv = document.createElement('div');
+     modDiv.className = 'flex flex-col gap-2';
+
+     let modId = `mod-cb-${modIdx}`;
+     let parentHtml = `
+        <label class="font-bold text-sm text-gray-800 flex items-center gap-2 cursor-pointer select-none">
+          <input type="checkbox" id="${modId}" class="w-4 h-4 accent-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer" checked onchange="toggleExportModule(this, '${modId}-children')">
+          ${mod.title}
+        </label>
+     `;
+
+     let childrenHtml = `<div id="${modId}-children" class="flex flex-col gap-2 ml-6">`;
+     mod.items.forEach((item, itemIdx) => {
+        childrenHtml += `
+          <label class="text-sm text-gray-700 flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" class="w-4 h-4 accent-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer child-of-${modId}" checked onchange="updateExportModuleParent('${modId}')">
+            ${item}
+          </label>
+        `;
+     });
+     childrenHtml += `</div>`;
+
+     modDiv.innerHTML = parentHtml + childrenHtml;
+     listContainer.appendChild(modDiv);
+  });
+
+  document.getElementById('exportModal').classList.remove('hidden');
+}
+
+function closeExportModal() {
+  document.getElementById('exportModal').classList.add('hidden');
+}
+
+function toggleExportModule(parentCb, childrenContainerId) {
+  const children = document.getElementById(childrenContainerId).querySelectorAll('input[type="checkbox"]');
+  children.forEach(cb => cb.checked = parentCb.checked);
+}
+
+function updateExportModuleParent(parentId) {
+  const parentCb = document.getElementById(parentId);
+  const children = document.querySelectorAll(`.child-of-${parentId}`);
+  const allChecked = Array.from(children).every(cb => cb.checked);
+  const someChecked = Array.from(children).some(cb => cb.checked);
+  parentCb.checked = allChecked;
+  parentCb.indeterminate = someChecked && !allChecked;
+}
+
+function resetExportModal() {
+  const checkboxes = document.getElementById('exportChecklist').querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    cb.checked = true;
+    cb.indeterminate = false;
+  });
+}
+
+function confirmExportPDF() {
+  alert('Generating PDF with selected modules...');
+  closeExportModal();
+}
 </script>
 </body>
 </html>
