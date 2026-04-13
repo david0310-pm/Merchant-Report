@@ -206,20 +206,19 @@
       <div class="filter-row-label">PERIOD</div>
       <div class="flex flex-wrap gap-4 flex-1">
         <div>
+          <span class="filter-label">Date Basis</span>
+          <div class="tg" id="tg-basis">
+            <button class="tg-btn active" onclick="setTG(this,'tg-basis')">Booking Date</button>
+            <button class="tg-btn" onclick="setTG(this,'tg-basis')">Participation Date</button>
+          </div>
+        </div>
+        <div>
           <span class="filter-label">From</span>
           <input type="date" class="filter-input" id="dt-from" value="2026-01-01">
         </div>
         <div>
           <span class="filter-label">To</span>
           <input type="date" class="filter-input" id="dt-to" value="2026-09-30">
-        </div>
-        <div class="w-px h-8 bg-gray-200 self-center mt-4"></div>
-        <div>
-          <span class="filter-label">Date Basis</span>
-          <div class="tg" id="tg-basis">
-            <button class="tg-btn active" onclick="setTG(this,'tg-basis')">Booking Date</button>
-            <button class="tg-btn" onclick="setTG(this,'tg-basis')">Participation Date</button>
-          </div>
         </div>
         <div>
           <span class="filter-label">Comparison</span>
@@ -337,22 +336,42 @@
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Unit Share by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">Top 11 + Others · blue = compset</div></div>
       <div id="chart-origin-share" class="chart-container-sm"></div>
-      <div class="ai-box ai-bl">💡 <strong>AI:</strong> India leads with 17% share. Korea still large at 12% but trending down. SEA markets collectively ~25%.</div>
+      <div class="flex justify-center items-center gap-4 mt-2 text-xs">
+        <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#ff5b00"></span><span class="text-gray-600">Merchant</span></div>
+        <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#2196f3"></span><span class="text-gray-600">Compset</span></div>
+      </div>
+      <div class="ai-box ai-bl mt-3">💡 <strong>AI:</strong> India leads with 17% share. Korea still large at 12% but trending down. SEA markets collectively ~25%.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Activity CVR by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">Top 11 + Others · blue = compset</div></div>
       <div id="chart-cvr-origin" class="chart-container-sm"></div>
-      <div class="ai-box ai-bl">💡 <strong>AI:</strong> India and HK over-index on CVR vs compset. Korea and ANZ below comp — investigate pricing and content localisation.</div>
+      <div class="flex justify-center items-center gap-4 mt-2 text-xs">
+        <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#ff5b00"></span><span class="text-gray-600">Merchant</span></div>
+        <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#2196f3"></span><span class="text-gray-600">Compset</span></div>
+      </div>
+      <div class="ai-box ai-bl mt-3">💡 <strong>AI:</strong> India and HK over-index on CVR vs compset. Korea and ANZ below comp — investigate pricing and content localisation.</div>
     </div>
   </div>
   <div class="grid grid-cols-2 gap-4 mb-5">
     <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Origin <span class="lbl-comp">YoY</span> Breakdown</h4><div class="text-xs text-gray-400 mt-0.5"><span class="lbl-metric-cap">Gross</span> Sales Share vs <span class="lbl-comp">YoY</span> Growth · bubble = volume</div></div>
+      <div class="flex justify-between items-start mb-3">
+        <div><h4 class="font-semibold text-sm text-gray-800">Origin <span class="lbl-comp">YoY</span> Breakdown</h4><div class="text-xs text-gray-400 mt-0.5"><span class="lbl-metric-cap">Gross</span> Sales Share vs <span class="lbl-comp">YoY</span> Growth · bubble = volume</div></div>
+        <div class="tg" id="tg-origin-bubble">
+          <button class="tg-btn active" onclick="setTG(this,'tg-origin-bubble')">Unit</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-origin-bubble')">Salse</button>
+        </div>
+      </div>
       <div id="chart-origin-bubble" class="chart-container-md"></div>
       <div class="ai-box ai-bl">💡 <strong>AI:</strong> India leads volume with strong <span class="lbl-comp">YoY</span>. Korea below benchmark. ANZ high growth but small share — opportunity to scale.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800"><span class="lbl-metric-cap">Gross</span> Sales Composition by Origin</h4><div class="text-xs text-gray-400 mt-0.5">Monthly 100% stacked · Top 11 + Others</div></div>
+      <div class="flex justify-between items-start mb-3">
+        <div><h4 class="font-semibold text-sm text-gray-800"><span class="lbl-metric-cap">Gross</span> Sales Composition by Origin</h4><div class="text-xs text-gray-400 mt-0.5">Monthly 100% stacked · Top 11 + Others</div></div>
+        <div class="tg" id="tg-origin-stacked">
+          <button class="tg-btn active" onclick="setTG(this,'tg-origin-stacked')">Unit</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-origin-stacked')">Salse</button>
+        </div>
+      </div>
       <div id="chart-origin-stacked" class="chart-container-md"></div>
       <div class="ai-box ai-or" style="margin-top:8px">💡 <strong>AI:</strong> India share growing MoM from 14.7% → 15.8%. SEA origins stable at combined ~19%.</div>
     </div>
@@ -361,7 +380,7 @@
   <div class="sec-hd mb-4 sec-hd-purple">🕐 User Booking Behavior</div>
   
   <div class="bg-white p-5 rounded-lg shadow-sm mb-5">
-    <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Booking Window by Origin</h4><div class="text-xs text-gray-400">Lead day distribution</div></div>
+    <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Booking Window by Origin</h4><div class="text-xs text-gray-400"><span class="lbl-metric-cap">Gross</span> Units · Lead day distribution</div></div>
     <div class="overflow-x-auto mb-3" style="max-height: 260px;">
       <table class="rpt-tbl" id="window-tbl">
         <thead style="position: sticky; top: 0; background: white;"><tr><th>Origin</th><th>0D</th><th>1-3D</th><th>4-7D</th><th>8-30D</th><th>30D+</th><th>Median</th></tr></thead>
@@ -388,12 +407,12 @@
   
   <div class="grid grid-cols-2 gap-4 mb-5">
     <div class="bg-white p-5 rounded-lg shadow-sm flex flex-col">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Overall Window <span class="text-xs text-gray-400 font-normal">· blue = compset</span></h4></div>
+      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Overall Window by <span class="lbl-metric-cap">Gross</span> Unit</h4><div class="text-xs text-gray-400">Merchant vs Compset · blue = compset</div></div>
       <div id="chart-overall-window" class="chart-container-sm flex-1"></div>
       <div class="ai-box ai-or">💡 <strong>AI:</strong> 32% same-day bookings. Compset books earlier (4d median vs 3d). H2: Push early-bird bundles for TW/KR.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Group Composition by <span class="lbl-metric-cap">Gross</span> Unit</h4><div class="text-xs text-gray-400">Current <span class="lbl-metric-cap">Gross</span> Unit vs LY <span class="lbl-metric-cap">Gross</span> Unit</div></div>
+      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Group Composition by <span class="lbl-metric-cap">Gross</span> Unit</h4><div class="text-xs text-gray-400">Current <span class="lbl-metric-cap">Gross</span> Unit vs LY <span class="lbl-metric-cap">Gross</span> Unit · blue = compset</div></div>
       <div id="chart-group-comp" class="chart-container-sm"></div>
       <div class="text-xs text-gray-400 mb-2">others = unclassified unit type, not adult or child.</div>
       <div class="ai-box ai-gr">💡 <strong>AI:</strong> Family combos (2A1C, 2A2C) growing <span class="lbl-comp">YoY</span>. Family bundle with child ticket would resonate for IN and KR.</div>
@@ -404,7 +423,7 @@
       <div class="ai-box ai-or">💡 <strong>AI:</strong> Fri–Sun account for 58% of bookings. Merchant over-indexes Sat vs compset (+6pp). Wed weakest for both.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Booking by Timeslot Distribution</h4><div class="text-xs text-gray-400">% of daily bookings by hour · Merchant vs Compset</div></div>
+      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Booking by Timeslot Distribution</h4><div class="text-xs text-gray-400"><span class="lbl-metric-cap">Gross</span> Units · Merchant vs Compset</div></div>
       <div id="chart-timeslot" class="chart-container-sm"></div>
       <div class="ai-box ai-bl">💡 <strong>AI:</strong> Peak booking 10:00–14:00 (47% of orders). Merchant peaks at 11:00 vs compset 13:00.</div>
     </div>
@@ -517,18 +536,28 @@
       </div>
     </div>
     <table class="rpt-tbl" id="supply-table">
-      <thead><tr><th>ACTIVITY NAME</th><th>PACKAGE NAME</th><th>CXL Policy</th><th>CXL Rate</th><th class="comp-col">vs Comp</th><th>Avg. Refund Rate</th><th class="comp-col">vs Comp</th><th>Bad Review</th><th>Status</th></tr></thead>
+      <thead><tr><th>ACTIVITY NAME</th><th>PACKAGE NAME</th><th>CXL Policy</th><th>CXL Rate</th><th class="comp-col">vs Comp</th><th>Refund Rate</th><th class="comp-col">vs Comp</th><th>Bad Review</th><th>Status</th></tr></thead>
       <tbody>
-        <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks Dated</td><td class="text-xs">No cancel</td><td>8.0%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>1.8%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>1.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 1Park Dated</td><td class="text-xs">No cancel</td><td>7.5%</td><td class="comp-col text-green-600 text-xs">-1.0pp</td><td>2.0%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>1.2%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Regular 1D 2Parks</td><td class="text-xs">Flexible 12h</td><td>10.0%</td><td class="comp-col text-orange-500 text-xs">+0.4pp</td><td>2.3%</td><td class="comp-col text-orange-500 text-xs">+0.9pp</td><td>2.1%</td><td><span class="tp tp-wn">Watch</span></td></tr>
-        <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">MINI Ticket 1D</td><td class="text-xs">No cancel</td><td>6.8%</td><td class="comp-col text-green-600 text-xs">-1.5pp</td><td>1.5%</td><td class="comp-col text-green-600 text-xs">Below avg</td><td>0.9%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks+Premier</td><td class="text-xs">No cancel</td><td class="text-red-600 font-bold">11.1%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.1pp</td><td class="text-red-600 font-bold">3.8%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.4pp</td><td class="text-red-600">3.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks Dated</td><td class="text-xs">No cancel</td><td>8.0%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>1.8%</td><td class="comp-col text-green-600 text-xs">-0.4pp</td><td>1.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 1Park Dated</td><td class="text-xs">No cancel</td><td>7.5%</td><td class="comp-col text-green-600 text-xs">-1.0pp</td><td>2.0%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>1.2%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Regular 1D 2Parks</td><td class="text-xs">Flexible 12h</td><td>10.0%</td><td class="comp-col text-red-600 text-xs">+0.4pp</td><td>2.3%</td><td class="comp-col text-red-600 text-xs">+0.9pp</td><td>2.1%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">MINI Ticket 1D</td><td class="text-xs">No cancel</td><td>6.8%</td><td class="comp-col text-green-600 text-xs">-1.5pp</td><td>1.5%</td><td class="comp-col text-green-600 text-xs">-0.6pp</td><td>0.9%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks+Premier</td><td class="text-xs">No cancel</td><td>11.1%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.1pp</td><td>3.8%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.4pp</td><td>3.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks Dated + Transfer</td><td class="text-xs">Free 24h</td><td>9.2%</td><td class="comp-col text-red-600 text-xs">+0.8pp</td><td>2.5%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>2.0%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 1Park Dated + Meal</td><td class="text-xs">No cancel</td><td>7.8%</td><td class="comp-col text-green-600 text-xs">-0.7pp</td><td>1.9%</td><td class="comp-col text-green-600 text-xs">-0.3pp</td><td>1.5%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Regular 1D 2Parks + Fast Track</td><td class="text-xs">Flexible 48h</td><td>11.5%</td><td class="comp-col text-red-600 text-xs">+1.9pp</td><td>2.8%</td><td class="comp-col text-red-600 text-xs">+1.4pp</td><td>2.4%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">MINI Ticket 1D + Souvenir</td><td class="text-xs">No cancel</td><td>6.5%</td><td class="comp-col text-green-600 text-xs">-1.8pp</td><td>1.4%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>0.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks+Premier+VIP</td><td class="text-xs">No cancel</td><td>12.3%</td><td class="comp-col text-red-600 font-semibold text-xs">+3.3pp</td><td>4.2%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.8pp</td><td>4.1%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr data-pkg="567123"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Annual Pass Holder 20% — 1D 2Parks</td><td class="text-xs">No cancel</td><td>5.2%</td><td class="comp-col text-green-600 text-xs">-3.1pp</td><td>1.1%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>0.6%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
-      <div>Showing 1-5 of 5 rows</div>
-      <div class="flex gap-1"><button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed">Prev</button><button class="px-2 py-1 border rounded bg-klook-orange text-white border-klook-orange">1</button><button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed">Next</button></div>
+      <div id="supply-pagination-info">Showing 1-10 of 11 rows</div>
+      <div class="flex gap-1">
+        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed supply-prev-btn" disabled>Prev</button>
+        <button class="px-2 py-1 border rounded bg-klook-orange text-white border-klook-orange supply-page-btn active" data-page="1">1</button>
+        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed supply-next-btn">Next</button>
+      </div>
     </div>
     <div class="ai-box ai-rd mt-3">🚨 <strong>AI:</strong> 1D 2Parks+Premier has both highest CXL (11.1%) and refund rate (3.8%). 0% free cancel vs comp 45%.</div>
   </div>
@@ -547,18 +576,28 @@
       </div>
     </div>
     <table class="rpt-tbl" id="rate-table">
-      <thead><tr><th>Activity Name</th><th>Package Name</th><th>Period</th><th>Discount</th><th>Net Sales</th><th>% to AID Sales</th><th>Units</th></tr></thead>
+      <thead><tr><th>Activity Name</th><th>Package Name</th><th>Period</th><th>Discount</th><th>Sales</th><th>% to AID Sales</th><th>Units</th></tr></thead>
       <tbody>
         <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">App Exclusive — 1D 2Parks</td><td class="text-xs">Jan–Mar</td><td><span class="badge badge-nu text-xs">No cost</span></td><td class="text-green-600 font-semibold">$152K</td><td><strong>9.4%</strong></td><td>5,400</td></tr>
         <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">6% off — KR/JP/TW/CN/HK</td><td class="text-xs">May–Jul</td><td><span class="badge badge-dn text-xs">6% off</span></td><td class="text-green-600 font-semibold">$155K</td><td><strong>9.6%</strong></td><td>729</td></tr>
         <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">LNY Flash — 1D 1Park</td><td class="text-xs">Jan 20–Feb 5</td><td><span class="badge badge-dn text-xs">Flash</span></td><td class="text-orange-500 font-semibold">$98K</td><td><strong>6.1%</strong></td><td>2,840</td></tr>
         <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">2% off All — 1D 2Parks</td><td class="text-xs">May 6–27</td><td><span class="badge badge-dn text-xs">2% off</span></td><td class="text-orange-500 font-semibold">$104K</td><td><strong>6.4%</strong></td><td>162</td></tr>
         <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Early Bird 15% — 1D 2Parks</td><td class="text-xs">Jan 1–15</td><td><span class="badge badge-dn text-xs">15% off</span></td><td class="text-orange-500 font-semibold">$45K</td><td><strong>2.8%</strong></td><td>136</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Member Day 10% — 1D 1Park</td><td class="text-xs">Mar 1–31</td><td><span class="badge badge-dn text-xs">10% off</span></td><td class="text-gray-600 font-semibold">$78K</td><td><strong>4.8%</strong></td><td>892</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Flash Sale 20% — 1D 2Parks</td><td class="text-xs">Apr 15–22</td><td><span class="badge badge-dn text-xs">20% off</span></td><td class="text-gray-600 font-semibold">$67K</td><td><strong>4.2%</strong></td><td>524</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Bundle Save 8% — 1D+Meal</td><td class="text-xs">Feb–Jun</td><td><span class="badge badge-nu text-xs">8% off</span></td><td class="text-gray-500 font-semibold">$52K</td><td><strong>3.2%</strong></td><td>687</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Weekend Special 5% — 1D 2Parks</td><td class="text-xs">May–Aug</td><td><span class="badge badge-nu text-xs">5% off</span></td><td class="text-gray-500 font-semibold">$41K</td><td><strong>2.5%</strong></td><td>412</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Summer Kickoff 12% — 1D 1Park</td><td class="text-xs">Jun 1–15</td><td><span class="badge badge-dn text-xs">12% off</span></td><td class="text-gray-500 font-semibold">$38K</td><td><strong>2.4%</strong></td><td>356</td></tr>
+        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Halloween Special 18% — 1D 2Parks</td><td class="text-xs">Oct 1–31</td><td><span class="badge badge-dn text-xs">18% off</span></td><td class="text-gray-500 font-semibold">$35K</td><td><strong>2.2%</strong></td><td>298</td></tr>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
-      <div>Showing 1-5 of 5 rows</div>
-      <div class="flex gap-1"><button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed">Prev</button><button class="px-2 py-1 border rounded bg-klook-orange text-white border-klook-orange">1</button><button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed">Next</button></div>
+      <div id="rate-pagination-info">Showing 1-10 of 11 rows</div>
+      <div class="flex gap-1">
+        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed rate-prev-btn" disabled>Prev</button>
+        <button class="px-2 py-1 border rounded bg-klook-orange text-white border-klook-orange rate-page-btn active" data-page="1">1</button>
+        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed rate-next-btn">Next</button>
+      </div>
     </div>
     <div class="ai-box ai-gr mt-3">💡 <strong>AI:</strong> App Exclusive = highest ROI at zero discount cost. 6% off APAC drove highest % to AID sales (9.6%).</div>
   </div>
@@ -568,11 +607,6 @@
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="flex justify-between items-start mb-3">
         <div><h4 class="font-semibold text-sm text-gray-800">Next 6 Months Pace by Participation Date (OTB)</h4><div class="text-xs text-gray-400">Confirmed bookings for future travel dates as of today vs. same day last year</div></div>
-        <div class="tg">
-          <button class="tg-btn" onclick="setTG(this,'tg-gran')">D</button>
-          <button class="tg-btn" onclick="setTG(this,'tg-gran')">W</button>
-          <button class="tg-btn active" onclick="setTG(this,'tg-gran')">M</button>
-        </div>
       </div>
       <div id="chart-otb" class="chart-container-sm"></div>
       <div class="bg-gray-50 p-3 rounded-lg mb-3 text-xs text-gray-700">
@@ -866,17 +900,20 @@ function buildGroupComp(){
   const revLY=[...GROUP_LY].reverse();
   const prev = currentComp === 'PoP' ? 'PP' : 'LY';
   const metricStr = currentBasis === 'Net' ? 'Net Unit' : 'Gross Unit';
+  const compCY = revCY.map(v => v - 1.5);
+  const barWidth = 14;
   initChart('chart-group-comp',{
     tooltip:{...TT,trigger:'axis'},
-    legend:{data:[`Current ${metricStr}`,`${prev} ${metricStr}`],bottom:0,itemWidth:10,itemHeight:8,textStyle:{fontSize:10}},
+    legend:{data:[`Current ${metricStr}`,`${prev} ${metricStr}`,'Compset'],bottom:0,itemWidth:10,itemHeight:8,textStyle:{fontSize:10}},
     grid:{left:76,right:56,top:8,bottom:36},
     xAxis:{type:'value',axisLabel:{formatter:v=>v+'%',fontSize:10},splitLine:{lineStyle:{color:'#f0f0f0'}}},
     yAxis:{type:'category',data:revCats,axisLabel:{fontSize:10}},
     series:[
-      {name:`Current ${metricStr}`,type:'bar',data:revCY,barMaxWidth:14,itemStyle:{color:'#ff5b00'},
+      {name:`Current ${metricStr}`,type:'bar',data:revCY,barWidth:barWidth,itemStyle:{color:'#ff5b00'},
        label:{show:true,position:'right',fontSize:10,formatter:p=>p.value+'%'}},
-      {name:`${prev} ${metricStr}`,type:'bar',data:revLY,barMaxWidth:14,itemStyle:{color:'#d1d5db'},
-       label:{show:true,position:'right',fontSize:9,color:'#9ca3af',formatter:p=>p.value+'%'}}
+      {name:`${prev} ${metricStr}`,type:'bar',data:revLY,barWidth:barWidth,itemStyle:{color:'#d1d5db'},
+       label:{show:true,position:'right',fontSize:9,color:'#9ca3af',formatter:p=>p.value+'%'}},
+      {name:'Compset',type:'scatter',data:compCY.map((v,i)=>[v,i]),symbol:'rect',symbolSize:[3,14],itemStyle:{color:'#2196f3'},z:10}
     ]
   });
 }
@@ -999,6 +1036,8 @@ function refreshAllCharts() {
 
 window.addEventListener('DOMContentLoaded',()=>{
   refreshAllCharts();
+  initPagination('supply');
+  initPagination('rate');
 });
 
 /* ═══════════════════════════════ FILTER UI & LINKAGE ═══════════════════════════════ */
@@ -1160,6 +1199,7 @@ function filterSupplyTable(el,mode){
     }
   }
   document.getElementById('supply-pkg-dd').classList.remove('open');
+  updatePagination('supply');
 }
 
 function filterRateTable(el,mode){
@@ -1205,7 +1245,123 @@ function filterRateTable(el,mode){
     }
   }
   document.getElementById('rate-pkg-dd').classList.remove('open');
+  updatePagination('rate');
 }
+
+/* ═══════════════════════════════ PAGINATION ═══════════════════════════════ */
+const ROWS_PER_PAGE = 10;
+
+function updatePagination(tableType) {
+  const table = document.getElementById(`${tableType}-table`);
+  const infoEl = document.getElementById(`${tableType}-pagination-info`);
+  const prevBtn = document.querySelector(`.${tableType}-prev-btn`);
+  const nextBtn = document.querySelector(`.${tableType}-next-btn`);
+  const pageBtns = document.querySelectorAll(`.${tableType}-page-btn`);
+  
+  if (!table || !infoEl) return;
+  
+  const visibleRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');
+  const totalRows = visibleRows.length;
+  const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE) || 1;
+  
+  let currentPage = 1;
+  pageBtns.forEach(btn => {
+    if (btn.classList.contains('active')) {
+      currentPage = parseInt(btn.dataset.page) || 1;
+    }
+  });
+  
+  if (currentPage > totalPages) currentPage = totalPages;
+  
+  const startRow = Math.min((currentPage - 1) * ROWS_PER_PAGE + 1, totalRows + 1);
+  const endRow = Math.min(currentPage * ROWS_PER_PAGE, totalRows);
+  
+  if (totalRows === 0) {
+    infoEl.textContent = 'Showing 0 of 0 rows';
+  } else {
+    infoEl.textContent = `Showing ${startRow}-${endRow} of ${totalRows} rows`;
+  }
+  
+  if (prevBtn) {
+    prevBtn.disabled = currentPage <= 1;
+    prevBtn.classList.toggle('cursor-not-allowed', currentPage <= 1);
+    prevBtn.classList.toggle('text-gray-400', currentPage <= 1);
+  }
+  
+  if (nextBtn) {
+    nextBtn.disabled = currentPage >= totalPages;
+    nextBtn.classList.toggle('cursor-not-allowed', currentPage >= totalPages);
+    nextBtn.classList.toggle('text-gray-400', currentPage >= totalPages);
+  }
+  
+  pageBtns.forEach(btn => {
+    const page = parseInt(btn.dataset.page);
+    if (page > totalPages) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = '';
+    }
+  });
+  
+  visibleRows.forEach((row, idx) => {
+    const pageNum = Math.floor(idx / ROWS_PER_PAGE) + 1;
+    row.style.display = (pageNum === currentPage) ? '' : 'none';
+  });
+}
+
+function goToPage(tableType, page) {
+  const table = document.getElementById(`${tableType}-table`);
+  if (!table) return;
+  
+  const visibleRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');
+  const totalRows = visibleRows.length;
+  const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE) || 1;
+  
+  if (page < 1 || page > totalPages) return;
+  
+  const pageBtns = document.querySelectorAll(`.${tableType}-page-btn`);
+  pageBtns.forEach(btn => {
+    btn.classList.remove('active');
+    btn.classList.remove('bg-klook-orange', 'text-white');
+    btn.classList.add('bg-gray-50', 'text-gray-700');
+    if (parseInt(btn.dataset.page) === page) {
+      btn.classList.add('active', 'bg-klook-orange', 'text-white');
+      btn.classList.remove('bg-gray-50', 'text-gray-700');
+    }
+  });
+  
+  updatePagination(tableType);
+}
+
+function initPagination(tableType) {
+  const table = document.getElementById(`${tableType}-table`);
+  const paginationContainer = document.querySelector(`#${tableType}-pagination-info`).parentElement;
+  
+  if (!table || !paginationContainer) return;
+  
+  const visibleRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');
+  const totalRows = visibleRows.length;
+  const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE) || 1;
+  
+  const existingPageBtns = paginationContainer.querySelectorAll('.supply-page-btn, .rate-page-btn');
+  existingPageBtns.forEach(btn => btn.remove());
+  
+  const nextBtn = paginationContainer.querySelector(`.${tableType}-next-btn`);
+  
+  for (let i = 1; i <= totalPages && i <= 5; i++) {
+    const pageBtn = document.createElement('button');
+    pageBtn.className = `px-2 py-1 border rounded ${i === 1 ? 'bg-klook-orange text-white' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'} ${tableType}-page-btn`;
+    pageBtn.dataset.page = i;
+    pageBtn.textContent = i;
+    pageBtn.onclick = () => goToPage(tableType, i);
+    if (nextBtn) {
+      nextBtn.before(pageBtn);
+    }
+  }
+  
+  updatePagination(tableType);
+}
+
 
 /* ═══════════════════════════════ EXPORT MODAL ═══════════════════════════════ */
 function openExportModal() {
@@ -1221,7 +1377,7 @@ function openExportModal() {
 
   let kpiCards = document.querySelectorAll('.kpi-card');
   if (kpiCards.length > 0) {
-    modules.push({ title: 'Module 1: Sales Overview', items: ['Sales Overview Metrics'] });
+    modules.push({ title: 'Module 1: Sales Overview', items: ['Gross Sales', 'Gross Units', 'Activity CVR', 'Avg Booking Value', 'Review Score'] });
   }
 
   let modCounter = 2;
@@ -1240,7 +1396,7 @@ function openExportModal() {
     } else if (currentModule && el.tagName === 'DIV' && !el.classList.contains('sec-hd')) {
        let h4s = el.querySelectorAll('h4');
        h4s.forEach(h4 => {
-         let text = (h4.innerText || h4.textContent).replace(/·.*/, '').split('\n')[0].trim();
+         let text = (h4.innerText || h4.textContent).replace(/^[^\w\s]+/, '').replace(/🎯\s*/, '').split('\n')[0].trim();
          if (text && text !== 'Recommended Actions') {
             currentModule.items.push(text);
          }
