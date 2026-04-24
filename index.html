@@ -77,6 +77,15 @@
   .rpt-tbl td { padding: 6px 8px; border-bottom: 1px solid #f8f8f8; vertical-align: middle; }
   .rpt-tbl tr:last-child td { border-bottom: none; }
   .rpt-tbl tbody tr:hover td { background: #fafafa; }
+  .activity-header { background: #f5f5f5; cursor: pointer; }
+  .activity-header td { font-weight: 700; border-bottom: 1px solid #e5e5e5; }
+  .activity-header:hover td { background: #ebebeb; }
+  .activity-toggle { display: inline-block; transition: transform 0.2s; margin-right: 4px; font-size: 10px; }
+  .activity-header.collapsed .activity-toggle { transform: rotate(-90deg); }
+  .activity-child { display: table-row; }
+  .activity-child.hidden { display: none; }
+  .activity-child td { background: #fafafa; }
+  .activity-child:hover td { background: #f0f0f0; }
   .tp { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 600; }
   .tp-ok { background: #e8f5e9; color: #2e7d32; }
   .tp-wn { background: #fff3e0; color: #e65100; }
@@ -270,7 +279,7 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-5 gap-3 mb-5">
+  <div class="grid grid-cols-4 gap-3 mb-5">
     <div class="kpi-card" style="border-top-color:#ff5b00">
       <div class="text-xs text-gray-400 uppercase tracking-wide mb-1"><span class="lbl-metric-cap">Gross</span> Sales</div>
       <div class="text-2xl font-bold">$4.03M</div>
@@ -283,12 +292,7 @@
       <div class="flex gap-2 mt-2"><span class="badge badge-up">▲15.2% <span class="lbl-comp-upper">YOY</span></span></div>
       <div class="text-xs text-gray-400 mt-1 comp-col">Compset: ▲9.1% <span class="lbl-comp-upper">YOY</span> <span class="badge badge-up" style="font-size:9px">+6.1pp</span></div>
     </div>
-    <div class="kpi-card" style="border-top-color:#ff9800">
-      <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Activity CVR</div>
-      <div class="text-2xl font-bold">5.2%</div>
-      <div class="flex gap-2 mt-2"><span class="badge badge-up">▲0.6pp <span class="lbl-comp-upper">YOY</span></span></div>
-      <div class="text-xs text-gray-400 mt-1 comp-col">Compset: 4.9% <span class="badge badge-up" style="font-size:9px">▲+5%</span></div>
-    </div>
+
     <div class="kpi-card" style="border-top-color:#2196f3">
       <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Avg Booking Value</div>
       <div class="text-2xl font-bold">$208</div>
@@ -332,37 +336,21 @@
   </div>
 
   <div class="sec-hd mb-4">🌍 Origin Analysis</div>
-  <div class="grid grid-cols-2 gap-4 mb-4">
+  <div class="grid grid-cols-2 gap-4 mb-5">
     <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Unit Share by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">Top 11 + Others · blue = compset</div></div>
+      <div class="flex justify-between items-start mb-3">
+        <div><h4 class="font-semibold text-sm text-gray-800">Unit Share by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">Top 11 + Others · blue = compset</div></div>
+        <div class="tg" id="tg-origin-share">
+          <button class="tg-btn active" onclick="setTG(this,'tg-origin-share')">Unit</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-origin-share')">Sales</button>
+        </div>
+      </div>
       <div id="chart-origin-share" class="chart-container-sm"></div>
       <div class="flex justify-center items-center gap-4 mt-2 text-xs">
         <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#ff5b00"></span><span class="text-gray-600">Merchant</span></div>
         <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#2196f3"></span><span class="text-gray-600">Compset</span></div>
       </div>
       <div class="ai-box ai-bl mt-3">💡 <strong>AI:</strong> India leads with 17% share. Korea still large at 12% but trending down. SEA markets collectively ~25%.</div>
-    </div>
-    <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="mb-3"><h4 class="font-semibold text-sm text-gray-800">Activity CVR by Origin</h4><div class="text-xs text-gray-400 mt-0.5 comp-col">Top 11 + Others · blue = compset</div></div>
-      <div id="chart-cvr-origin" class="chart-container-sm"></div>
-      <div class="flex justify-center items-center gap-4 mt-2 text-xs">
-        <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#ff5b00"></span><span class="text-gray-600">Merchant</span></div>
-        <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background-color:#2196f3"></span><span class="text-gray-600">Compset</span></div>
-      </div>
-      <div class="ai-box ai-bl mt-3">💡 <strong>AI:</strong> India and HK over-index on CVR vs compset. Korea and ANZ below comp — investigate pricing and content localisation.</div>
-    </div>
-  </div>
-  <div class="grid grid-cols-2 gap-4 mb-5">
-    <div class="bg-white p-5 rounded-lg shadow-sm">
-      <div class="flex justify-between items-start mb-3">
-        <div><h4 class="font-semibold text-sm text-gray-800">Origin <span class="lbl-comp">YoY</span> Breakdown</h4><div class="text-xs text-gray-400 mt-0.5"><span class="lbl-metric-cap">Gross</span> Sales Share vs <span class="lbl-comp">YoY</span> Growth · bubble = volume</div></div>
-        <div class="tg" id="tg-origin-bubble">
-          <button class="tg-btn active" onclick="setTG(this,'tg-origin-bubble')">Unit</button>
-          <button class="tg-btn" onclick="setTG(this,'tg-origin-bubble')">Sales</button>
-        </div>
-      </div>
-      <div id="chart-origin-bubble" class="chart-container-md"></div>
-      <div class="ai-box ai-bl">💡 <strong>AI:</strong> India leads volume with strong <span class="lbl-comp">YoY</span>. Korea below benchmark. ANZ high growth but small share — opportunity to scale.</div>
     </div>
     <div class="bg-white p-5 rounded-lg shadow-sm">
       <div class="flex justify-between items-start mb-3">
@@ -374,6 +362,19 @@
       </div>
       <div id="chart-origin-stacked" class="chart-container-md"></div>
       <div class="ai-box ai-or" style="margin-top:8px">💡 <strong>AI:</strong> India share growing MoM from 14.7% → 15.8%. SEA origins stable at combined ~19%.</div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 gap-4 mb-5">
+    <div class="bg-white p-5 rounded-lg shadow-sm">
+      <div class="flex justify-between items-start mb-3">
+        <div><h4 class="font-semibold text-sm text-gray-800">Origin <span class="lbl-comp">YoY</span> Breakdown</h4><div class="text-xs text-gray-400 mt-0.5"><span class="lbl-metric-cap">Gross</span> Sales Share vs <span class="lbl-comp">YoY</span> Growth · bubble = volume</div></div>
+        <div class="tg" id="tg-origin-bubble">
+          <button class="tg-btn active" onclick="setTG(this,'tg-origin-bubble')">Unit</button>
+          <button class="tg-btn" onclick="setTG(this,'tg-origin-bubble')">Sales</button>
+        </div>
+      </div>
+      <div id="chart-origin-bubble" class="chart-container-md"></div>
+      <div class="ai-box ai-bl">💡 <strong>AI:</strong> India leads volume with strong <span class="lbl-comp">YoY</span>. Korea below benchmark. ANZ high growth but small share — opportunity to scale.</div>
     </div>
   </div>
 
@@ -430,46 +431,8 @@
   </div>
 
   <div class="sec-hd mb-4">📦 Package Detail Breakdown</div>
-  <div class="grid grid-cols-2 gap-4 mb-5">
-    <div class="bg-white p-5 rounded-lg shadow-sm flex flex-col">
-      <div class="flex justify-between items-start mb-3">
-        <div><h4 class="font-semibold text-sm text-gray-800">B2B / B2C Channel Split by Package</h4><div class="text-xs text-gray-400"><span class="lbl-metric-lower">gross</span> units</div></div>
-        <div class="pkg-dd-wrap">
-          <div class="pkg-dd-btn" onclick="togglePkgDd('b2b-pkg-dd')" id="b2b-dd-label">All Packages</div>
-          <div class="pkg-dd-menu" id="b2b-pkg-dd">
-            <div class="pkg-dd-item"><input type="checkbox" id="b2b-all" checked onchange="filterB2BTable(this,'all')"> All Packages</div>
-            <div class="pkg-dd-item"><input type="checkbox" class="b2b-cb" data-pkg="386583" onchange="filterB2BTable(this,'single')"> 1D 2Parks Dated</div>
-            <div class="pkg-dd-item"><input type="checkbox" class="b2b-cb" data-pkg="386478" onchange="filterB2BTable(this,'single')"> 1D 1Park Dated</div>
-            <div class="pkg-dd-item"><input type="checkbox" class="b2b-cb" data-pkg="8908" onchange="filterB2BTable(this,'single')"> Regular 1D 2Parks</div>
-            <div class="pkg-dd-item"><input type="checkbox" class="b2b-cb" data-pkg="25476" onchange="filterB2BTable(this,'single')"> MINI Ticket 1D</div>
-            <div class="pkg-dd-item"><input type="checkbox" class="b2b-cb" data-pkg="253741" onchange="filterB2BTable(this,'single')"> 1D 2Parks+Premier</div>
-          </div>
-        </div>
-      </div>
-      <div class="flex-1">
-        <table class="rpt-tbl" id="b2b-table">
-          <thead><tr><th>Activity</th><th>Package</th><th>Total Units</th><th>B2C Units</th><th>B2C%</th><th>B2B Units</th><th>B2B%</th></tr></thead>
-          <tbody>
-            <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks Dated</td><td>8,200</td><td>6,560</td><td>80%</td><td>1,640</td><td>20%</td></tr>
-            <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 1Park Dated</td><td>7,100</td><td>5,964</td><td>84%</td><td>1,136</td><td>16%</td></tr>
-            <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Regular 1D 2Parks</td><td>5,400</td><td>3,780</td><td>70%</td><td>1,620</td><td>30%</td></tr>
-            <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">MINI Ticket 1D</td><td>4,300</td><td>3,870</td><td>90%</td><td>430</td><td>10%</td></tr>
-            <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks+Premier</td><td>2,100</td><td>1,470</td><td>70%</td><td>630</td><td>30%</td></tr>
-            <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks Dated + Transfer</td><td>3,200</td><td>2,240</td><td>70%</td><td>960</td><td>30%</td></tr>
-            <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 1Park Dated + Meal</td><td>2,500</td><td>2,000</td><td>80%</td><td>500</td><td>20%</td></tr>
-            <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Regular 1D 2Parks + Fast Track</td><td>1,800</td><td>1,080</td><td>60%</td><td>720</td><td>40%</td></tr>
-            <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">MINI Ticket 1D + Souvenir</td><td>1,200</td><td>1,080</td><td>90%</td><td>120</td><td>10%</td></tr>
-            <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks+Premier+VIP</td><td>800</td><td>560</td><td>70%</td><td>240</td><td>30%</td></tr>
-            <tr style="background:#f9fafb;font-weight:700"><td colspan="2">All Packages Total</td><td>43,300</td><td>35,214</td><td>81%</td><td>8,086</td><td>19%</td></tr>
-          </tbody>
-        </table>
-        <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
-          <div>Showing 1-10 of 11 rows</div>
-          <div class="flex gap-1"><button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed">Prev</button><button class="px-2 py-1 border rounded bg-klook-orange text-white border-klook-orange">1</button><button class="px-2 py-1 border rounded bg-gray-50 text-gray-500">2</button><button class="px-2 py-1 border rounded bg-gray-50 text-gray-500">Next</button></div>
-        </div>
-      </div>
-      <div class="ai-box ai-bl mt-3">💡 <strong>AI:</strong> B2C dominates at 83%. Regular 1D 2Parks has highest B2B mix (30%).</div>
-    </div>
+  <div class="grid grid-cols-1 gap-4 mb-5">
+
 
     <div class="bg-white p-5 rounded-lg shadow-sm flex flex-col">
       <div class="flex justify-between items-start mb-3">
@@ -488,19 +451,21 @@
       </div>
       <div class="flex-1">
         <table class="rpt-tbl" id="psc-table">
-          <thead><tr><th>Activity</th><th>Package</th><th>Sales</th><th>Units</th><th>ABV</th><th>% to AID Sales</th></tr></thead>
+          <thead><tr><th>Activity / Package</th><th>Sales</th><th>Units</th><th>ABV</th><th>% to AID Sales</th></tr></thead>
           <tbody>
-            <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks Dated</td><td class="text-black font-medium">$876K</td><td>8,200</td><td>$107</td><td><span class="font-semibold text-black text-xs">21%</span></td></tr>
-            <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 1Park Dated</td><td class="text-black font-medium">$723K</td><td>7,100</td><td>$102</td><td><span class="font-semibold text-black text-xs">18%</span></td></tr>
-            <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Regular 1D 2Parks</td><td class="text-black font-medium">$564K</td><td>5,400</td><td>$104</td><td><span class="font-semibold text-black text-xs">14%</span></td></tr>
-            <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">MINI Ticket 1D</td><td class="text-black font-medium">$443K</td><td>4,300</td><td>$103</td><td><span class="font-semibold text-black text-xs">11%</span></td></tr>
-            <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks+Premier</td><td class="text-black font-medium">$201K</td><td>2,100</td><td>$96</td><td><span class="font-semibold text-black text-xs">5%</span></td></tr>
-            <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks Dated + Transfer</td><td class="text-black font-medium">$326K</td><td>3,200</td><td>$102</td><td><span class="font-semibold text-black text-xs">8%</span></td></tr>
-            <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 1Park Dated + Meal</td><td class="text-black font-medium">$255K</td><td>2,500</td><td>$102</td><td><span class="font-semibold text-black text-xs">6%</span></td></tr>
-            <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Regular 1D 2Parks + Fast Track</td><td class="text-black font-medium">$187K</td><td>1,800</td><td>$104</td><td><span class="font-semibold text-black text-xs">5%</span></td></tr>
-            <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">MINI Ticket 1D + Souvenir</td><td class="text-black font-medium">$124K</td><td>1,200</td><td>$103</td><td><span class="font-semibold text-black text-xs">3%</span></td></tr>
-            <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">1D 2Parks+Premier+VIP</td><td class="text-black font-medium">$77K</td><td>800</td><td>$96</td><td><span class="font-semibold text-black text-xs">2%</span></td></tr>
-            <tr style="background:#f9fafb;font-weight:700"><td colspan="2">All Packages Total</td><td class="text-green-700">$4.03M</td><td>38,934</td><td>$104</td><td><strong>100%</strong></td></tr>
+            <tr class="activity-header" data-activity="disneyland" onclick="toggleActivityRow(this)"><td class="cursor-pointer"><span class="activity-toggle">▼</span> <strong>Disneyland Paris</strong></td><td class="font-bold">$2,803K</td><td>26,600</td><td>$105</td><td><strong>100%</strong></td></tr>
+            <tr class="activity-child" data-activity="disneyland" data-pkg="386583"><td class="pl-6 text-xs">1D 2Parks Dated</td><td class="text-black font-medium">$876K</td><td>8,200</td><td>$107</td><td><span class="font-semibold text-black text-xs">31%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland" data-pkg="386478"><td class="pl-6 text-xs">1D 1Park Dated</td><td class="text-black font-medium">$723K</td><td>7,100</td><td>$102</td><td><span class="font-semibold text-black text-xs">26%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland" data-pkg="8908"><td class="pl-6 text-xs">Regular 1D 2Parks</td><td class="text-black font-medium">$564K</td><td>5,400</td><td>$104</td><td><span class="font-semibold text-black text-xs">20%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland" data-pkg="25476"><td class="pl-6 text-xs">MINI Ticket 1D</td><td class="text-black font-medium">$443K</td><td>4,300</td><td>$103</td><td><span class="font-semibold text-black text-xs">16%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland" data-pkg="253741"><td class="pl-6 text-xs">1D 2Parks+Premier</td><td class="text-black font-medium">$201K</td><td>2,100</td><td>$96</td><td><span class="font-semibold text-black text-xs">7%</span></td></tr>
+            <tr class="activity-header" data-activity="disneyland-plus" onclick="toggleActivityRow(this)"><td class="cursor-pointer"><span class="activity-toggle">▼</span> <strong>Disneyland Paris + Add-ons</strong></td><td class="font-bold">$969K</td><td>9,500</td><td>$102</td><td><strong>100%</strong></td></tr>
+            <tr class="activity-child" data-activity="disneyland-plus" data-pkg="386583"><td class="pl-6 text-xs">1D 2Parks Dated + Transfer</td><td class="text-black font-medium">$326K</td><td>3,200</td><td>$102</td><td><span class="font-semibold text-black text-xs">34%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland-plus" data-pkg="386478"><td class="pl-6 text-xs">1D 1Park Dated + Meal</td><td class="text-black font-medium">$255K</td><td>2,500</td><td>$102</td><td><span class="font-semibold text-black text-xs">26%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland-plus" data-pkg="8908"><td class="pl-6 text-xs">Regular 1D 2Parks + Fast Track</td><td class="text-black font-medium">$187K</td><td>1,800</td><td>$104</td><td><span class="font-semibold text-black text-xs">19%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland-plus" data-pkg="25476"><td class="pl-6 text-xs">MINI Ticket 1D + Souvenir</td><td class="text-black font-medium">$124K</td><td>1,200</td><td>$103</td><td><span class="font-semibold text-black text-xs">13%</span></td></tr>
+            <tr class="activity-child" data-activity="disneyland-plus" data-pkg="253741"><td class="pl-6 text-xs">1D 2Parks+Premier+VIP</td><td class="text-black font-medium">$77K</td><td>800</td><td>$96</td><td><span class="font-semibold text-black text-xs">8%</span></td></tr>
+            <tr style="background:#f9fafb;font-weight:700"><td colspan="1">All Packages Total</td><td class="text-green-700">$4.03M</td><td>38,934</td><td>$104</td><td><strong>100%</strong></td></tr>
           </tbody>
         </table>
         <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
@@ -546,19 +511,20 @@
       </div>
     </div>
     <table class="rpt-tbl" id="supply-table">
-      <thead><tr><th>ACTIVITY NAME</th><th>PACKAGE NAME</th><th>CXL Policy</th><th>CXL Rate</th><th class="comp-col">vs Comp</th><th>Refund Rate</th><th class="comp-col">vs Comp</th><th>Bad Review</th><th>Status</th></tr></thead>
+      <thead><tr><th>Activity / Package</th><th>CXL Policy</th><th>CXL Rate</th><th class="comp-col">vs Comp</th><th>Refund Rate</th><th class="comp-col">vs Comp</th><th>Bad Review</th><th>Status</th></tr></thead>
       <tbody>
-        <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks Dated</td><td class="text-xs">No cancel</td><td>8.0%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>1.8%</td><td class="comp-col text-green-600 text-xs">-0.4pp</td><td>1.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 1Park Dated</td><td class="text-xs">No cancel</td><td>7.5%</td><td class="comp-col text-green-600 text-xs">-1.0pp</td><td>2.0%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>1.2%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Regular 1D 2Parks</td><td class="text-xs">Flexible 12h</td><td>10.0%</td><td class="comp-col text-red-600 text-xs">+0.4pp</td><td>2.3%</td><td class="comp-col text-red-600 text-xs">+0.9pp</td><td>2.1%</td><td><span class="tp tp-bd">Action!</span></td></tr>
-        <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">MINI Ticket 1D</td><td class="text-xs">No cancel</td><td>6.8%</td><td class="comp-col text-green-600 text-xs">-1.5pp</td><td>1.5%</td><td class="comp-col text-green-600 text-xs">-0.6pp</td><td>0.9%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks+Premier</td><td class="text-xs">No cancel</td><td>11.1%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.1pp</td><td>3.8%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.4pp</td><td>3.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
-        <tr data-pkg="386583"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks Dated + Transfer</td><td class="text-xs">Free 24h</td><td>9.2%</td><td class="comp-col text-red-600 text-xs">+0.8pp</td><td>2.5%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>2.0%</td><td><span class="tp tp-bd">Action!</span></td></tr>
-        <tr data-pkg="386478"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 1Park Dated + Meal</td><td class="text-xs">No cancel</td><td>7.8%</td><td class="comp-col text-green-600 text-xs">-0.7pp</td><td>1.9%</td><td class="comp-col text-green-600 text-xs">-0.3pp</td><td>1.5%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="8908"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Regular 1D 2Parks + Fast Track</td><td class="text-xs">Flexible 48h</td><td>11.5%</td><td class="comp-col text-red-600 text-xs">+1.9pp</td><td>2.8%</td><td class="comp-col text-red-600 text-xs">+1.4pp</td><td>2.4%</td><td><span class="tp tp-bd">Action!</span></td></tr>
-        <tr data-pkg="25476"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">MINI Ticket 1D + Souvenir</td><td class="text-xs">No cancel</td><td>6.5%</td><td class="comp-col text-green-600 text-xs">-1.8pp</td><td>1.4%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>0.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
-        <tr data-pkg="253741"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">1D 2Parks+Premier+VIP</td><td class="text-xs">No cancel</td><td>12.3%</td><td class="comp-col text-red-600 font-semibold text-xs">+3.3pp</td><td>4.2%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.8pp</td><td>4.1%</td><td><span class="tp tp-bd">Action!</span></td></tr>
-        <tr data-pkg="567123"><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs">Annual Pass Holder 20% — 1D 2Parks</td><td class="text-xs">No cancel</td><td>5.2%</td><td class="comp-col text-green-600 text-xs">-3.1pp</td><td>1.1%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>0.6%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr class="activity-header" data-activity="supply-disneyland" onclick="toggleActivityRow(this)"><td class="cursor-pointer"><span class="activity-toggle">▼</span> <strong>Disneyland Paris</strong></td><td class="text-gray-400">-</td><td class="font-bold">8.7%</td><td class="comp-col text-red-600 text-xs font-bold">+0.4pp</td><td class="font-bold">2.3%</td><td class="comp-col text-red-600 text-xs font-bold">+0.9pp</td><td class="font-bold">1.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="386583"><td class="pl-6 text-xs">1D 2Parks Dated</td><td class="text-xs">No cancel</td><td>8.0%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>1.8%</td><td class="comp-col text-green-600 text-xs">-0.4pp</td><td>1.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="386478"><td class="pl-6 text-xs">1D 1Park Dated</td><td class="text-xs">No cancel</td><td>7.5%</td><td class="comp-col text-green-600 text-xs">-1.0pp</td><td>2.0%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>1.2%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="8908"><td class="pl-6 text-xs">Regular 1D 2Parks</td><td class="text-xs">Flexible 12h</td><td>10.0%</td><td class="comp-col text-red-600 text-xs">+0.4pp</td><td>2.3%</td><td class="comp-col text-red-600 text-xs">+0.9pp</td><td>2.1%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="25476"><td class="pl-6 text-xs">MINI Ticket 1D</td><td class="text-xs">No cancel</td><td>6.8%</td><td class="comp-col text-green-600 text-xs">-1.5pp</td><td>1.5%</td><td class="comp-col text-green-600 text-xs">-0.6pp</td><td>0.9%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="253741"><td class="pl-6 text-xs">1D 2Parks+Premier</td><td class="text-xs">No cancel</td><td>11.1%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.1pp</td><td>3.8%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.4pp</td><td>3.8%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="386583"><td class="pl-6 text-xs">1D 2Parks Dated + Transfer</td><td class="text-xs">Free 24h</td><td>9.2%</td><td class="comp-col text-red-600 text-xs">+0.8pp</td><td>2.5%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>2.0%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="386478"><td class="pl-6 text-xs">1D 1Park Dated + Meal</td><td class="text-xs">No cancel</td><td>7.8%</td><td class="comp-col text-green-600 text-xs">-0.7pp</td><td>1.9%</td><td class="comp-col text-green-600 text-xs">-0.3pp</td><td>1.5%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="8908"><td class="pl-6 text-xs">Regular 1D 2Parks + Fast Track</td><td class="text-xs">Flexible 48h</td><td>11.5%</td><td class="comp-col text-red-600 text-xs">+1.9pp</td><td>2.8%</td><td class="comp-col text-red-600 text-xs">+1.4pp</td><td>2.4%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="25476"><td class="pl-6 text-xs">MINI Ticket 1D + Souvenir</td><td class="text-xs">No cancel</td><td>6.5%</td><td class="comp-col text-green-600 text-xs">-1.8pp</td><td>1.4%</td><td class="comp-col text-gray-400 text-xs">0pp</td><td>0.8%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="253741"><td class="pl-6 text-xs">1D 2Parks+Premier+VIP</td><td class="text-xs">No cancel</td><td>12.3%</td><td class="comp-col text-red-600 font-semibold text-xs">+3.3pp</td><td>4.2%</td><td class="comp-col text-red-600 font-semibold text-xs">+2.8pp</td><td>4.1%</td><td><span class="tp tp-bd">Action!</span></td></tr>
+        <tr class="activity-child" data-activity="supply-disneyland" data-pkg="567123"><td class="pl-6 text-xs">Annual Pass Holder 20% — 1D 2Parks</td><td class="text-xs">No cancel</td><td>5.2%</td><td class="comp-col text-green-600 text-xs">-3.1pp</td><td>1.1%</td><td class="comp-col text-green-600 text-xs">-0.5pp</td><td>0.6%</td><td><span class="tp tp-ok">✓ OK</span></td></tr>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
@@ -586,27 +552,29 @@
       </div>
     </div>
     <table class="rpt-tbl" id="rate-table">
-      <thead><tr><th>Activity Name</th><th>Package Name</th><th>Period</th><th>Discount</th><th>Sales</th><th>% to AID Sales</th><th>Units</th></tr></thead>
+      <thead><tr><th>Activity / Package</th><th>Period</th><th>Discount</th><th>Sales</th><th>% to AID Sales</th><th>Units</th></tr></thead>
       <tbody>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">App Exclusive — 1D 2Parks</td><td class="text-xs">Jan–Mar</td><td><span class="badge badge-nu text-xs">No cost</span></td><td class="text-black font-semibold">$152K</td><td><strong>9.4%</strong></td><td>5,400</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">6% off — KR/JP/TW/CN/HK</td><td class="text-xs">May–Jul</td><td><span class="badge badge-dn text-xs">6% off</span></td><td class="text-black font-semibold">$155K</td><td><strong>9.6%</strong></td><td>729</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">LNY Flash — 1D 1Park</td><td class="text-xs">Jan 20–Feb 5</td><td><span class="badge badge-dn text-xs">Flash</span></td><td class="text-black font-semibold">$98K</td><td><strong>6.1%</strong></td><td>2,840</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">2% off All — 1D 2Parks</td><td class="text-xs">May 6–27</td><td><span class="badge badge-dn text-xs">2% off</span></td><td class="text-black font-semibold">$104K</td><td><strong>6.4%</strong></td><td>162</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Early Bird 15% — 1D 2Parks</td><td class="text-xs">Jan 1–15</td><td><span class="badge badge-dn text-xs">15% off</span></td><td class="text-black font-semibold">$45K</td><td><strong>2.8%</strong></td><td>136</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Member Day 10% — 1D 1Park</td><td class="text-xs">Mar 1–31</td><td><span class="badge badge-dn text-xs">10% off</span></td><td class="text-black font-semibold">$78K</td><td><strong>4.8%</strong></td><td>892</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Flash Sale 20% — 1D 2Parks</td><td class="text-xs">Apr 15–22</td><td><span class="badge badge-dn text-xs">20% off</span></td><td class="text-black font-semibold">$67K</td><td><strong>4.2%</strong></td><td>524</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Bundle Save 8% — 1D+Meal</td><td class="text-xs">Feb–Jun</td><td><span class="badge badge-nu text-xs">8% off</span></td><td class="text-black font-semibold">$52K</td><td><strong>3.2%</strong></td><td>687</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Weekend Special 5% — 1D 2Parks</td><td class="text-xs">May–Aug</td><td><span class="badge badge-nu text-xs">5% off</span></td><td class="text-black font-semibold">$41K</td><td><strong>2.5%</strong></td><td>412</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Summer Kickoff 12% — 1D 1Park</td><td class="text-xs">Jun 1–15</td><td><span class="badge badge-dn text-xs">12% off</span></td><td class="text-black font-semibold">$38K</td><td><strong>2.4%</strong></td><td>356</td></tr>
-        <tr><td class="text-xs font-semibold" style="color:#000000">Disneyland Paris</td><td class="text-xs font-semibold">Halloween Special 18% — 1D 2Parks</td><td class="text-xs">Oct 1–31</td><td><span class="badge badge-dn text-xs">18% off</span></td><td class="text-black font-semibold">$35K</td><td><strong>2.2%</strong></td><td>298</td></tr>
+        <tr class="activity-header" data-activity="rate-disneyland" onclick="toggleActivityRow(this)"><td class="cursor-pointer"><span class="activity-toggle">▼</span> <strong>Disneyland Paris</strong></td><td class="text-gray-400">-</td><td class="text-gray-400">-</td><td class="font-bold">$765K</td><td><strong>100%</strong></td><td>11,436</td></tr>
+        <tr class="activity-child" data-activity="rate-disneyland"><td class="pl-6 text-xs">App Exclusive — 1D 2Parks</td><td class="text-xs">Jan–Mar</td><td><span class="badge badge-nu text-xs">No cost</span></td><td class="text-black font-semibold">$183K</td><td><strong>24%</strong></td><td>3,450</td></tr>
+        <tr class="activity-child" data-activity="rate-disneyland"><td class="pl-6 text-xs">6% off — KR/JP/TW/CN/HK</td><td class="text-xs">May–Jul</td><td><span class="badge badge-dn text-xs">6% off</span></td><td class="text-black font-semibold">$187K</td><td><strong>24%</strong></td><td>1,120</td></tr>
+        <tr class="activity-child" data-activity="rate-disneyland"><td class="pl-6 text-xs">LNY Flash — 1D 1Park</td><td class="text-xs">Jan 20–Feb 5</td><td><span class="badge badge-dn text-xs">Flash</span></td><td class="text-black font-semibold">$118K</td><td><strong>15%</strong></td><td>4,100</td></tr>
+        <tr class="activity-child" data-activity="rate-disneyland"><td class="pl-6 text-xs">2% off All — 1D 2Parks</td><td class="text-xs">May 6–27</td><td><span class="badge badge-dn text-xs">2% off</span></td><td class="text-black font-semibold">$125K</td><td><strong>16%</strong></td><td>270</td></tr>
+        <tr class="activity-child" data-activity="rate-disneyland"><td class="pl-6 text-xs">Early Bird 15% — 1D 2Parks</td><td class="text-xs">Jan 1–15</td><td><span class="badge badge-dn text-xs">15% off</span></td><td class="text-black font-semibold">$54K</td><td><strong>7%</strong></td><td>210</td></tr>
+        <tr class="activity-child" data-activity="rate-disneyland"><td class="pl-6 text-xs">Member Day 10% — 1D 1Park</td><td class="text-xs">Mar 1–31</td><td><span class="badge badge-dn text-xs">10% off</span></td><td class="text-black font-semibold">$98K</td><td><strong>14%</strong></td><td>2,286</td></tr>
+        <tr class="activity-header" data-activity="rate-paris-plus" onclick="toggleActivityRow(this)"><td class="cursor-pointer"><span class="activity-toggle">▼</span> <strong>Disneyland Paris + Experiences</strong></td><td class="text-gray-400">-</td><td class="text-gray-400">-</td><td class="font-bold">$198K</td><td><strong>100%</strong></td><td>1,918</td></tr>
+        <tr class="activity-child" data-activity="rate-paris-plus"><td class="pl-6 text-xs">Flash Sale 20% — 1D 2Parks</td><td class="text-xs">Apr 15–22</td><td><span class="badge badge-dn text-xs">20% off</span></td><td class="text-black font-semibold">$67K</td><td><strong>34%</strong></td><td>524</td></tr>
+        <tr class="activity-child" data-activity="rate-paris-plus"><td class="pl-6 text-xs">Bundle Save 8% — 1D+Meal</td><td class="text-xs">Feb–Jun</td><td><span class="badge badge-nu text-xs">8% off</span></td><td class="text-black font-semibold">$52K</td><td><strong>26%</strong></td><td>687</td></tr>
+        <tr class="activity-child" data-activity="rate-paris-plus"><td class="pl-6 text-xs">Weekend Special 5% — 1D 2Parks</td><td class="text-xs">May–Aug</td><td><span class="badge badge-nu text-xs">5% off</span></td><td class="text-black font-semibold">$41K</td><td><strong>21%</strong></td><td>412</td></tr>
+        <tr class="activity-child" data-activity="rate-paris-plus"><td class="pl-6 text-xs">Summer Kickoff 12% — 1D 1Park</td><td class="text-xs">Jun 1–15</td><td><span class="badge badge-dn text-xs">12% off</span></td><td class="text-black font-semibold">$38K</td><td><strong>19%</strong></td><td>295</td></tr>
       </tbody>
     </table>
     <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
-      <div id="rate-pagination-info">Showing 1-10 of 11 rows</div>
+      <div id="rate-pagination-info">Showing 1-10 of 12 rows</div>
       <div class="flex gap-1">
         <button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed rate-prev-btn" disabled>Prev</button>
         <button class="px-2 py-1 border rounded bg-klook-orange text-white border-klook-orange rate-page-btn active" data-page="1">1</button>
-        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-400 cursor-not-allowed rate-next-btn">Next</button>
+        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-500 rate-page-btn" data-page="2">2</button>
+        <button class="px-2 py-1 border rounded bg-gray-50 text-gray-500 rate-next-btn">Next</button>
       </div>
     </div>
     <div class="ai-box ai-gr mt-3">💡 <strong>AI:</strong> App Exclusive = highest ROI at zero discount cost. 6% off APAC drove highest % to AID sales (9.6%).</div>
@@ -670,6 +638,8 @@ const ORIG_NAMES   = ['India','S. Korea','HK & Macau','Japan','Singapore','Taiwa
 const ORIG_COLORS  = ['#ff5b00','#e53935','#ff9800','#4caf50','#9c27b0','#00cbd1','#4d40cc','#8d6e63','#e91e63','#546e7a','#fb8c00','#bdbdbd'];
 const ORIG_CY_PCT  = [17,12,11,10,7,6,6,6,6,5,4,4];
 const ORIG_COMP_PCT= [14,22,18,11,5,6,4,5,6,6,4,3];
+const ORIG_SALES_PCT= [19,10,12,11,8,6,7,5,7,5,5,5];
+const ORIG_COMP_SALES_PCT= [16,20,16,12,6,5,5,4,7,6,4,3];
 
 const ORIG_MONTHLY=[
   [18,17,16,17,18,16,17,17,16], [14,13,12,11,10,12,11,12,13],
@@ -828,9 +798,14 @@ function buildUnitsChart(){
 }
 
 function buildOriginShare(){
+  const groupId = 'tg-origin-share';
+  const activeBtn = document.querySelector(`#${groupId} .tg-btn.active`);
+  const isSales = activeBtn && activeBtn.textContent === 'Sales';
+  const cyData = isSales ? ORIG_SALES_PCT : ORIG_CY_PCT;
+  const compData = isSales ? ORIG_COMP_SALES_PCT : ORIG_COMP_PCT;
   const revNames=[...ORIG_NAMES].reverse();
-  const revCy=[...ORIG_CY_PCT].reverse();
-  const revComp=[...ORIG_COMP_PCT].reverse();
+  const revCy=[...cyData].reverse();
+  const revComp=[...compData].reverse();
   initChart('chart-origin-share',{
     tooltip:{...TT,trigger:'axis'},
     legend:{show:false},
@@ -1065,6 +1040,10 @@ function applyFilters() {
 function setTG(btn,groupId){
   document.querySelectorAll(`#${groupId} .tg-btn`).forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  
+  if(groupId === 'tg-origin-share'){
+    buildOriginShare();
+  }
 }
 
 function toggleMs(ddId){
@@ -1124,6 +1103,20 @@ function togglePkgDd(ddId){
   const isOpen=dd.classList.contains('open');
   document.querySelectorAll('.pkg-dd-menu.open').forEach(d=>d.classList.remove('open'));
   if(!isOpen) dd.classList.add('open');
+}
+
+function toggleActivityRow(headerRow){
+  const activity = headerRow.dataset.activity;
+  const isCollapsed = headerRow.classList.contains('collapsed');
+  const children = document.querySelectorAll(`.activity-child[data-activity="${activity}"]`);
+  
+  if(isCollapsed){
+    headerRow.classList.remove('collapsed');
+    children.forEach(child => child.classList.remove('hidden'));
+  } else {
+    headerRow.classList.add('collapsed');
+    children.forEach(child => child.classList.add('hidden'));
+  }
 }
 
 function filterB2BTable(cb,mode){
