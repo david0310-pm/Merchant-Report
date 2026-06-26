@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klook Merchant Insight Report - Hotel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        klook: {
+                            orange: '#ff5b00',
+                            purple: '#4d40cc',
+                            cyan: '#00cbd1',
+                            'dark-yellow': '#ffc200',
+                            'light-yellow': '#ffe131',
+                            indigo: '#2e2ead',
+                            'light-purple': '#887bf1',
+                            'dark-cyan': '#00afaf',
+                            'light-cyan': '#21e0e0',
+                            grey: '#212121'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="https://unpkg.com/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #212121; }
+        .chart-container { height: 350px; width: 100%; }
+        .filter-input { border: 1px solid #e5e7eb; border-radius: 4px; padding: 6px 10px; font-size: 13px; color: #374151; outline: none; transition: border-color 0.2s; background-color: white;}
+        .filter-input:focus { border-color: #ff5b00; }
+        .filter-input:disabled { cursor: not-allowed; background-color: #f3f4f6; }
+        #compsetHotels { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: none; }
+        .filter-label { font-size: 13px; color: #4b5563; white-space: nowrap; margin-right: 8px; font-weight: 500;}
+        .filter-row { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; transition: all 0.3s ease-in-out; }
+        .filter-group { display: flex; align-items: center; }
+        /* 自定义时间选择器组合样式 */
+        .date-combo { display: flex; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden; background: white; }
+        .date-combo select { border: none; background: #f9fafb; padding: 6px 10px; font-size: 13px; outline: none; border-right: 1px solid #e5e7eb; cursor: pointer; }
+        .date-combo input { border: none; padding: 6px 10px; font-size: 13px; outline: none; }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
+        .chart-tag { display:inline-block; font-size:10px; font-weight:700; color:#15803d; background:#dcfce7; padding:1px 6px; border-radius:5px; margin-left:6px; vertical-align:middle; }
+        .basis-btn { background:#fff; color:#888; border:none; cursor:pointer; border-right:1px solid #e5e7eb; }
+        .basis-btn:last-child { border-right:none; }
+        .basis-btn.active { background:#ff5b00; color:#fff; }
+        .blockable { position:relative; }
+        .stay-overlay { display:none; position:absolute; inset:0; flex-direction:column; align-items:center; justify-content:center; text-align:center; background:rgba(249,250,251,0.78); border-radius:8px; z-index:5; padding:20px; }
+        .stay-overlay .switch-link { color:#ff5b00; font-weight:700; cursor:pointer; text-decoration:underline; }
+        body.stay-mode .blockable .chart-container { filter:grayscale(1) opacity(0.32); pointer-events:none; }
+        body.stay-mode .blockable .stay-overlay { display:flex; }
+        .metric-seg { display:inline-flex; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+        .metric-seg button { border:none; background:#fff; color:#888; font-size:12px; font-weight:600; padding:5px 14px; cursor:pointer; font-family:inherit; }
+        .metric-seg button.active { background:#ff5b00; color:#fff; }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm border-l-4 border-klook-orange">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-klook-orange rounded font-bold text-white flex items-center justify-center text-lg">K</div>
+            <h1 class="text-2xl font-bold text-klook-grey">Merchant Insight Report - Hotel</h1>
+        </div>
+        <button onclick="openExportModal()" class="bg-klook-orange hover:bg-[#e04f00] text-white font-medium py-2 px-5 rounded transition shadow-sm flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Export PDF
+        </button>
+    </div>
+
+    <div class="bg-white p-5 rounded-lg shadow-sm mb-6">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h2 class="text-lg font-semibold text-klook-grey">Global Filters</h2>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Time |<span class="chart-tag">M12</span></span>
+                <div class="filter-group">
+                    <span class="filter-label">Date Basis:</span>
+                    <div class="inline-flex border border-gray-200 rounded overflow-hidden">
+                        <button type="button" data-basis="book" class="basis-btn px-3 py-1.5 text-xs font-semibold">Book Date</button>
+                        <button type="button" data-basis="stay" class="basis-btn px-3 py-1.5 text-xs font-semibold">Stay Date</button>
+                    </div>
+                </div>
+                <div class="filter-group ml-4">
+                    <span class="filter-label basis-label">Book Date:</span>
+                    <input type="date" class="filter-input">
+                    <span class="mx-2 text-gray-400">~</span>
+                    <input type="date" class="filter-input">
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Demand |</span>
+                <div class="filter-group">
+                    <span class="filter-label">Origin:</span>
+                    <select class="filter-input w-32"><option>All</option><option>Japan</option><option>Hong Kong</option><option>South Korea</option></select>
+                </div>
+                <div class="filter-group ml-4">
+                    <span class="filter-label">2C/2B:</span>
+                    <select class="filter-input w-24"><option>All</option><option>2C</option><option>2B</option></select>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Supplier |</span>
+                <div class="filter-group">
+                    <span class="filter-label">Hotel_supplier_type:</span>
+                    <select class="filter-input w-32"><option>All</option><option>API</option><option>Direct</option><option>Agent</option></select>
+                </div>
+                <div class="filter-group ml-4">
+                    <span class="filter-label text-klook-purple">Master Hotel ID:</span>
+                    <select id="masterHotelId" class="filter-input w-48 border-klook-purple"><option selected>1001 - Greet Inn</option><option>1002 - Just Sleep</option></select>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="font-medium text-klook-grey w-24">Compset |</span>
+                <div class="filter-group">
+                    <span class="filter-label">Compset Hotels:</span>
+                    <select id="compsetHotels" class="filter-input w-48" disabled><option>Default Compset</option><option>Custom Compset</option></select>
+                </div>
+            </div>
+            
+            <div class="flex justify-end items-center pt-4 border-t mt-2">
+                <div class="flex gap-3">
+                    <button class="bg-white hover:bg-gray-50 text-klook-grey font-medium py-1.5 px-6 rounded transition text-sm border border-gray-300">Reset</button>
+                    <button class="bg-klook-orange hover:bg-[#e04f00] text-white font-medium py-1.5 px-6 rounded transition text-sm shadow-sm">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-cyan pl-2">AI Insights</h2>
+        <div class="bg-white p-5 rounded-lg shadow-sm mb-6 border-t-2 border-klook-orange">
+            <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-klook-orange rounded-full flex items-center justify-center text-white font-bold">1</div>
+                    <div>
+                        <h3 class="font-semibold text-klook-grey mb-1">Booking Trend Analysis</h3>
+                        <p class="text-gray-600 text-sm">Your bookings have increased by 56.6% compared to the previous period, significantly outperforming the market average.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-klook-orange rounded-full flex items-center justify-center text-white font-bold">2</div>
+                    <div>
+                        <h3 class="font-semibold text-klook-grey mb-1">Cancellation Rate Alert</h3>
+                        <p class="text-gray-600 text-sm">Your cancellation rate is 48.8%, which is higher than both compset (34.9%) and city average (29.6%). Consider implementing retention strategies.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-klook-orange rounded-full flex items-center justify-center text-white font-bold">3</div>
+                    <div>
+                        <h3 class="font-semibold text-klook-grey mb-1">Revenue Optimization</h3>
+                        <p class="text-gray-600 text-sm">Gross sales have grown by 70.5%, driven by both increased bookings and ADR improvement. Continue focusing on high-demand periods.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-purple pl-2">Module 1: Hotel Performance Summary</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-6">
+            <div class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-1">Gross Bookings</div>
+                <div class="text-2xl font-bold text-klook-grey mb-1">2,742</div>
+                <div class="text-green-500 font-bold text-xs">+56.6% YOY</div>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-1">Gross RNs</div>
+                <div class="text-2xl font-bold text-klook-grey mb-1">5,421</div>
+                <div class="text-green-500 font-bold text-xs">+8.7% YOY</div>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-1">Gross ADR</div>
+                <div class="text-2xl font-bold text-klook-grey mb-1">$90</div>
+                <div class="text-green-500 font-bold text-xs">+9.0% YOY</div>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-1">Gross Sales</div>
+                <div class="text-2xl font-bold text-klook-grey mb-1">$401K</div>
+                <div class="text-green-500 font-bold text-xs">+70.5% YOY</div>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-1">Booking Cancellation Rate<span class="chart-tag">M11</span></div>
+                <div class="text-2xl font-bold text-klook-grey mb-1">48.8%</div>
+                <div class="text-green-500 font-bold text-xs">▲ -2.4% YOY</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-md font-semibold text-klook-grey mr-2">Core Metric Trend</h3>
+                        <select class="filter-input w-32 bg-gray-50"><option selected>Gross Sales</option><option>Gross Bookings</option><option>Gross RNs</option><option>Gross ADR</option></select>
+                        <span class="text-gray-400">vs</span>
+                        <select class="filter-input w-32 bg-gray-50"><option selected>Gross Bookings</option><option>Gross Sales</option><option>Gross RNs</option><option>Gross ADR</option></select>
+                    </div>
+                    <select class="filter-input w-28 bg-gray-50">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                <div id="chart-core-trend" class="chart-container"></div>
+            </div>
+
+            <!-- ===== M1: YoY comparison charts (2x2) ===== -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-md font-semibold text-klook-grey">Room Nights — YoY<span class="chart-tag">M1</span></h3>
+                        <div class="metric-seg"><button class="active">Gross RNs</button><button>Net RNs</button></div>
+                    </div>
+                    <select class="filter-input w-24 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+                </div>
+                <div id="chart-m1-rn" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-md font-semibold text-klook-grey">Sales — YoY<span class="chart-tag">M1</span></h3>
+                        <div class="metric-seg"><button class="active">Gross Sales</button><button>Net Sales</button></div>
+                    </div>
+                    <select class="filter-input w-24 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+                </div>
+                <div id="chart-m1-sales" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-md font-semibold text-klook-grey">Bookings — YoY<span class="chart-tag">M1</span></h3>
+                        <div class="metric-seg"><button class="active">Gross Bookings</button><button>Net Bookings</button></div>
+                    </div>
+                    <select class="filter-input w-24 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+                </div>
+                <div id="chart-m1-bookings" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-md font-semibold text-klook-grey">ADR — YoY<span class="chart-tag">M1</span></h3>
+                    <select class="filter-input w-24 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+                </div>
+                <div id="chart-m1-adr" class="chart-container"></div>
+            </div>
+
+            <!-- ===== M2: Origin charts (2x2) ===== -->
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-md font-semibold text-klook-grey">Origin Trend Chart<span class="chart-tag">M2</span></h3>
+                        <select class="filter-input w-32 py-1"><option selected>Gross Sales</option><option>Gross RNs</option><option>Gross Bookings</option><option>Net RNs</option><option>Net Sales</option><option>Net Bookings</option></select>
+                    </div>
+                    <select class="filter-input w-24 py-1"><option>Daily</option><option>Weekly</option><option selected>Monthly</option><option>Quarterly</option></select>
+                </div>
+                <div id="chart-m2-origin-trend" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <h3 class="text-md font-semibold mb-4 text-klook-grey">Origin x Lead Time<span class="chart-tag">M2</span></h3>
+                <div id="chart-m2-origin-leadtime" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <h3 class="text-md font-semibold mb-4 text-klook-grey">Origin x LOS<span class="chart-tag">M2</span></h3>
+                <div id="chart-m2-origin-los" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-purple">
+                <h3 class="text-md font-semibold mb-4 text-klook-grey">Origin x ADR<span class="chart-tag">M2</span></h3>
+                <div id="chart-m2-origin-adr" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-purple blockable">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Traffic and Booking Trend<span class="chart-tag">M3</span></h3>
+                    <select class="filter-input w-28 py-1">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                <div id="chart-traffic-booking" class="chart-container"></div>
+                <div class="stay-overlay"><div class="text-3xl mb-2">🚦</div><div class="text-sm text-gray-700 max-w-md">Session data can't be shown by check-in date — switch to <span class="switch-link">Book Date</span> view to see it.</div></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-purple">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-md font-semibold text-klook-grey">Room Night Trend<span class="chart-tag">M5</span></h3>
+                    <select class="filter-input w-28 py-1">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                <div id="chart-room-night" class="chart-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-xl font-bold mb-4 text-klook-grey border-l-4 border-klook-cyan pl-2">Module 2: Hotel vs Compset / Hotel vs City Comparison</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="border border-gray-200 rounded-xl p-6 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-2">Overall City Rank Position<span class="chart-tag">M4</span></div>
+                <div class="text-4xl font-bold text-klook-grey">60</div>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-6 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-2">Inbound City Rank Position<span class="chart-tag">M4</span></div>
+                <div class="text-4xl font-bold text-klook-grey">50</div>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-6 bg-white shadow-sm flex flex-col items-center justify-center text-center">
+                <div class="text-klook-grey font-medium text-sm mb-2">Domestic City Rank Position<span class="chart-tag">M4</span></div>
+                <div class="text-4xl font-bold text-klook-grey">10</div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
+            <!-- Category Headers -->
+            <div class="flex border-b border-gray-200 bg-gray-50">
+                <div class="w-40"></div>
+                <div class="flex-1 grid grid-cols-5 gap-2 text-center">
+                    <div class="col-span-4 text-xs font-bold text-gray-500 tracking-wider">GROSS METRICS</div>
+                    <div class="col-span-1 text-xs font-bold text-gray-500 tracking-wider">CANCELLATION</div>
+                </div>
+            </div>
+            
+            <!-- Header with icons and labels -->
+            <div class="flex items-center border-b border-gray-200 p-3 bg-white">
+                <div class="w-40 font-medium text-gray-600 text-xs">Level<span class="chart-tag">M6</span></div>
+                <div class="flex-1 grid grid-cols-5 gap-2 text-center text-xs font-medium">
+                    <!-- Gross Metrics -->
+                    <div class="flex flex-col items-center bg-blue-100 rounded p-2">
+                        <div class="w-4 h-4 mb-1 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" /></svg></div>
+                        <div class="text-blue-600 font-semibold">Gross Bookings</div>
+                    </div>
+                    <div class="flex flex-col items-center bg-blue-100 rounded p-2">
+                        <div class="w-4 h-4 mb-1 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12 3.545V21m6-17.455h-4.5" /></svg></div>
+                        <div class="text-blue-600 font-semibold">Gross RNs</div>
+                    </div>
+                    <div class="flex flex-col items-center bg-blue-100 rounded p-2">
+                        <div class="w-4 h-4 mb-1 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg></div>
+                        <div class="text-blue-600 font-semibold">Gross ADR</div>
+                    </div>
+                    <div class="flex flex-col items-center bg-blue-100 rounded p-2">
+                        <div class="w-4 h-4 mb-1 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /></svg></div>
+                        <div class="text-blue-600 font-semibold">Gross Sales</div>
+                    </div>
+                    <!-- Cancellation -->
+                    <div class="flex flex-col items-center bg-red-100 rounded p-2">
+                        <div class="w-4 h-4 mb-1 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" /></svg></div>
+                        <div class="text-red-600 font-semibold">Cancel Ratio</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hotel Level Row -->
+            <div class="flex items-center p-3 bg-blue-600 border-b border-blue-100">
+                <div class="w-40 font-bold text-white">Hotel Level</div>
+                <div class="flex-1 grid grid-cols-5 gap-2 text-center text-xs">
+                    <div class="font-bold text-white"><span class="text-green-300">↑ +41.2% YOY</span></div>
+                    <div class="font-bold text-white"><span class="text-green-300">↑ +33.3% YOY</span></div>
+                    <div class="font-bold text-white">$53<br><span class="text-green-300">↑ +6.9% YOY</span></div>
+                    <div class="font-bold text-white"><span class="text-green-300">↑ +42.5% YOY</span></div>
+                    <div class="font-bold text-white">48.8%<br><span class="text-green-300">▲ -2.4% YOY</span></div>
+                </div>
+            </div>
+            
+            <!-- Compset Avg Row -->
+            <div class="flex items-center p-3 bg-green-50 border-b border-green-100">
+                <div class="w-40 font-bold text-green-700">Compset avg</div>
+                <div class="flex-1 grid grid-cols-5 gap-2 text-center text-xs">
+                    <div class="font-bold"><span class="text-green-500">↑ +12.5% YOY</span></div>
+                    <div class="font-bold"><span class="text-green-500">↑ +10.1% YOY</span></div>
+                    <div class="font-bold">$48<br><span class="text-red-500">↓ -2.4% YOY</span></div>
+                    <div class="font-bold"><span class="text-green-500">↑ +8.2% YOY</span></div>
+                    <div class="font-bold">34.9%<br><span class="text-green-500">▲ -1.5% YOY</span></div>
+                </div>
+            </div>
+            
+            <!-- City Level Row -->
+            <div class="flex items-center p-3 bg-orange-50">
+                <div class="w-40 font-bold text-orange-700">City Level</div>
+                <div class="flex-1 grid grid-cols-5 gap-2 text-center text-xs">
+                    <div class="font-bold"><span class="text-red-500">↓ -3.1% YOY</span></div>
+                    <div class="font-bold"><span class="text-gray-400">+0.0% YOY</span></div>
+                    <div class="font-bold">$45<br><span class="text-green-500">↑ +1.5% YOY</span></div>
+                    <div class="font-bold"><span class="text-red-500">↓ -1.2% YOY</span></div>
+                    <div class="font-bold">29.6%<br><span class="text-red-500">▼ +1.2% YOY</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <!-- Original Room Night Trend -->
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-cyan">
+                <div class="mb-4">
+                    <h2 class="text-md font-semibold text-klook-grey">Room Night Trend (Hotel vs Compset vs City)</h2>
+                </div>
+                <div id="chart-monthly-rn" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-cyan blockable">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-md font-semibold text-klook-grey">Session Trend<span class="chart-tag">M12</span></h2>
+                    <select class="border border-gray-300 rounded-md py-1 px-3 text-sm focus:outline-none focus:border-klook-cyan">
+                        <option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly" selected>Monthly</option><option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                <div id="chart-session" class="chart-container"></div>
+                <div class="stay-overlay"><div class="text-3xl mb-2">🚦</div><div class="text-sm text-gray-700 max-w-md">Session data can't be shown by check-in date — switch to <span class="switch-link">Book Date</span> view to see it.</div></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Origin Market Share by Gross Bookings</h2>
+                <div id="chart-origin" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Length of Stay (LOS) Composition by Gross Bookings</h2>
+                <div id="chart-los" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Lead Time Distribution by Gross Bookings</h2>
+                <div id="chart-leadtime" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm col-span-2 border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross Bookings by PAX<span class="chart-tag">M7</span></h2>
+                <div id="chart-m7-pax-stack" style="height:220px;width:100%"></div>
+                <div class="overflow-x-auto mt-4">
+                    <table class="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-500">
+                                <th class="px-4 py-3 text-left font-semibold tracking-wide">LEVEL</th>
+                                <th class="px-4 py-3 text-center font-semibold tracking-wide">SOLO</th>
+                                <th class="px-4 py-3 text-center font-semibold tracking-wide">2 PAX</th>
+                                <th class="px-4 py-3 text-center font-semibold tracking-wide">3-4 PAX</th>
+                                <th class="px-4 py-3 text-center font-semibold tracking-wide">FAMILY</th>
+                                <th class="px-4 py-3 text-center font-semibold tracking-wide">&gt;=5 PAX</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t border-gray-200">
+                                <td class="px-4 py-4 font-bold text-klook-purple bg-indigo-50 border-l-4 border-klook-purple">Hotel Level</td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">17.1%</div><div class="text-gray-400 text-xs mt-1">– 0.0% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">60.0%</div><div class="text-gray-400 text-xs mt-1">– 0.0% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">17.1%</div><div class="text-green-500 text-xs mt-1">↑ +1100.0% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">5.7%</div><div class="text-gray-400 text-xs mt-1">– 0.0% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">0.0%</div><div class="text-gray-400 text-xs mt-1">– 0.0% YoY</div></td>
+                            </tr>
+                            <tr class="border-t border-gray-200">
+                                <td class="px-4 py-4 font-bold text-green-700 bg-green-50 border-l-4 border-green-500">Compset avg</td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">3.8%</div><div class="text-green-500 text-xs mt-1">↑ +176.9% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">69.8%</div><div class="text-green-500 text-xs mt-1">↑ +183.8% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">15.3%</div><div class="text-green-500 text-xs mt-1">↑ +239.5% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">9.9%</div><div class="text-green-500 text-xs mt-1">↑ +126.2% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">1.2%</div><div class="text-gray-400 text-xs mt-1">– 0.0% YoY</div></td>
+                            </tr>
+                            <tr class="border-t border-gray-200">
+                                <td class="px-4 py-4 font-bold text-orange-700 bg-orange-50 border-l-4 border-klook-orange">City Level</td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">10.0%</div><div class="text-green-500 text-xs mt-1">↑ +169.6% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">65.0%</div><div class="text-green-500 text-xs mt-1">↑ +76.0% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">13.0%</div><div class="text-green-500 text-xs mt-1">↑ +112.4% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">11.2%</div><div class="text-green-500 text-xs mt-1">↑ +65.2% YoY</div></td>
+                                <td class="px-4 py-4 text-center"><div class="font-bold text-klook-grey">0.8%</div><div class="text-green-500 text-xs mt-1">↑ +112.5% YoY</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross Bookings in Past 4 Weeks (vs Compset AVG)<span class="chart-tag">M8</span></h2>
+                <div id="chart-past4weeks-vs-avg" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross Bookings in Upcoming 5 Months (vs Compset AVG)<span class="chart-tag">M8</span></h2>
+                <div id="chart-future5months-vs-avg" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross ADR in Past 4 Weeks (vs Compset AVG)<span class="chart-tag">M8</span></h2>
+                <div id="chart-adr-past4-vs-avg" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross ADR in Upcoming 5 Months (vs Compset AVG)<span class="chart-tag">M8</span></h2>
+                <div id="chart-adr-future5-vs-avg" class="chart-container"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross RNs in Past 4 Weeks (vs Compset AVG)<span class="chart-tag">M8</span></h2>
+                <div id="chart-nrn-past4-vs-avg" class="chart-container"></div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border-t-2 border-klook-cyan">
+                <h2 class="text-md font-semibold mb-4 text-klook-grey">Gross RNs in Upcoming 5 Months (vs Compset AVG)<span class="chart-tag">M8</span></h2>
+                <div id="chart-nrn-future5-vs-avg" class="chart-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdfModal" class="fixed inset-0 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-lg font-bold text-klook-grey">Export Report to PDF</h3>
+                <button onclick="closeExportModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-500 mb-4">Select the modules and charts you want to include in the PDF export.</p>
+                
+                <div class="space-y-4 max-h-96 overflow-y-auto">
+                    <div>
+                        <label class="flex items-center gap-2 font-bold text-klook-grey mb-2">
+                            <input type="checkbox" checked class="w-4 h-4 text-klook-orange rounded focus:ring-klook-orange">
+                            Module 1: Hotel Performance Summary
+                        </label>
+                        <div class="pl-6 grid grid-cols-2 gap-2 text-sm text-gray-600">
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Key Summary</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Core Metric Trend</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Core Metric by Origin</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Destination Stacked Trend</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Traffic and Booking Trend</label>
+                        </div>
+                    </div>
+                    
+                    <hr class="border-gray-100">
+
+                    <div>
+                        <label class="flex items-center gap-2 font-bold text-klook-grey mb-2">
+                            <input type="checkbox" checked class="w-4 h-4 text-klook-orange rounded focus:ring-klook-orange">
+                            Module 2: Hotel vs Compset / City
+                        </label>
+                        <div class="pl-6 grid grid-cols-2 gap-2 text-sm text-gray-600">
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Key Summary</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Room Night Trend</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Session Trend</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Origin Market Share</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> LOS Composition</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Compset Bookings (4 Weeks)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Compset Bookings (4 Weeks vs Compset AVG)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Compset Check-ins (5 Months)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Compset Check-ins (5 Months vs Compset AVG)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> ADR in Past 4 Weeks</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> ADR in Past 4 Weeks (vs Compset AVG)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> ADR in Upcoming 5 Months</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> ADR in Upcoming 5 Months (vs Compset AVG)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> RN in Past 4 Weeks</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> RN in Past 4 Weeks (vs Compset AVG)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> RN in Upcoming 5 Months</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> RN in Upcoming 5 Months (vs Compset AVG)</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" checked> Booking Ranking</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+                <button onclick="closeExportModal()" class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100">Cancel</button>
+                <button onclick="downloadPDF()" class="px-4 py-2 bg-klook-orange text-white rounded hover:bg-[#e04f00]">Generate PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for echarts to be loaded
+        function initAllCharts() {
+            if (typeof echarts === 'undefined') {
+                console.log('Waiting for ECharts to load...');
+                setTimeout(initAllCharts, 200);
+                return;
+            }
+            
+            const klookPalette = ['#ff5b00', '#00cbd1', '#4d40cc', '#ffc200', '#00afaf', '#887bf1', '#ffe131', '#2e2ead'];
+
+            // ====== MODULE 1 CHARTS ======
+
+            // 3.2 Core Metric Trend
+            var chartCoreTrend = echarts.init(document.getElementById('chart-core-trend'));
+        chartCoreTrend.setOption({
+            color: ['#4d40cc', '#ff5b00'], 
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Gross Sales', 'Gross Bookings'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mar 01', 'Mar 02', 'Mar 03', 'Mar 04', 'Mar 05', 'Mar 06', 'Mar 07', 'Mar 08', 'Mar 09'] },
+            yAxis: [
+                { type: 'value', name: 'Gross Sales ($)', alignTicks: true },
+                { type: 'value', name: 'Gross Bookings', alignTicks: true }
+            ],
+            series: [
+                { name: 'Gross Sales', type: 'bar', data: [3200, 3400, 3100, 4500, 5200, 4800, 5100, 6000, 5800] },
+                { name: 'Gross Bookings', type: 'bar', yAxisIndex: 1, data: [150, 160, 140, 210, 250, 230, 240, 290, 270] }
+            ]
+        });
+
+        // ===== M1: YoY comparison charts =====
+        var M1_MONTHS = ['Jan-2026', 'Feb-2026', 'Mar-2026', 'Apr-2026', 'May-2026', 'Jun-2026'];
+        function makeYoY(domId, metricName, curColor, cur, prior, valFmt) {
+            var yoy = cur.map(function(v, i) { return prior[i] ? +(((v - prior[i]) / prior[i]) * 100).toFixed(1) : 0; });
+            var c = echarts.init(document.getElementById(domId));
+            c.setOption({
+                color: ['#d1d5db', curColor, '#4d40cc'],
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' },
+                    formatter: function(ps) {
+                        var i = ps[0].dataIndex;
+                        return ps[0].axisValue
+                            + '<br/>Prior Year: ' + valFmt(prior[i])
+                            + '<br/>Current Year: ' + valFmt(cur[i])
+                            + '<br/>YoY%: ' + yoy[i] + '%';
+                    } },
+                legend: { bottom: 0, data: ['Current Year', 'Prior Year', 'YoY%'] },
+                grid: { left: '3%', right: '4%', bottom: '20%', containLabel: true },
+                xAxis: { type: 'category', data: M1_MONTHS,
+                    axisLabel: {
+                        formatter: function(v, i) {
+                            var y = yoy[i], sty = y > 0 ? 'up' : (y < 0 ? 'dn' : 'flat'), arrow = y > 0 ? '▲' : (y < 0 ? '▼' : '–');
+                            return '{m|' + v + '}\n{' + sty + '|' + arrow + ' ' + Math.abs(y) + '%}';
+                        },
+                        rich: {
+                            m: { color: '#6b7280', lineHeight: 15 },
+                            up: { color: '#16a34a', fontWeight: 'bold', lineHeight: 16 },
+                            dn: { color: '#ef4444', fontWeight: 'bold', lineHeight: 16 },
+                            flat: { color: '#9ca3af', lineHeight: 16 }
+                        }
+                    } },
+                yAxis: [
+                    { type: 'value', name: metricName, alignTicks: true },
+                    { type: 'value', name: 'YoY%', position: 'right', axisLabel: { formatter: '{value}%' }, splitLine: { show: false }, alignTicks: true }
+                ],
+                series: [
+                    { name: 'Prior Year', type: 'bar', data: prior, label: { show: true, position: 'top', formatter: function(p) { return valFmt(p.value); }, fontSize: 9, color: '#9ca3af' } },
+                    { name: 'Current Year', type: 'bar', data: cur, label: { show: true, position: 'top', formatter: function(p) { return valFmt(p.value); }, fontSize: 9, color: curColor, fontWeight: 'bold' } },
+                    { name: 'YoY%', type: 'line', yAxisIndex: 1, data: yoy, symbolSize: 7, lineStyle: { width: 3 }, itemStyle: { color: '#4d40cc' } }
+                ]
+            });
+            return c;
+        }
+        var fmtInt = function(v) { return Math.round(v).toLocaleString(); };
+        var fmtK = function(v) { return '$' + Math.round(v / 1000) + 'K'; };
+        var fmtUsd = function(v) { return '$' + Math.round(v); };
+        var chartM1Rn = makeYoY('chart-m1-rn', 'Room Nights', '#ff5b00', [820, 910, 1040, 980, 1120, 760], [740, 800, 930, 890, 1000, 680], fmtInt);
+        var chartM1Sales = makeYoY('chart-m1-sales', 'Sales (USD)', '#4d40cc', [203000, 123000, 126000, 45000, 69000, 103000], [168000, 100000, 104000, 48000, 66000, 90000], fmtK);
+        var chartM1Bookings = makeYoY('chart-m1-bookings', 'Bookings', '#ff5b00', [150, 160, 210, 90, 140, 170], [130, 170, 180, 95, 135, 210], fmtInt);
+        var chartM1Adr = makeYoY('chart-m1-adr', 'ADR (USD)', '#4d40cc', [88, 92, 94, 96, 100, 140], [83, 88, 90, 99, 98, 150], fmtUsd);
+
+        // ===== M2: Origin charts =====
+        var M2_MONTHS = ['Jan-2026', 'Feb-2026', 'Mar-2026', 'Apr-2026', 'May-2026', 'Jun-2026'];
+
+        // chart1: Origin Trend — 100% stacked bar (origin % share by month)
+        var chartM2OriginTrend = echarts.init(document.getElementById('chart-m2-origin-trend'));
+        (function() {
+            var origins = [
+                { name: 'India', color: '#ff5b00', data: [34, 27, 34, 37, 45, 36] },
+                { name: 'Taiwan', color: '#2e2ead', data: [16, 15, 9, 9, 6, 9] },
+                { name: 'Philippines', color: '#ffc200', data: [9, 9, 11, 10, 11, 9] },
+                { name: 'Malaysia', color: '#00afaf', data: [5, 7, 7, 6, 6, 5] },
+                { name: 'Japan', color: '#4d40cc', data: [6, 5, 6, 5, 4, 3] },
+                { name: 'Hong Kong', color: '#887bf1', data: [6, 9, 9, 10, 7, 9] },
+                { name: 'Thailand', color: '#00cbd1', data: [4, 5, 5, 5, 6, 5] },
+                { name: 'Singapore', color: '#21e0e0', data: [5, 5, 6, 4, 5, 11] },
+                { name: 'United States', color: '#ffe131', data: [4, 4, 3, 3, 4, 3] }
+            ];
+            var others = M2_MONTHS.map(function(_, i) { var s = 0; origins.forEach(function(o) { s += o.data[i]; }); return Math.max(0, 100 - s); });
+            origins.push({ name: 'Others', color: '#9ca3af', data: others });
+            chartM2OriginTrend.setOption({
+                color: origins.map(function(o) { return o.color; }),
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: function(v) { return v + '%'; } },
+                legend: { bottom: 0, data: origins.map(function(o) { return o.name; }) },
+                grid: { left: '3%', right: '4%', bottom: '18%', top: '6%', containLabel: true },
+                xAxis: { type: 'category', data: M2_MONTHS },
+                yAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
+                series: origins.map(function(o) {
+                    return { name: o.name, type: 'bar', stack: 'origin', barWidth: '55%', data: o.data,
+                        label: { show: true, formatter: function(p) { return p.value >= 5 ? p.value + '%' : ''; }, color: '#fff', fontSize: 10, fontWeight: 'bold' } };
+                })
+            });
+        })();
+
+        // chart2-4: Origin × <metric> over time (month on x-axis, one line per origin)
+        function makeOriginTimeTrend(domId, yName, valFmt, lines) {
+            var c = echarts.init(document.getElementById(domId));
+            c.setOption({
+                color: lines.map(function(l) { return l.color; }),
+                tooltip: { trigger: 'axis', valueFormatter: valFmt },
+                legend: { bottom: 0, data: lines.map(function(l) { return l.name; }) },
+                grid: { left: '3%', right: '4%', bottom: '16%', top: '12%', containLabel: true },
+                xAxis: { type: 'category', boundaryGap: false, data: M2_MONTHS },
+                yAxis: { type: 'value', name: yName },
+                series: lines.map(function(l) {
+                    return { name: l.name, type: 'line', smooth: true, symbolSize: 5, data: l.data };
+                })
+            });
+            return c;
+        }
+        var chartM2OriginLeadtime = makeOriginTimeTrend('chart-m2-origin-leadtime', 'Avg Lead Time (days)',
+            function(v) { return v + ' d'; }, [
+            { name: 'India', color: '#ff5b00', data: [12, 13, 14, 13, 15, 14] },
+            { name: 'Taiwan', color: '#2e2ead', data: [8, 9, 8, 9, 8, 9] },
+            { name: 'Hong Kong', color: '#887bf1', data: [15, 16, 15, 17, 16, 16] },
+            { name: 'United States', color: '#ffe131', data: [28, 30, 29, 31, 30, 29] },
+            { name: 'Malaysia', color: '#00afaf', data: [18, 19, 18, 20, 19, 18] }
+        ]);
+        var chartM2OriginLos = makeOriginTimeTrend('chart-m2-origin-los', 'Avg LOS (nights)',
+            function(v) { return v + ' n'; }, [
+            { name: 'India', color: '#ff5b00', data: [2.1, 2.0, 2.2, 2.1, 2.3, 2.2] },
+            { name: 'Taiwan', color: '#2e2ead', data: [1.5, 1.6, 1.5, 1.6, 1.5, 1.6] },
+            { name: 'Hong Kong', color: '#887bf1', data: [2.0, 2.1, 2.0, 2.2, 2.1, 2.0] },
+            { name: 'United States', color: '#ffe131', data: [3.4, 3.5, 3.3, 3.6, 3.5, 3.4] },
+            { name: 'Malaysia', color: '#00afaf', data: [2.6, 2.7, 2.6, 2.8, 2.7, 2.6] }
+        ]);
+        var chartM2OriginAdr = makeOriginTimeTrend('chart-m2-origin-adr', 'ADR (USD)',
+            function(v) { return '$' + v; }, [
+            { name: 'India', color: '#ff5b00', data: [110, 112, 115, 113, 118, 116] },
+            { name: 'Taiwan', color: '#2e2ead', data: [118, 120, 119, 121, 118, 120] },
+            { name: 'Hong Kong', color: '#887bf1', data: [140, 142, 141, 143, 142, 140] },
+            { name: 'United States', color: '#ffe131', data: [185, 188, 186, 190, 188, 186] },
+            { name: 'Malaysia', color: '#00afaf', data: [130, 132, 131, 134, 132, 130] }
+        ]);
+
+        // 3.5 Traffic and Booking Trend
+        var chartTrafficBooking = echarts.init(document.getElementById('chart-traffic-booking'));
+        chartTrafficBooking.setOption({
+            color: ['#ff5b00', '#00afaf'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+            legend: { bottom: 0, data: ['Session', 'Gross Bookings'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'], axisLabel: { rotate: 45 } },
+            yAxis: [
+                { type: 'value', name: 'Session', axisLabel: { show: false }, axisTick: { show: false }, axisLine: { show: false }, splitLine: { show: false }, alignTicks: true },
+                { type: 'value', name: 'Gross Bookings', alignTicks: true }
+            ],
+            series: [
+                { name: 'Session', type: 'bar', data: [1200, 1300, 1400, 2800, 2500, 2100, 1800, 2200] },
+                { name: 'Gross Bookings', type: 'line', yAxisIndex: 1, data: [150, 160, 180, 350, 380, 290, 240, 310], symbolSize: 8, lineStyle: { width: 3, type: 'smooth' } }
+            ]
+        });
+
+        // Room Night Trend
+        var chartRoomNight = echarts.init(document.getElementById('chart-room-night'));
+        chartRoomNight.setOption({
+            color: ['#4d40cc', '#ff5b00'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Direct RNs', 'Direct Capture Rate'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+            yAxis: [
+                { type: 'value', name: 'Direct RNs', position: 'left', alignTicks: true },
+                { type: 'value', name: 'Direct Capture Rate', position: 'right', axisLabel: { formatter: '{value}%' }, alignTicks: true }
+            ],
+            series: [
+                { name: 'Direct RNs', type: 'bar', data: [480, 500, 520, 540, 552, 560, 580, 592, 608, 624, 640, 656] },
+                { name: 'Direct Capture Rate', type: 'line', yAxisIndex: 1, data: [38, 39, 40, 40, 41, 40, 42, 41, 42, 43, 42, 41], symbolSize: 6, lineStyle: { width: 3 } }
+            ]
+        });
+
+        // ====== MODULE 2 CHARTS ======
+
+        var marketShareData = [1.9, 2.0, 2.1, 2.2, 2.2, 2.3, 2.1, 2.1, 2.3, 2.6, 2.4, 1.9];
+        var myChartMonthly = echarts.init(document.getElementById('chart-monthly-rn'));
+        myChartMonthly.setOption({
+            color: ['#2e2ead', '#ffc200', '#887bf1', '#00cbd1'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+            legend: { 
+                bottom: 0, 
+                data: ['Hotel Gross RNs', 'Market Share (%)', 'Compset Gross RNs', 'City Gross RNs'],
+                formatter: function(name) {
+                    if (name === 'Market Share (%)') {
+                        return '{msSquare|} ' + name;
+                    }
+                    return name;
+                },
+                textStyle: {
+                    rich: {
+                        msSquare: {
+                            backgroundColor: '#ffc200',
+                            width: 12,
+                            height: 12,
+                            borderRadius: 4,
+                            align: 'center',
+                            lineHeight: 12
+                        }
+                    }
+                }
+            },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: [{ 
+                type: 'category', 
+                data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep (Current)', 'Oct', 'Nov', 'Dec'],
+                axisLabel: { 
+                    formatter: function(value, index) {
+                        return value + '\n{ms|' + marketShareData[index] + '%}';
+                    },
+                    rich: {
+                        ms: {
+                            backgroundColor: '#ffc200',
+                            color: '#212121',
+                            fontSize: 10,
+                            padding: [2, 4],
+                            borderRadius: 2,
+                            lineHeight: 14
+                        }
+                    }
+                }
+            }],
+            yAxis: [
+                { type: 'value', name: 'RN (by Check-in Date)', nameTextStyle: { align: 'left' }, axisLabel: { show: false }, axisTick: { show: false }, axisLine: { show: false }, alignTicks: true },
+                { type: 'value', name: '', position: 'right', axisLabel: { show: false }, axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false }, alignTicks: true }
+            ],
+            series: [
+                { name: 'Hotel Gross RNs', type: 'bar', data: [1200, 1250, 1300, 1350, 1380, 1400, 1408, 1451, 1455, 1501, 1611, 1640], itemStyle: { color: '#ff5b00' } },
+                { name: 'Market Share (%)', type: 'line', yAxisIndex: 1, data: [1.9, 2.0, 2.1, 2.2, 2.2, 2.3, 2.1, 2.1, 2.3, 2.6, 2.4, 1.9], symbol: 'none', lineStyle: { width: 0 }, label: { show: false } },
+                { name: 'Compset Gross RNs', type: 'line', data: [280, 285, 290, 295, 298, 300, 300, 310, 305, 315, 320, 330], symbolSize: 6, lineStyle: { width: 3 } },
+                { name: 'City Gross RNs', type: 'line', yAxisIndex: 1, data: [1400, 1450, 1480, 1520, 1540, 1560, 1500, 1600, 1550, 1650, 1700, 1750], symbolSize: 6, lineStyle: { width: 3 } }
+            ]
+        });
+
+        var marketShareSessionData = [3.1, 3.2, 3.3, 3.6, 3.4, 2.9];
+        var chartSession = echarts.init(document.getElementById('chart-session'));
+        chartSession.setOption({
+            color: ['#2e2ead', '#ffc200', '#00cbd1', '#887bf1'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+            legend: { 
+                bottom: 0, 
+                data: ['Hotel Session', 'Market Share (%)', 'Compset Session', 'City Session'],
+                formatter: function(name) {
+                    if (name === 'Market Share (%)') {
+                        return '{msSquare|} ' + name;
+                    }
+                    return name;
+                },
+                textStyle: {
+                    rich: {
+                        msSquare: {
+                            backgroundColor: '#ffc200',
+                            width: 12,
+                            height: 12,
+                            borderRadius: 4,
+                            align: 'center',
+                            lineHeight: 12
+                        }
+                    }
+                }
+            },
+            grid: { left: '3%', right: '4%', bottom: '20%', containLabel: true },
+            xAxis: [{ 
+                type: 'category', 
+                data: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                axisLabel: { 
+                    formatter: function(value, index) {
+                        return value + '\n{ms|' + marketShareSessionData[index] + '%}';
+                    },
+                    rich: {
+                        ms: {
+                            backgroundColor: '#ffc200',
+                            color: '#212121',
+                            fontSize: 10,
+                            padding: [2, 4],
+                            borderRadius: 2,
+                            lineHeight: 14
+                        }
+                    }
+                }
+            }],
+            yAxis: [
+                { type: 'value', name: 'Sessions', axisLabel: { show: false }, axisTick: { show: false }, axisLine: { show: false }, alignTicks: true },
+                { type: 'value', name: '', position: 'right', axisLabel: { show: false }, axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false }, alignTicks: true }
+            ],
+            series: [
+                { name: 'Hotel Session', type: 'bar', data: [14080, 14510, 14550, 15010, 16110, 16400] },
+                { name: 'Market Share (%)', type: 'line', yAxisIndex: 1, data: [3.1, 3.2, 3.3, 3.6, 3.4, 2.9], symbol: 'none', lineStyle: { width: 0 }, label: { show: false } },
+                { name: 'Compset Session', type: 'line', data: [3000, 3100, 3050, 3150, 3200, 3300], symbolSize: 6, lineStyle: { width: 3 } },
+                { name: 'City Session', type: 'line', yAxisIndex: 1, data: [15000, 16000, 15500, 16500, 17000, 17500], symbolSize: 6, lineStyle: { width: 3 } }
+            ]
+        });
+
+        var chartOrigin = echarts.init(document.getElementById('chart-origin'));
+        chartOrigin.setOption({
+            color: ['#ff5b00', '#4d40cc', '#00cbd1', '#ffc200', '#00afaf', '#887bf1', '#2e2ead', '#21e0e0', '#ffe131', '#9ca3af'],
+            tooltip: { trigger: 'item', formatter: '{b}: {d}%' },
+            title: [
+                { text: 'HOTEL LEVEL', left: '16.5%', top: '0%', textAlign: 'center', textStyle: { fontSize: 12, color: '#475569', fontWeight: 600 } },
+                { text: 'COMPSET AVG', left: '50%', top: '0%', textAlign: 'center', textStyle: { fontSize: 12, color: '#475569', fontWeight: 600 } },
+                { text: 'CITY LEVEL', left: '83.5%', top: '0%', textAlign: 'center', textStyle: { fontSize: 12, color: '#475569', fontWeight: 600 } }
+            ],
+            legend: [
+                { bottom: 0, left: '2%', width: '30%', itemWidth: 11, itemHeight: 11, textStyle: { fontSize: 10 }, data: ['Taiwan', 'Hong Kong', 'United States', 'Malaysia'] },
+                { bottom: 0, left: '36%', width: '30%', itemWidth: 11, itemHeight: 11, textStyle: { fontSize: 10 }, data: ['Taiwan', 'Hong Kong', 'United States', 'Others', 'Japan'] },
+                { bottom: 0, left: '70%', width: '30%', itemWidth: 11, itemHeight: 11, textStyle: { fontSize: 10 }, data: ['Taiwan', 'Others', 'Hong Kong', 'United States', 'Philippines'] }
+            ],
+            series: [
+                { type: 'pie', radius: ['34%', '54%'], center: ['16.5%', '48%'], label: { formatter: '{b}\n{d}%', fontSize: 10 }, labelLine: { length: 6, length2: 8 }, data: [{value: 76.24, name: 'Taiwan'}, {value: 13.86, name: 'Hong Kong'}, {value: 4.95, name: 'United States'}, {value: 4.95, name: 'Malaysia'}] },
+                { type: 'pie', radius: ['34%', '54%'], center: ['50%', '48%'], label: { formatter: '{b}\n{d}%', fontSize: 10 }, labelLine: { length: 6, length2: 8 }, data: [{value: 86.14, name: 'Taiwan'}, {value: 3.96, name: 'Hong Kong'}, {value: 3.96, name: 'United States'}, {value: 3.96, name: 'Others'}, {value: 1.98, name: 'Japan'}] },
+                { type: 'pie', radius: ['34%', '54%'], center: ['83.5%', '48%'], label: { formatter: '{b}\n{d}%', fontSize: 10 }, labelLine: { length: 6, length2: 8 }, data: [{value: 86.14, name: 'Taiwan'}, {value: 5.94, name: 'Others'}, {value: 2.97, name: 'Hong Kong'}, {value: 2.97, name: 'United States'}, {value: 1.98, name: 'Philippines'}] }
+            ]
+        });
+
+        var chartLos = echarts.init(document.getElementById('chart-los'));
+        chartLos.setOption({
+            color: ['#00cbd1', '#4d40cc', '#ffc200', '#ff5b00'],
+            tooltip: { 
+                trigger: 'axis', 
+                axisPointer: { type: 'shadow' },
+                formatter: function(params) {
+                    let total = 0;
+                    params.forEach(p => total += p.value);
+                    let html = `<div class="font-bold mb-1">${params[0].axisValueLabel}</div>`;
+                    params.forEach(p => {
+                        let pct = total > 0 ? ((p.value / total) * 100).toFixed(1) : 0;
+                        html += `${p.marker} ${p.seriesName}: ${p.value} <span style="color:#888">(${pct}%)</span><br/>`;
+                    });
+                    return html;
+                }
+            },
+            legend: { bottom: 0, data: ['1 Night', '2 Nights', '3-4 Nights', '5+ Nights'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Hotel Level', 'Compset Avg', 'City Level'] },
+            yAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
+            series: [
+                { name: '1 Night', type: 'bar', stack: 'total', barWidth: '30%', data: [80, 71, 76] },
+                { name: '2 Nights', type: 'bar', stack: 'total', data: [13, 25, 20] },
+                { name: '3-4 Nights', type: 'bar', stack: 'total', data: [5, 3, 3] },
+                { name: '5+ Nights', type: 'bar', stack: 'total', data: [2, 1, 1] }
+            ]
+        });
+
+        var chartPast4VsAvg = echarts.init(document.getElementById('chart-past4weeks-vs-avg'));
+        chartPast4VsAvg.setOption({
+            color: ['#00cbd1', '#bfe9ec'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Greet Inn (Self)', 'Compset AVG'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['2/28~3/5', '3/6~3/12', '3/13~3/19', '3/20~3/26'] },
+            yAxis: { type: 'value', name: 'Booking', axisLine: { show: true }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: false } },
+            series: [
+                { name: 'Greet Inn (Self)', type: 'bar', data: [265, 250, 473, 425], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } },
+                { name: 'Compset AVG', type: 'bar', data: [152.5, 155, 195, 186.25], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } }
+            ]
+        });
+
+        var chartFuture5VsAvg = echarts.init(document.getElementById('chart-future5months-vs-avg'));
+        chartFuture5VsAvg.setOption({
+            color: ['#4d40cc', '#cdc9f3'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Greet Inn (Self)', 'Compset AVG'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mar', 'Apr', 'May', 'Jun', 'Jul'] },
+            yAxis: { type: 'value', name: 'Booking (by Check-in Date)', nameTextStyle: { align: 'left' }, axisLine: { show: true }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: false } },
+            series: [
+                { name: 'Greet Inn (Self)', type: 'bar', data: [1059, 829, 306, 91, 120], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } },
+                { name: 'Compset AVG', type: 'bar', data: [450, 320, 250, 100, 150], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } }
+            ]
+        });
+
+        // M4: ranking charts replaced by 3 rank-position scorecards (see HTML)
+
+        var chartAdrPast4VsAvg = echarts.init(document.getElementById('chart-adr-past4-vs-avg'));
+        chartAdrPast4VsAvg.setOption({
+            color: ['#00cbd1', '#bfe9ec'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Greet Inn (Self)', 'Compset AVG'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['2/28~3/5', '3/6~3/12', '3/13~3/19', '3/20~3/26'] },
+            yAxis: { type: 'value', name: 'ADR', axisLine: { show: true }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: false } },
+            series: [
+                { name: 'Greet Inn (Self)', type: 'bar', data: [150, 145, 160, 155], label: { show: true, position: 'top', formatter: function(p) { return '$' + p.value; }, color: '#212121', fontSize: 10 } },
+                { name: 'Compset AVG', type: 'bar', data: [132.5, 136.25, 140, 133.75], label: { show: true, position: 'top', formatter: function(p) { return '$' + p.value; }, color: '#212121', fontSize: 10 } }
+            ]
+        });
+
+        var chartAdrFuture5VsAvg = echarts.init(document.getElementById('chart-adr-future5-vs-avg'));
+        chartAdrFuture5VsAvg.setOption({
+            color: ['#4d40cc', '#cdc9f3'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Greet Inn (Self)', 'Compset AVG'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mar', 'Apr', 'May', 'Jun', 'Jul'] },
+            yAxis: { type: 'value', name: 'ADR (by Check-in Date)', nameTextStyle: { align: 'left' }, axisLine: { show: true }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: false } },
+            series: [
+                { name: 'Greet Inn (Self)', type: 'bar', data: [160, 155, 165, 170, 175], label: { show: true, position: 'top', formatter: function(p) { return '$' + p.value; }, color: '#212121', fontSize: 10 } },
+                { name: 'Compset AVG', type: 'bar', data: [140, 135, 145, 150, 155], label: { show: true, position: 'top', formatter: function(p) { return '$' + p.value; }, color: '#212121', fontSize: 10 } }
+            ]
+        });
+
+        var chartNrnPast4VsAvg = echarts.init(document.getElementById('chart-nrn-past4-vs-avg'));
+        chartNrnPast4VsAvg.setOption({
+            color: ['#00cbd1', '#bfe9ec'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Greet Inn (Self)', 'Compset AVG'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['2/28~3/5', '3/6~3/12', '3/13~3/19', '3/20~3/26'] },
+            yAxis: { type: 'value', name: 'RN', axisLine: { show: true }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: false } },
+            series: [
+                { name: 'Greet Inn (Self)', type: 'bar', data: [265, 250, 473, 425], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } },
+                { name: 'Compset AVG', type: 'bar', data: [152.5, 155, 195, 186.25], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } }
+            ]
+        });
+
+        var chartNrnFuture5VsAvg = echarts.init(document.getElementById('chart-nrn-future5-vs-avg'));
+        chartNrnFuture5VsAvg.setOption({
+            color: ['#4d40cc', '#cdc9f3'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Greet Inn (Self)', 'Compset AVG'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['Mar', 'Apr', 'May', 'Jun', 'Jul'] },
+            yAxis: { type: 'value', name: 'RN (by Check-in Date)', nameTextStyle: { align: 'left' }, axisLine: { show: true }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: false } },
+            series: [
+                { name: 'Greet Inn (Self)', type: 'bar', data: [1059, 829, 306, 91, 120], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } },
+                { name: 'Compset AVG', type: 'bar', data: [500, 342.5, 247.5, 100, 132.5], label: { show: true, position: 'top', color: '#212121', fontSize: 10 } }
+            ]
+        });
+
+        var chartLeadTime = echarts.init(document.getElementById('chart-leadtime'));
+        chartLeadTime.setOption({
+            color: ['#4d40cc', '#00cbd1', '#ff5b00'],
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { bottom: 0, data: ['Hotel', 'Compset avg', 'City'] },
+            grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+            xAxis: { type: 'category', data: ['0 Days', '1-7 Days', '8-14 Days', '15-30 Days', '31+ Days'] },
+            yAxis: { type: 'value', axisLabel: { formatter: '{value}%' } },
+            series: [
+                { name: 'Hotel', type: 'bar', data: [6, 20, 20, 40, 14] },
+                { name: 'Compset avg', type: 'bar', data: [2, 26, 18, 22, 32] },
+                { name: 'City', type: 'bar', data: [9, 28, 15, 24, 24] }
+            ]
+        });
+
+        // M7: Gross Bookings by PAX — 100% stacked bar (% share by level)
+        var chartM7PaxStack = echarts.init(document.getElementById('chart-m7-pax-stack'));
+        (function() {
+            var paxSeries = [
+                { name: 'Solo', color: '#4d40cc', data: [10.0, 3.8, 17.1] },
+                { name: '2 PAX', color: '#00cbd1', data: [65.0, 69.8, 60.0] },
+                { name: '3-4 PAX', color: '#ffc200', data: [13.0, 15.3, 17.1] },
+                { name: 'Family', color: '#00afaf', data: [11.2, 9.9, 5.7] },
+                { name: '>=5 PAX', color: '#887bf1', data: [0.8, 1.2, 0.0] }
+            ];
+            chartM7PaxStack.setOption({
+                color: paxSeries.map(function(s) { return s.color; }),
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: function(v) { return v + '%'; } },
+                legend: { bottom: 0, data: paxSeries.map(function(s) { return s.name; }) },
+                grid: { left: '1%', right: '3%', top: '6%', bottom: '18%', containLabel: true },
+                xAxis: { type: 'value', max: 100, show: false },
+                yAxis: { type: 'category', data: ['City Level', 'Compset avg', 'Hotel Level'], axisLabel: { fontWeight: 'bold', color: '#475569' } },
+                series: paxSeries.map(function(s) {
+                    return { name: s.name, type: 'bar', stack: 't', barWidth: '55%', data: s.data,
+                        label: { show: true, formatter: function(p) { return p.value >= 5 ? p.value + '%' : ''; }, color: '#fff', fontWeight: 'bold' } };
+                })
+            });
+        })();
+
+        window.addEventListener('resize', function() {
+            chartM7PaxStack.resize();
+            chartCoreTrend.resize();
+            chartM1Rn.resize();
+            chartM1Sales.resize();
+            chartM1Bookings.resize();
+            chartM1Adr.resize();
+            chartM2OriginTrend.resize();
+            chartM2OriginLeadtime.resize();
+            chartM2OriginLos.resize();
+            chartM2OriginAdr.resize();
+            chartTrafficBooking.resize();
+            chartRoomNight.resize();
+            myChartMonthly.resize();
+            chartSession.resize();
+            chartOrigin.resize();
+            chartLos.resize();
+            chartPast4VsAvg.resize();
+            chartFuture5VsAvg.resize();
+            chartLeadTime.resize();
+            chartAdrPast4VsAvg.resize();
+            chartAdrFuture5VsAvg.resize();
+            chartNrnPast4VsAvg.resize();
+            chartNrnFuture5VsAvg.resize();
+        });
+    }
+
+        // PDF Modal Logic
+        function openExportModal() {
+            const pdfModal = document.getElementById('pdfModal');
+            if (pdfModal) {
+                pdfModal.classList.remove('hidden');
+                pdfModal.classList.add('flex');
+            }
+        }
+        function closeExportModal() {
+            const pdfModal = document.getElementById('pdfModal');
+            if (pdfModal) {
+                pdfModal.classList.add('hidden');
+                pdfModal.classList.remove('flex');
+            }
+        }
+        function downloadPDF() {
+            alert('PDF Export process started! Downloading selected modules...');
+            closeExportModal();
+        }
+        
+        // Master Hotel ID and Compset Hotels interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const masterHotelId = document.getElementById('masterHotelId');
+            const compsetHotels = document.getElementById('compsetHotels');
+            
+            if (masterHotelId && compsetHotels) {
+                // Initial update
+                updateCompsetHotels();
+                
+                // Add event listener
+                masterHotelId.addEventListener('change', updateCompsetHotels);
+                
+                function updateCompsetHotels() {
+                    const selectedHotel = masterHotelId.value;
+                    
+                    // Clear existing options
+                    compsetHotels.innerHTML = '';
+                    
+                    // Add Peer Group option based on selected hotel
+                    if (selectedHotel === '1001 - Greet Inn') {
+                        const option = document.createElement('option');
+                        option.value = 'Peer Group A';
+                        option.textContent = 'Peer Group A';
+                        compsetHotels.appendChild(option);
+                    } else if (selectedHotel === '1002 - Just Sleep') {
+                        const option = document.createElement('option');
+                        option.value = 'Peer Group B';
+                        option.textContent = 'Peer Group B';
+                        compsetHotels.appendChild(option);
+                    }
+                    
+                    // Add Default and Custom Compset options
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = 'Default Compset';
+                    defaultOption.textContent = 'Default Compset';
+                    compsetHotels.appendChild(defaultOption);
+                    
+                    const customOption = document.createElement('option');
+                    customOption.value = 'Custom Compset';
+                    customOption.textContent = 'Custom Compset';
+                    compsetHotels.appendChild(customOption);
+                    
+                    // Ensure Compset Hotels remains disabled
+                    compsetHotels.disabled = true;
+                }
+            }
+        });
+        
+        // M12: Date basis toggle (Book Date / Stay Date)
+        document.addEventListener('DOMContentLoaded', function() {
+            var btns = document.querySelectorAll('.basis-btn');
+            var label = document.querySelector('.basis-label');
+            function setBasis(basis) {
+                btns.forEach(function(x) { x.classList.toggle('active', x.getAttribute('data-basis') === basis); });
+                document.body.classList.toggle('stay-mode', basis === 'stay');
+                if (label) label.textContent = (basis === 'stay' ? 'Stay Date:' : 'Book Date:');
+                setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 60);
+            }
+            btns.forEach(function(b) { b.addEventListener('click', function() { setBasis(b.getAttribute('data-basis')); }); });
+            document.querySelectorAll('.switch-link').forEach(function(s) { s.addEventListener('click', function() { setBasis('book'); }); });
+            setBasis('book'); // default
+
+            // Metric segmented toggles (Gross/Net) — visual switch (demo)
+            document.querySelectorAll('.metric-seg').forEach(function(seg) {
+                seg.querySelectorAll('button').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        seg.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+                        btn.classList.add('active');
+                    });
+                });
+            });
+        });
+
+        // Initialize all charts when page loads
+        window.addEventListener('DOMContentLoaded', initAllCharts);
+    </script>
+</body>
+</html>
